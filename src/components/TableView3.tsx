@@ -1,4 +1,3 @@
-// src/components/TableView.tsx
 import React, { useState } from 'react';
 import type { Triple } from '../utils/ttlParser';
 
@@ -50,7 +49,7 @@ export const TableView: React.FC<TableViewProps> = ({ triples }) => {
   };
 
   return (
-    <div style={{ width: '100%' }}>
+    <div style={{ width: '100%', padding: '0' }}>
       {/* Kontroller */}
       <div style={{ marginBottom: '15px', display: 'flex', gap: '10px', alignItems: 'center' }}>
         <input
