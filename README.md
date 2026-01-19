@@ -1,73 +1,84 @@
-# React + TypeScript + Vite
+# TTL Visualization
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React-based web application for visualizing and managing RDF/TTL (Turtle) ontologies. This tool enables users to explore ontology data through interactive graph and table views, with support for both local file uploads and API-based ontology management.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **TTL File Parsing**: Parse and visualize RDF triples from Turtle (.ttl) files
+- **Dual Visualization Modes**:
+  - **Graph View**: Interactive force-directed graph visualization of ontology relationships
+  - **Table View**: Tabular display of subject-predicate-object triples with selection capability
+- **Multiple Data Sources**:
+  - Upload local TTL files
+  - Fetch ontologies from a backend API
+- **Triple Selection**: Select specific triples from the table view to include in chat feedback
+- **Chat Integration**: Send feedback and prompts to update ontologies via an integrated chat drawer
+- **Dashboard Layout**: Material UI-based responsive layout with navigation sidebar
 
-## React Compiler
+## Tech Stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Framework**: React 19 with TypeScript
+- **Build Tool**: Vite
+- **UI Library**: Material UI (MUI) 7
+- **RDF Parsing**: N3.js and rdflib
+- **Graph Visualization**: react-force-graph-2d
+- **HTTP Client**: Axios
+- **Routing**: React Router DOM
 
-## Expanding the ESLint configuration
+## Getting Started
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### Prerequisites
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+- Node.js (v18 or higher recommended)
+- npm or yarn
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Installation
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Available Scripts
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+| Command | Description |
+|---------|-------------|
+| `npm run dev` | Start development server with hot reload |
+| `npm run build` | Type-check and build for production |
+| `npm run preview` | Preview production build locally |
+| `npm run lint` | Run ESLint |
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Project Structure
+
 ```
+src/
+├── api/              # API client and service functions
+├── components/       # Reusable UI components (GraphView, TableView, TTLUploader)
+├── context/          # React context for ontology state management
+├── layout/           # Layout components (Header, SideNav, ChatDrawer)
+├── pages/            # Page components for routing
+├── types/            # TypeScript type definitions
+└── utils/            # Utility functions (TTL parsing, triple utilities)
+```
+
+## API Integration
+
+The application connects to a backend API for ontology management:
+
+- `GET /api/ontologies` - Retrieve all ontologies
+- `GET /api/ontologies/latest` - Get the latest ontology
+- `POST /api/ontologies` - Update ontology with prompt and selected triples
+
+## Usage
+
+1. **Load an Ontology**: Either upload a local `.ttl` file or fetch from the API
+2. **Explore Data**: Switch between graph and table views to analyze the ontology
+3. **Select Triples**: In table view, select specific triples of interest
+4. **Provide Feedback**: Use the chat drawer to send prompts and selected triples to update the ontology
+
+## License
+
+Private project - All rights reserved
