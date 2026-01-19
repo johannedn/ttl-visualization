@@ -71,7 +71,7 @@ export const GraphView: React.FC<GraphViewProps> = ({ triples }) => {
   }, [triples]);
 
   return (
-    <div style={{ width: '100%', height: '600px', border: '1px solid #ccc' }}>
+    <div style={{ width: '50%', height: '600px', border: '1px solid #ccc', padding: '0' }}>
       <ForceGraph2D
         graphData={graphData}
         nodeLabel="name"

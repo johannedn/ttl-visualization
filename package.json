@@ -10,6 +10,10 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^7.3.7",
+    "@mui/material": "^7.3.7",
     "@types/n3": "^1.26.1",
     "@types/rdflib": "^0.20.1",
     "@types/recharts": "^1.8.29",
@@ -19,6 +23,7 @@
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "react-force-graph-2d": "^1.29.0",
+    "react-router-dom": "^7.12.0",
     "recharts": "^3.5.0"
   },
   "devDependencies": {
