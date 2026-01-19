@@ -1,5 +1,6 @@
 import apiClient from './axiosClient';
 import type { OntologyResponse, OntologyRequest } from '../types/ontology';
+import type { Triple } from '../utils/ttlParser';
 
 export const ontologyService = {
   // GET /api/ontologies - Get all ontologies
@@ -14,12 +15,23 @@ export const ontologyService = {
     return response.data;
   },
 
-  // POST /api/ontologies - Create/update ontology
-  updateOntology: async (prompt: string): Promise<OntologyResponse> => {
-    const response = await apiClient.post<OntologyResponse>(
+  // // POST /api/ontologies - Create/update ontology
+  // updateOntology: async (prompt: string): Promise<OntologyResponse> => {
+  //   const response = await apiClient.post<OntologyResponse>(
+  //     '/api/ontologies',
+  //     { prompt }
+  //   );
+  //   return response.data;
+  // },
+  updateOntology: async (
+    prompt: string,
+    triples: Triple[]
+  ): Promise<OntologyResponse> => {
+    const response = await apiClient.post(
       '/api/ontologies',
-      { prompt }
-    );
-    return response.data;
+      { prompt, triples }
+    )
+    return response.data
   },
+
 };

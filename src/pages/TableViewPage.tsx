@@ -1,12 +1,5 @@
-import { TableView } from '../components/TableView3'
-import type { Triple } from '../utils/ttlParser'
+import { TableView } from '../components/TableView'
 
-
-interface Props {
-	triples: Triple[]
-}
-
-
-export function TableViewPage({ triples }: Props) {
-	return <TableView triples={triples} />
+export function TableViewPage() {
+	return <TableView/>
 }

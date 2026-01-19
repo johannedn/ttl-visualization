@@ -2,6 +2,7 @@ import { Drawer, Toolbar, Box, Typography, TextField, IconButton, CircularProgre
 import SendIcon from '@mui/icons-material/Send'
 import * as React from 'react'
 import { ontologyService } from '../api/ontologyService'
+import { useOntology } from '../context/OntologyContext'
 
 
 export const CHAT_WIDTH = 320
@@ -11,10 +12,14 @@ interface ChatDrawerProps {
 	open: boolean
 }
 
+
 export function ChatDrawer({ open }: ChatDrawerProps) {
 	const [message, setMessage] = React.useState('')
 	const [sending, setSending] = React.useState(false)
 	const [error, setError] = React.useState<string | null>(null)
+
+	const { selectedTriples, clearSelection } = useOntology()
+
 
 
 	const handleSend = async () => {
@@ -26,7 +31,10 @@ export function ChatDrawer({ open }: ChatDrawerProps) {
 
 
 		try {
-			await ontologyService.updateOntology(message)
+			await ontologyService.updateOntology(
+				message,
+				selectedTriples
+			)
 			setMessage('')
 		} catch (err) {
 			setError('Failed to send message')
@@ -57,7 +65,7 @@ export function ChatDrawer({ open }: ChatDrawerProps) {
 			{/* Messages area (placeholder) */}
 			<Box flexGrow={1} p={2} overflow="auto">
 				<Typography variant="body2" color="text.secondary">
-					Chat history kommer her
+					Chat log comes later
 				</Typography>
 			</Box>
 			{/* Input area */}
@@ -71,7 +79,7 @@ export function ChatDrawer({ open }: ChatDrawerProps) {
 					<TextField
 						fullWidth
 						size="small"
-						placeholder="Send prompt til ontologi…"
+						placeholder="Send feedback to ontologychat..."
 						value={message}
 						onChange={e => setMessage(e.target.value)}
 						onKeyDown={e => {
