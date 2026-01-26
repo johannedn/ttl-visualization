@@ -1,104 +1,39 @@
-import { Drawer, Toolbar, Box, Typography, TextField, IconButton, CircularProgress } from '@mui/material'
-import SendIcon from '@mui/icons-material/Send'
-import * as React from 'react'
-import { ontologyService } from '../api/ontologyService'
-import { useOntology } from '../context/OntologyContext'
-
-
-export const CHAT_WIDTH = 320
-
+// src/chat/ChatDrawer.tsx
+import { Drawer, Toolbar, Box, Typography } from '@mui/material'
+import { ChatMessages } from '@components/chat/ChatMessages'
+import { ChatInput } from '@components/chat/ChatInput'
 
 interface ChatDrawerProps {
-	open: boolean
+  open: boolean
+  chatState: ReturnType<typeof import('@context/useOntologyChat').useOntologyChat>
 }
 
+export function ChatDrawer({ open, chatState }: ChatDrawerProps) {
+  const { messages, send, pendingId, connected, clearHistory, selectedTriples } = chatState
 
-export function ChatDrawer({ open }: ChatDrawerProps) {
-	const [message, setMessage] = React.useState('')
-	const [sending, setSending] = React.useState(false)
-	const [error, setError] = React.useState<string | null>(null)
-
-	const { selectedTriples, clearSelection } = useOntology()
-
-
-
-	const handleSend = async () => {
-		if (!message.trim()) return
-
-
-		setSending(true)
-		setError(null)
-
-
-		try {
-			await ontologyService.updateOntology(
-				message,
-				selectedTriples
-			)
-			setMessage('')
-		} catch (err) {
-			setError('Failed to send message')
-		} finally {
-			setSending(false)
-		}
-	}
-
-
-	return (
-		<Drawer
-			anchor="right"
-			open={open}
-			variant="persistent"
-			sx={{
-				width: CHAT_WIDTH,
-				[`& .MuiDrawer-paper`]: {
-					width: CHAT_WIDTH,
-					boxSizing: 'border-box',
-					display: 'flex',
-					flexDirection: 'column',
-				},
-			}}
-		>
-			<Toolbar />
-
-
-			{/* Messages area (placeholder) */}
-			<Box flexGrow={1} p={2} overflow="auto">
-				<Typography variant="body2" color="text.secondary">
-					Chat log comes later
-				</Typography>
-			</Box>
-			{/* Input area */}
-			<Box p={2} borderTop={1} borderColor="divider">
-				{error && (
-					<Typography color="error" variant="caption" display="block" mb={1}>
-						{error}
-					</Typography>
-				)}
-				<Box display="flex" gap={1}>
-					<TextField
-						fullWidth
-						size="small"
-						placeholder="Send feedback to ontologychat..."
-						value={message}
-						onChange={e => setMessage(e.target.value)}
-						onKeyDown={e => {
-							if (e.key === 'Enter' && !e.shiftKey) {
-								e.preventDefault()
-								handleSend()	
-							}
-							}}
-						disabled={sending}
-					/>
-					<IconButton
-						color="primary"
-						onClick={handleSend}
-						disabled={sending}
-					>
-						{sending ? <CircularProgress size={20} /> : <SendIcon />}
-					</IconButton>
-				</Box>
-			</Box>
-		</Drawer>
-	)
+  return (
+    <Drawer 
+      open={open} 
+      anchor="right" 
+      variant="persistent"
+      sx={{ width: 400, '& .MuiDrawer-paper': { width: 400 } }}
+    >
+      <Toolbar />
+      <Box display="flex" flexDirection="column" height="100%">
+        <Box p={2} borderBottom={1} borderColor="divider">
+          <Typography variant="h6">Ontology Chat</Typography>
+          <Typography variant="caption" color={connected ? 'success.main' : 'error.main'}>
+            {connected ? 'Connected' : 'Disconnected'}
+          </Typography>
+        </Box>
+        
+        <ChatMessages messages={messages} onClearHistory={clearHistory} />
+        <ChatInput 
+          onSend={send} 
+          pending={!!pendingId}
+          selectedTriples={selectedTriples}
+        />
+      </Box>
+    </Drawer>
+  )
 }
