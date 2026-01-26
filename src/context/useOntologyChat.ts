@@ -3,27 +3,16 @@ import { useOntology } from '@context/OntologyContext'
 import { parseTTL } from '@utils/ttlParser'
 import type { ChatResponse } from 'types/chat'
 
-const CHAT_HISTORY_KEY = 'ontology_chat_history'
 
 export function useOntologyChat() {
   const { selectedTriples, setTriples, clearSelection } = useOntology()
 
-  // Last inn historikk fra sessionStorage ved oppstart
-  const [messages, setMessages] = useState<ChatResponse[]>(() => {
-    const saved = sessionStorage.getItem(CHAT_HISTORY_KEY)
-    return saved ? JSON.parse(saved) : []
-  })
-  
+  const [messages, setMessages] = useState<ChatResponse[]>([])
   const [pendingId, setPendingId] = useState<string | null>(null)
   const [connected, setConnected] = useState(false)
 
   const wsRef = useRef<WebSocket | null>(null)
   const initializedRef = useRef(false)
-
-  // Lagre meldinger til sessionStorage ved hver endring
-  useEffect(() => {
-    sessionStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(messages))
-  }, [messages])
 
   useEffect(() => {
     if (initializedRef.current) return
@@ -127,7 +116,6 @@ export function useOntologyChat() {
 
   const clearHistory = () => {
     setMessages([])
-    sessionStorage.removeItem(CHAT_HISTORY_KEY)
   }
 
   return { messages, send, pendingId, connected, clearHistory, selectedTriples }
