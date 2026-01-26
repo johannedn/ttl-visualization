@@ -14,13 +14,6 @@ export default function App() {
   const { triples, loadFromAPI, loadFromFile, loading, error } = useOntology()
   const [loadMode, setLoadMode] = useState<LoadMode>('api')
 
-  // Ved oppstart, hvis API mode, last inn triplene
-  useEffect(() => {
-    if (loadMode === 'api') {
-      loadFromAPI()
-    }
-  }, [loadMode, loadFromAPI])
-
   const handleFileLoad = async (content: string) => {
     await loadFromFile(content)
   }
