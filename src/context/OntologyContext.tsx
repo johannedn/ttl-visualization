@@ -1,5 +1,5 @@
 // src/context/OntologyContext.tsx
-import React, { createContext, useContext, useState } from 'react'
+import React, { createContext, useContext, useEffect, useState } from 'react'
 import type { Triple } from '@utils/ttlParser'
 import { parseTTL } from '@utils/ttlParser'
 import { ontologyService } from '@api/ontologyService'
@@ -19,6 +19,7 @@ interface OntologyContextValue {
 }
 
 const OntologyContext = createContext<OntologyContextValue | null>(null)
+const DEFAULT_LOCAL_ONTOLOGY = import.meta.env.VITE_LOCAL_ONTOLOGY || '/assets/dev-ontology.ttl'
 
 export function OntologyProvider({ children }: { children: React.ReactNode }) {
   const [triples, setTriples] = useState<Triple[]>([])
@@ -60,6 +61,34 @@ export function OntologyProvider({ children }: { children: React.ReactNode }) {
       setError('Failed to parse uploaded file')
     }
   }
+
+  useEffect(() => {
+    if (!import.meta.env.DEV) return
+    if (triples.length > 0) return
+
+    let cancelled = false
+    const loadLocal = async () => {
+      setLoading(true)
+      try {
+        const res = await fetch(DEFAULT_LOCAL_ONTOLOGY)
+        if (!res.ok) throw new Error(`Failed to fetch ${DEFAULT_LOCAL_ONTOLOGY}`)
+        const ttl = await res.text()
+        const parsed = await parseTTL(ttl)
+        if (!cancelled && triples.length === 0) {
+          setTriples(parsed)
+        }
+      } catch (err) {
+        console.warn('No local ontology loaded from assets', err)
+      } finally {
+        if (!cancelled) setLoading(false)
+      }
+    }
+
+    loadLocal()
+    return () => {
+      cancelled = true
+    }
+  }, [triples.length])
 
   return (
     <OntologyContext.Provider

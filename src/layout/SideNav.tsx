@@ -19,22 +19,30 @@ const linkStyle = {
 	color: 'inherit',
 }
 
-export function SideNav() {
+interface SideNavProps {
+	open: boolean
+	onClose: () => void
+}
+
+export function SideNav({ open, onClose }: SideNavProps) {
 	return (
 		<Drawer
-			variant="permanent"
+			variant="temporary"
+			anchor="left"
+			open={open}
+			onClose={onClose}
 			sx={{
-			width: DRAWER_WIDTH,
-			[`& .MuiDrawer-paper`]: {
-			width: DRAWER_WIDTH,
-			boxSizing: 'border-box',
-			},
+				[`& .MuiDrawer-paper`]: {
+					width: DRAWER_WIDTH,
+					boxSizing: 'border-box',
+					marginTop: '120px',
+					height: 'calc(100vh - 120px)',
+				},
 			}}
-			open
 		>
-			<Toolbar>
-				<Typography variant="h6">My App</Typography>
-			</Toolbar>
+			<Box p={2}>
+				<Typography variant="h6">Navigation</Typography>
+			</Box>
 			<Divider />
 			{/* Claude sin versjon */}
 			<List>
@@ -61,7 +69,7 @@ export function SideNav() {
 				
 				<NavLink to="/graph" style={linkStyle}>
 					{({ isActive }) => (
-						<ListItemButton selected={isActive}>
+						<ListItemButton selected={isActive} onClick={onClose}>
 							<ListItemText primary="Graph View" />
 						</ListItemButton>
 					)}
@@ -69,7 +77,7 @@ export function SideNav() {
 
 				<NavLink to="/table" style={linkStyle}>
 					{({ isActive }) => (
-						<ListItemButton selected={isActive}>
+						<ListItemButton selected={isActive} onClick={onClose}>
 							<ListItemText primary="Table View" />
 						</ListItemButton>
 				)}
@@ -77,7 +85,7 @@ export function SideNav() {
 
 				<NavLink to="/history" style={linkStyle}>
 					{({ isActive }) => (
-						<ListItemButton selected={isActive}>
+						<ListItemButton selected={isActive} onClick={onClose}>
 							<ListItemText primary="History" />
 						</ListItemButton>
 				)}

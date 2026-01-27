@@ -1,10 +1,12 @@
 // src/chat/ChatInput.tsx
 import { useState } from 'react'
 import { Box, Button, TextField, Chip, Typography } from '@mui/material'
+import SendIcon from '@mui/icons-material/Send'
 
 interface Props {
   onSend: (text: string) => void
   pending: boolean
+  connected?: boolean
   selectedTriples?: Array<{
     subject: string
     predicate: string
@@ -12,7 +14,7 @@ interface Props {
   }> | null
 }
 
-export function ChatInput({ onSend, pending, selectedTriples }: Props) {
+export function ChatInput({ onSend, pending, connected = true, selectedTriples }: Props) {
   const [value, setValue] = useState('')
 
   const handleSend = () => {
@@ -69,12 +71,51 @@ export function ChatInput({ onSend, pending, selectedTriples }: Props) {
           value={value}
           onChange={e => setValue(e.target.value)}
           onKeyPress={handleKeyPress}
-          placeholder={pending ? 'Confirm or clarify…' : 'Ask about ontology…'}
+          disabled={!connected}
+          placeholder={
+            !connected 
+              ? 'Disconnected - cannot send messages' 
+              : pending 
+                ? 'Confirm or clarify…' 
+                : 'Ask OntoloChat'
+          }
+          sx={{
+            '& .MuiOutlinedInput-root': {
+              color: '#2d4f4b',
+              '& fieldset': {
+                borderColor: 'rgba(45, 79, 75, 0.3)',
+              },
+              '&:hover fieldset': {
+                borderColor: 'rgba(45, 79, 75, 0.5)',
+              },
+              '&.Mui-focused fieldset': {
+                borderColor: '#fbbf24',
+                borderWidth: 2,
+              },
+            },
+            '& .MuiInputBase-input::placeholder': {
+              color: 'rgba(45, 79, 75, 0.5)',
+              opacity: 1,
+            },
+          }}
         />
         <Button 
           variant="contained" 
           onClick={handleSend}
-          disabled={!value.trim()}
+          disabled={!value.trim() || !connected}
+          sx={{
+            bgcolor: '#2d4f4b',
+            color: '#fbbf24',
+            '&:hover': {
+              bgcolor: '#1a3330',
+            },
+            '&:disabled': {
+              bgcolor: 'rgba(45, 79, 75, 0.5)',
+              color: 'rgba(251, 191, 36, 0.5)',
+            },
+            fontWeight: 600,
+          }}
+          endIcon={<SendIcon />}
         >
           Send
         </Button>

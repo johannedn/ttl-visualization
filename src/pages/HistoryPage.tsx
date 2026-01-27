@@ -17,13 +17,19 @@ import {
 import { Visibility as VisibilityIcon } from '@mui/icons-material';
 import { historyService, type HistoryEntry } from '@api/historyService';
 import { HistoryDetailDialog } from '@components/HistoryDetailDialog';
+import { usePageTitle } from '@context/PageContext';
 
 export function HistoryPage() {
+  const { setTitle } = usePageTitle()
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedVersionId, setSelectedVersionId] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  useEffect(() => {
+    setTitle('Ontology Change History')
+  }, [setTitle])
 
   useEffect(() => {
     const fetchHistory = async () => {
