@@ -12,31 +12,51 @@ interface DashboardLayoutProps {
 export function DashboardLayout({ children }: DashboardLayoutProps) {
 	const [chatOpen, setChatOpen] = React.useState(false)
 	const [sidebarOpen, setSidebarOpen] = React.useState(false)
+	const [sidebarHoverTimeout, setSidebarHoverTimeout] = React.useState<NodeJS.Timeout | null>(null)
 	const [chatWidth, setChatWidth] = React.useState(420)
 	const chatState = useOntologyChat() // Initialiser chat hook her
 
+	const handleSidebarMouseEnter = () => {
+		if (sidebarHoverTimeout) clearTimeout(sidebarHoverTimeout)
+		setSidebarOpen(true)
+	}
+
+	const handleSidebarMouseLeave = () => {
+		const timeout = setTimeout(() => {
+			setSidebarOpen(false)
+		}, 150)
+		setSidebarHoverTimeout(timeout)
+	}
+
 	return (
-		<Box sx={{ display: 'flex' }}>
+		<Box sx={{ display: 'flex', width: '100%', height: '100vh' }}>
 			<CssBaseline />
 
-			<AppHeader onOpenChat={() => setChatOpen(prev => !prev)} onOpenSidebar={() => setSidebarOpen(prev => !prev)} />
-			<SideNav open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+			<Box onMouseEnter={handleSidebarMouseEnter} onMouseLeave={handleSidebarMouseLeave} sx={{ display: 'flex', flexDirection: 'column', flexShrink: 0 }}>
+				<AppHeader onOpenChat={() => setChatOpen(prev => !prev)} onOpenSidebar={() => setSidebarOpen(prev => !prev)} />
+				<SideNav open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+			</Box>
 
 			<Box
 				component="main"
 				sx={{
 					flexGrow: 1,
-					pt: 3,
-					pr: 3,
-					pb: 3,
-					pl: 3,
+					display: 'flex',
+					flexDirection: 'column',
+					overflow: 'hidden',
 					bgcolor: '#f5faf9',
-					minHeight: '100vh',
-					transition: 'flex-basis 0.1s ease-out',
 				}}
 			>
 				<Toolbar sx={{ minHeight: 120 }} />
-				{children}
+				<Box
+					sx={{
+						flexGrow: 1,
+						overflow: 'auto',
+						pb: 3,
+					}}
+				>
+					{children}
+				</Box>
 			</Box>
 
 			{chatOpen && <ChatDrawer open={chatOpen} onClose={() => setChatOpen(false)} chatState={chatState} width={chatWidth} onWidthChange={setChatWidth} />}

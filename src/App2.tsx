@@ -4,6 +4,8 @@ import { Box, Button, Typography } from '@mui/material'
 import { DashboardLayout } from './layout/DashboardLayout'
 import { TTLUploader } from './components/TTLUploader'
 import { GraphViewPage } from './pages/GraphViewPage'
+import { GraphViewV2Page } from './pages/GraphViewV2Page'
+import { GraphViewFullscreenPage } from './pages/GraphViewFullscreenPage'
 import { TableViewPage } from './pages/TableViewPage'
 import { HistoryPage } from './pages/HistoryPage'
 import { useOntology } from '@context/OntologyContext'
@@ -24,10 +26,11 @@ export default function App() {
     <DashboardLayout>
       <Box 
         sx={{
-          width: '95%',
-          maxWidth: '1800px',
-          margin: '0 auto',
-          mt: 6,
+          width: '100%',
+          display: 'flex',
+          flexDirection: 'column',
+          px: 3,
+          mt: 8,
           mb: 3,
         }}
       >
@@ -49,6 +52,8 @@ export default function App() {
       <Routes>
         <Route path="/" element={<Navigate to="/graph" replace />} />
         <Route path="/graph" element={<GraphViewPage triples={triples} />} />
+        <Route path="/graph-fullscreen" element={<GraphViewFullscreenPage triples={triples} />} />
+        <Route path="/graph-v2" element={<GraphViewV2Page triples={triples} />} />
         <Route path="/table" element={<TableViewPage />} />
         <Route path="/history" element={<HistoryPage />} />
       </Routes>

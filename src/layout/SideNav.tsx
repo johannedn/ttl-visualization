@@ -7,8 +7,12 @@ import {
 	Divider,
 	Typography,
 	Box,
+	ListItemIcon,
 } from '@mui/material'
 import { NavLink } from 'react-router-dom'
+import AccountTreeIcon from '@mui/icons-material/AccountTree'
+import TableChartIcon from '@mui/icons-material/TableChart'
+import HistoryIcon from '@mui/icons-material/History'
 
 
 
@@ -27,7 +31,7 @@ interface SideNavProps {
 export function SideNav({ open, onClose }: SideNavProps) {
 	return (
 		<Drawer
-			variant="temporary"
+			variant="persistent"
 			anchor="left"
 			open={open}
 			onClose={onClose}
@@ -36,69 +40,95 @@ export function SideNav({ open, onClose }: SideNavProps) {
 					width: DRAWER_WIDTH,
 					boxSizing: 'border-box',
 					marginTop: '120px',
-					height: 'calc(100vh - 120px)',
+					height: 'auto',
 				},
 			}}
 		>
-			<Box p={2}>
-				<Typography variant="h6">Navigation</Typography>
-			</Box>
-			<Divider />
 			{/* Claude sin versjon */}
 			<List>
-			{/*
-				<NavLink to="/graph" style={{ textDecoration: 'none', color: 'inherit' }}>
-					<ListItemButton>
-						<ListItemText primary="Graph View" />
-					</ListItemButton>
-				</NavLink>
-
-				<NavLink to="/table" style={{ textDecoration: 'none', color: 'inherit' }}>
-					<ListItemButton>
-						<ListItemText primary="Table View" />
-					</ListItemButton>
-				</NavLink>
-
-				<NavLink to="/history" style={{ textDecoration: 'none', color: 'inherit' }}>
-					<ListItemButton>
-						<ListItemText primary="History" />
-					</ListItemButton>
-				</NavLink> */}
-
-				{/*chat sin versjon*/}
-				
 				<NavLink to="/graph" style={linkStyle}>
 					{({ isActive }) => (
-						<ListItemButton selected={isActive} onClick={onClose}>
-							<ListItemText primary="Graph View" />
+						<ListItemButton 
+							selected={isActive} 
+							onClick={onClose}
+							sx={{
+								color: '#2d4f4b',
+								'&:hover': {
+									bgcolor: 'rgba(251, 191, 36, 0.2)',
+								},
+								...(isActive && {
+									bgcolor: 'rgba(251, 191, 36, 0.3)',
+									borderLeft: '4px solid #fbbf24',
+									pl: 1.5,
+								}),
+							}}
+						>
+							<ListItemIcon sx={{ color: '#2d4f4b', minWidth: 40 }}>
+								<AccountTreeIcon />
+							</ListItemIcon>
+							<ListItemText 
+								primary="Graph View" 
+								sx={{ '& .MuiTypography-root': { fontWeight: 700, color: '#2d4f4b' } }}
+							/>
 						</ListItemButton>
 					)}
 				</NavLink>
 
 				<NavLink to="/table" style={linkStyle}>
 					{({ isActive }) => (
-						<ListItemButton selected={isActive} onClick={onClose}>
-							<ListItemText primary="Table View" />
+						<ListItemButton 
+							selected={isActive} 
+							onClick={onClose}
+							sx={{
+								color: '#2d4f4b',
+								'&:hover': {
+									bgcolor: 'rgba(251, 191, 36, 0.2)',
+								},
+								...(isActive && {
+									bgcolor: 'rgba(251, 191, 36, 0.3)',
+									borderLeft: '4px solid #fbbf24',
+									pl: 1.5,
+								}),
+							}}
+						>
+							<ListItemIcon sx={{ color: '#2d4f4b', minWidth: 40 }}>
+								<TableChartIcon />
+							</ListItemIcon>
+							<ListItemText 
+								primary="Table View" 
+								sx={{ '& .MuiTypography-root': { fontWeight: 700, color: '#2d4f4b' } }}
+							/>
 						</ListItemButton>
-				)}
+					)}
 				</NavLink>
 
 				<NavLink to="/history" style={linkStyle}>
 					{({ isActive }) => (
-						<ListItemButton selected={isActive} onClick={onClose}>
-							<ListItemText primary="History" />
+						<ListItemButton 
+							selected={isActive} 
+							onClick={onClose}
+							sx={{
+								color: '#2d4f4b',
+								'&:hover': {
+									bgcolor: 'rgba(251, 191, 36, 0.2)',
+								},
+								...(isActive && {
+									bgcolor: 'rgba(251, 191, 36, 0.3)',
+									borderLeft: '4px solid #fbbf24',
+									pl: 1.5,
+								}),
+							}}
+						>
+							<ListItemIcon sx={{ color: '#2d4f4b', minWidth: 40 }}>
+								<HistoryIcon />
+							</ListItemIcon>
+							<ListItemText 
+								primary="History" 
+								sx={{ '& .MuiTypography-root': { fontWeight: 700, color: '#2d4f4b' } }}
+							/>
 						</ListItemButton>
-				)}
+					)}
 				</NavLink>
-				{/* <ListItemButton>
-					<ListItemText primary="Table View" />
-				</ListItemButton>
-				<ListItemButton>
-					<ListItemText primary="Graph View" />
-				</ListItemButton>
-				<ListItemButton>
-					<ListItemText primary="History" />
-				</ListItemButton> */}
 			</List>
 		</Drawer>
 	)
