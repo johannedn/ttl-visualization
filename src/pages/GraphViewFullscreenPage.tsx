@@ -58,6 +58,7 @@ export function GraphViewFullscreenPage({ triples }: GraphViewFullscreenPageProp
   })
   
   const fgRef = useRef<ForceGraphMethods | undefined>(undefined)
+  const graphContainerRef = useRef<HTMLDivElement | null>(null)
 
   // Column Options für Filter
   const columnOptions = useMemo(() => {
@@ -185,10 +186,32 @@ export function GraphViewFullscreenPage({ triples }: GraphViewFullscreenPageProp
     setSelectedEntity(node.id);
     
     if (fgRef.current) {
-      fgRef.current.centerAt(node.x, node.y, 1000);
-      fgRef.current.zoom(3, 1000);
+      const currentZoom = fgRef.current.zoom();
+      fgRef.current.centerAt(node.x, node.y, 600);
+      fgRef.current.zoom(currentZoom, 0);
     }
   }, []);
+
+  useEffect(() => {
+    if (!selectedEntity || !fgRef.current) return;
+
+    const timeout = setTimeout(() => {
+      if (!fgRef.current) return;
+      const node = displayGraph.nodes.find(n => n.id === selectedEntity) as any;
+      if (!node) return;
+
+      const currentZoom = fgRef.current.zoom();
+      const containerWidth = graphContainerRef.current?.getBoundingClientRect().width ?? 0;
+      const overlayWidth = 360;
+      const offset = Math.min(overlayWidth, containerWidth * 0.3);
+      const offsetInGraph = offset / currentZoom;
+
+      fgRef.current.centerAt(node.x - offsetInGraph, node.y, 600);
+      fgRef.current.zoom(currentZoom, 0);
+    }, 200);
+
+    return () => clearTimeout(timeout);
+  }, [selectedEntity, displayGraph]);
 
   const handleCloseCard = useCallback(() => {
     setSelectedEntity(null);
@@ -316,7 +339,9 @@ export function GraphViewFullscreenPage({ triples }: GraphViewFullscreenPageProp
         </Box>
 
         {/* Graph Canvas */}
-        <Box sx={{ 
+        <Box
+          ref={graphContainerRef}
+          sx={{ 
           flex: 1, 
           position: 'relative', 
           bgcolor: '#FFFFFF',

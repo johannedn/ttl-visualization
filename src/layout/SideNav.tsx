@@ -35,6 +35,7 @@ export function SideNav({ open, onClose }: SideNavProps) {
 			anchor="left"
 			open={open}
 			onClose={onClose}
+			onClick={e => e.stopPropagation()}
 			sx={{
 				[`& .MuiDrawer-paper`]: {
 					width: DRAWER_WIDTH,

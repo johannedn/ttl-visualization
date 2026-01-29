@@ -19,12 +19,11 @@ interface OntologyContextValue {
 }
 
 const OntologyContext = createContext<OntologyContextValue | null>(null)
-const DEFAULT_LOCAL_ONTOLOGY = import.meta.env.VITE_LOCAL_ONTOLOGY || '/assets/dev-ontology.ttl'
 
 export function OntologyProvider({ children }: { children: React.ReactNode }) {
   const [triples, setTriples] = useState<Triple[]>([])
   const [selectedTriples, setSelectedTriples] = useState<Triple[]>([])
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
   const toggleTriple = (triple: Triple) => {
@@ -62,33 +61,35 @@ export function OntologyProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
+  // Automatically load the latest ontology from backend on mount
   useEffect(() => {
-    if (!import.meta.env.DEV) return
-    if (triples.length > 0) return
-
     let cancelled = false
-    const loadLocal = async () => {
-      setLoading(true)
+
+    const loadOntology = async () => {
       try {
-        const res = await fetch(DEFAULT_LOCAL_ONTOLOGY)
-        if (!res.ok) throw new Error(`Failed to fetch ${DEFAULT_LOCAL_ONTOLOGY}`)
-        const ttl = await res.text()
-        const parsed = await parseTTL(ttl)
-        if (!cancelled && triples.length === 0) {
+        setError(null)
+        const ontology = await ontologyService.getLatestOntology()
+        const parsed = await parseTTL(ontology.content)
+        if (!cancelled) {
           setTriples(parsed)
         }
       } catch (err) {
-        console.warn('No local ontology loaded from assets', err)
+        if (!cancelled) {
+          console.error('Error loading ontology from backend:', err)
+          setError('Failed to load ontology from backend')
+        }
       } finally {
-        if (!cancelled) setLoading(false)
+        if (!cancelled) {
+          setLoading(false)
+        }
       }
     }
 
-    loadLocal()
+    loadOntology()
     return () => {
       cancelled = true
     }
-  }, [triples.length])
+  }, [])
 
   return (
     <OntologyContext.Provider

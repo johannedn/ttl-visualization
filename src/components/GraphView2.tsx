@@ -15,6 +15,19 @@ const CATEGORY_COLORS = {
 };
 import type { Triple } from '../utils/ttlParser';
 
+// Hilfsfunktionen
+const isURI = (str: string): boolean => {
+  return str.startsWith('http://') || str.startsWith('https://') || str.startsWith('urn:');
+};
+
+const getShortName = (uri: string): string => {
+  if (isURI(uri)) {
+    const parts = uri.split(/[/#]/);
+    return parts[parts.length - 1] || uri;
+  }
+  return uri;
+};
+
 interface Node {
   id: string;
   name: string;
@@ -38,7 +51,7 @@ interface GraphViewProps {
   triples: Triple[];
 }
 
-export const GraphView: React.FC<GraphViewProps> = ({ triples }) => {
+const GraphViewComponent: React.FC<GraphViewProps> = ({ triples }) => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   
@@ -186,13 +199,28 @@ export const GraphView: React.FC<GraphViewProps> = ({ triples }) => {
   // Zoom zu einem Node
   const handleNodeClick = useCallback((node: any) => {
     setSelectedEntity(node.id);
-    
-    // Zoom zum Node mit Animation
+
     if (fgRef.current) {
-      fgRef.current.centerAt(node.x, node.y, 1000);
-      fgRef.current.zoom(3, 1000);
+      const currentZoom = fgRef.current.zoom();
+      fgRef.current.centerAt(node.x, node.y, 600);
+      fgRef.current.zoom(currentZoom, 0);
     }
   }, []);
+
+  useEffect(() => {
+    if (!selectedEntity || !fgRef.current) return;
+
+    const timeout = setTimeout(() => {
+      if (!fgRef.current) return;
+      const node = displayGraph.nodes.find(n => n.id === selectedEntity) as any;
+      if (!node) return;
+      const currentZoom = fgRef.current.zoom();
+      fgRef.current.centerAt(node.x, node.y, 600);
+      fgRef.current.zoom(currentZoom, 0);
+    }, 200);
+
+    return () => clearTimeout(timeout);
+  }, [selectedEntity, displayGraph]);
 
   // Entity Card schließen
   const handleCloseCard = useCallback(() => {
@@ -569,15 +597,4 @@ export const GraphView: React.FC<GraphViewProps> = ({ triples }) => {
   );
 };
 
-// Hilfsfunktionen
-const isURI = (str: string): boolean => {
-  return str.startsWith('http://') || str.startsWith('https://') || str.startsWith('urn:');
-};
-
-const getShortName = (uri: string): string => {
-  if (isURI(uri)) {
-    const parts = uri.split(/[/#]/);
-    return parts[parts.length - 1] || uri;
-  }
-  return uri;
-};
+export const GraphView = React.memo(GraphViewComponent);

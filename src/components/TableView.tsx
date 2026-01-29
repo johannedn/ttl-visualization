@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback } from 'react'
+import React, { useMemo, useState, useCallback, useEffect } from 'react'
 import {
   Box,
   Checkbox,
@@ -13,6 +13,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
+  TablePagination,
   TextField,
   Typography,
 } from '@mui/material'
@@ -26,6 +27,8 @@ export function TableView() {
 
   const [showFullURI, setShowFullURI] = useState(false)
   const [filter, setFilter] = useState('')
+  const [page, setPage] = useState(0)
+  const [rowsPerPage, setRowsPerPage] = useState(200)
   const [columnFilters, setColumnFilters] = useState({
     subject: [] as string[],
     predicate: [] as string[],
@@ -85,6 +88,16 @@ export function TableView() {
       return true
     })
   }, [triples, filter, columnFilters])
+
+  const visibleTriples = useMemo(() => {
+    const start = page * rowsPerPage
+    return filteredTriples.slice(start, start + rowsPerPage)
+  }, [filteredTriples, page, rowsPerPage])
+
+  useEffect(() => {
+    const maxPage = Math.max(0, Math.ceil(filteredTriples.length / rowsPerPage) - 1)
+    if (page > maxPage) setPage(0)
+  }, [filteredTriples.length, rowsPerPage, page])
 
   const isSelected = (t: any) =>
     selectedTriples.some(
@@ -370,18 +383,18 @@ export function TableView() {
           </TableHead>
 
           <TableBody>
-            {filteredTriples.map((t, i) => {
+            {visibleTriples.map((t, i) => {
               const selected = isSelected(t)
 
               return (
                 <TableRow
-                  key={i}
+                  key={`${i}-${t.subject}-${t.predicate}-${t.object}`}
                   hover
                   selected={selected}
                   onClick={() => toggleTriple(t)}
                   sx={{
                     cursor: 'pointer',
-                    bgcolor: i % 2 === 0 ? '#f5faf9' : '#FFFFFF',
+                    bgcolor: (page * rowsPerPage + i) % 2 === 0 ? '#f5faf9' : '#FFFFFF',
                     '& td': { 
                       py: 2, 
                       borderBottom: '1px solid rgba(45, 79, 75, 0.1)', 
@@ -449,6 +462,19 @@ export function TableView() {
           </TableBody>
         </Table>
       </TableContainer>
+
+      <TablePagination
+        component="div"
+        count={filteredTriples.length}
+        page={page}
+        onPageChange={(_, nextPage) => setPage(nextPage)}
+        rowsPerPage={rowsPerPage}
+        onRowsPerPageChange={(event) => {
+          setRowsPerPage(parseInt(event.target.value, 10))
+          setPage(0)
+        }}
+        rowsPerPageOptions={[50, 100, 200, 500]}
+      />
     </Box>
   )
 }

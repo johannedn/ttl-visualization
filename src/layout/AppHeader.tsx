@@ -2,7 +2,6 @@ import { AppBar, Toolbar, Typography, IconButton, Box } from '@mui/material'
 import ChatIcon from '@mui/icons-material/Chat'
 import MenuIcon from '@mui/icons-material/Menu'
 import AccountTreeIcon from '@mui/icons-material/AccountTree'
-import BubbleChartIcon from '@mui/icons-material/BubbleChart'
 import TableChartIcon from '@mui/icons-material/TableChart'
 import HistoryIcon from '@mui/icons-material/History'
 import { NavLink } from 'react-router-dom'
@@ -16,7 +15,7 @@ interface AppHeaderProps {
 
 export function AppHeader({ onOpenChat, onOpenSidebar }: AppHeaderProps) {
 	return (
-	<AppBar position="fixed" sx={{ zIndex: theme => theme.zIndex.drawer + 1, bgcolor: '#2d4f4b', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)' }}>
+	<AppBar position="fixed" onClick={e => e.stopPropagation()} sx={{ zIndex: theme => theme.zIndex.drawer + 1, bgcolor: '#2d4f4b', boxShadow: '0 2px 8px rgba(0, 0, 0, 0.15)' }}>
 		<Toolbar sx={{ minHeight: 120, py: 3 }}>
 			<IconButton 
 				onClick={onOpenSidebar} 
@@ -56,26 +55,6 @@ export function AppHeader({ onOpenChat, onOpenSidebar }: AppHeaderProps) {
 							<AccountTreeIcon sx={{ fontSize: 24, color: '#fbbf24' }} />
 							<Typography variant="caption" sx={{ color: '#fbbf24', fontSize: 16, mt: 0.5, fontWeight: 600 }}>
 								Graph
-							</Typography>
-						</Box>
-					)}
-				</NavLink>
-				
-				<NavLink to="/graph-v2" style={{ textDecoration: 'none' }}>
-					{({ isActive }) => (
-						<Box 
-							sx={{ 
-								display: 'flex', 
-								flexDirection: 'column', 
-								alignItems: 'center',
-								cursor: 'pointer',
-								opacity: isActive ? 1 : 0.7,
-								'&:hover': { opacity: 1 },
-							}}
-						>
-							<BubbleChartIcon sx={{ fontSize: 24, color: '#fbbf24' }} />
-							<Typography variant="caption" sx={{ color: '#fbbf24', fontSize: 16, mt: 0.5, fontWeight: 600 }}>
-								Graph V2
 							</Typography>
 						</Box>
 					)}
