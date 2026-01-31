@@ -33,6 +33,8 @@ export function useOntologyChat() {
     ws.onmessage = async (e) => {
       const msg: ChatResponse = JSON.parse(e.data)
       console.log('Received message:', msg)
+      console.log('Message type:', msg.type)
+      console.log('Message content:', JSON.stringify(msg, null, 2))
       
       if ('pending_id' in msg && msg.pending_id) setPendingId(msg.pending_id)
       
@@ -93,7 +95,8 @@ export function useOntologyChat() {
       return
     }
 
-    console.log('Sending:', text, 'pendingId:', pendingId, 'selected triples:', selectedTriples?.length)
+    console.log('Sending:', text, 'pendingId:', pendingId, 'selected triples:', selectedTriples)
+    console.log('selected_triples payload:', JSON.stringify(selectedTriples, null, 2))
     
     // selectedTriples er allerede i riktig format
     const userMessage: ChatResponse = {
@@ -103,12 +106,17 @@ export function useOntologyChat() {
     }
     setMessages((prev) => [...prev, userMessage])
     
-    if (pendingId) {
-      ws.send(JSON.stringify({ type: 'confirm', data: { pending_id: pendingId, reply: text } }))
-      setPendingId(null)
-    } else {
-      ws.send(JSON.stringify({ type: 'chat', data: { text, selected_triples: selectedTriples || null } }))
+    const chatPayload = {
+      type: 'chat',
+      data: {
+        text,
+        selected_triples: selectedTriples || null,
+        pending_id: pendingId || null
+      }
     }
+    console.log('Sending chat message:', JSON.stringify(chatPayload, null, 2))
+    ws.send(JSON.stringify(chatPayload))
+    if (pendingId) setPendingId(null)
     
     // Fjern selected triples etter sending
     clearSelection()

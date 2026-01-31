@@ -3,7 +3,12 @@ import * as N3 from 'n3';
 export interface Triple {
   subject: string;
   predicate: string;
-  object: string;
+  object: string | {
+    kind: 'literal';
+    value: string;
+    datatype?: string;
+    lang?: string;
+  };
 }
 
 export const parseTTL = async (ttlContent: string): Promise<Triple[]> => {
@@ -18,10 +23,20 @@ export const parseTTL = async (ttlContent: string): Promise<Triple[]> => {
       }
       
       if (quad) {
+        const obj = quad.object;
+        const object = obj.termType === 'Literal'
+          ? {
+              kind: 'literal',
+              value: obj.value,
+              datatype: obj.datatype ? obj.datatype.value : undefined,
+              lang: obj.language || undefined,
+            }
+          : obj.value;
+
         triples.push({
           subject: quad.subject.value,
           predicate: quad.predicate.value,
-          object: quad.object.value,
+          object,
         });
       } else {
         // Parsing ferdig

@@ -1,9 +1,51 @@
 // src/chat/ChatMessages.tsx
 import { Box, Typography, IconButton, Chip, Avatar } from '@mui/material'
+import { useEffect, useRef } from 'react'
 import { Delete as DeleteIcon } from '@mui/icons-material'
 import PersonIcon from '@mui/icons-material/Person'
 import SmartToyIcon from '@mui/icons-material/SmartToy'
 import type { ChatResponse } from 'types/chat'
+
+
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;')
+}
+
+function renderMarkdown(text: string): string {
+  let escaped = escapeHtml(text)
+  escaped = escaped.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+
+  const lines = escaped.split(/\n/)
+  let html = ''
+
+  for (const line of lines) {
+    const listMatch = line.match(/^\s*-\s+(.*)$/)
+    const orderedMatch = line.match(/^\s*(\d+)[.)]\s+(.*)$/)
+
+    if (listMatch) {
+      html += `<div class="md-ul-item">• ${listMatch[1]}</div>`
+      continue
+    }
+
+    if (orderedMatch) {
+      html += `<div class="md-ol-item"><span class="md-ol-num">${orderedMatch[1]}.</span> ${orderedMatch[2]}</div>`
+      continue
+    }
+
+    if (line.trim() == '') {
+      html += '<br>'
+    } else {
+      html += `${line}<br>`
+    }
+  }
+
+  return html.replace(/<br>$/, '')
+}
 
 interface ChatMessagesProps {
   messages: ChatResponse[]
@@ -11,6 +53,12 @@ interface ChatMessagesProps {
 }
 
 export function ChatMessages({ messages, onClearHistory }: ChatMessagesProps) {
+
+  const bottomRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
+  }, [messages])
   console.log('Rendering messages:', messages)
   
   return (
@@ -63,9 +111,16 @@ export function ChatMessages({ messages, onClearHistory }: ChatMessagesProps) {
                   color: '#2d4f4b'
                 }}
               >
-                <Typography variant="body2">
-                  {text}
-                </Typography>
+                <Typography
+                  variant="body2"
+                  component="div"
+                  sx={{
+                    '& .md-ol-item': { marginTop: 0.5 },
+                    '& .md-ol-num': { fontWeight: 700, marginRight: '6px' },
+                    '& .md-ul-item': { marginTop: 0.5 }
+                  }}
+                  dangerouslySetInnerHTML={{ __html: renderMarkdown(text) }}
+                />
                 
                 {/* Vis markerte tripler hvis de finnes */}
                 {'selected_triples' in m && m.selected_triples && m.selected_triples.length > 0 && (
@@ -76,7 +131,7 @@ export function ChatMessages({ messages, onClearHistory }: ChatMessagesProps) {
                     {m.selected_triples.map((triple, idx) => (
                       <Chip
                         key={idx}
-                        label={`${triple.subject} → ${triple.predicate} → ${triple.object}`}
+                        label={`${triple.subject} → ${triple.predicate} → ${typeof triple.object === 'string' ? triple.object : triple.object.value}`}
                         size="small"
                         sx={{ 
                           fontSize: '0.7rem',
@@ -110,6 +165,7 @@ export function ChatMessages({ messages, onClearHistory }: ChatMessagesProps) {
           </Box>
         )
       })}
+      <div ref={bottomRef} />
     </Box>
   )
 }

@@ -25,6 +25,8 @@ import { isURI, getShortName, getNamespace } from '@utils/tripleUtils'
 export function TableView() {
   const { triples, selectedTriples, toggleTriple } = useOntology()
 
+  const objectToText = useCallback((v: any) => (typeof v === 'string' ? v : v?.value ?? ''), [])
+
   const [showFullURI, setShowFullURI] = useState(false)
   const [filter, setFilter] = useState('')
   const [page, setPage] = useState(0)
@@ -47,7 +49,7 @@ export function TableView() {
     return {
       subject: Array.from(new Set(filtered.map(t => t.subject))).sort(),
       predicate: Array.from(new Set(filtered.map(t => t.predicate))).sort(),
-      object: Array.from(new Set(filtered.map(t => t.object))).sort(),
+      object: Array.from(new Set(filtered.map(t => objectToText(t.object)))).sort(),
     }
   }, [triples, columnFilters])
 
@@ -78,12 +80,12 @@ export function TableView() {
       if (filterLower && !(
         t.subject.toLowerCase().includes(filterLower) ||
         t.predicate.toLowerCase().includes(filterLower) ||
-        t.object.toLowerCase().includes(filterLower)
+        objectToText(t.object).toLowerCase().includes(filterLower)
       )) return false
 
       if (subjectSet && !subjectSet.has(t.subject)) return false
       if (predicateSet && !predicateSet.has(t.predicate)) return false
-      if (objectSet && !objectSet.has(t.object)) return false
+      if (objectSet && !objectSet.has(objectToText(t.object))) return false
 
       return true
     })
@@ -388,7 +390,7 @@ export function TableView() {
 
               return (
                 <TableRow
-                  key={`${i}-${t.subject}-${t.predicate}-${t.object}`}
+                  key={`${i}-${t.subject}-${t.predicate}-${objectToText(t.object)}`}
                   hover
                   selected={selected}
                   onClick={() => toggleTriple(t)}
@@ -422,7 +424,7 @@ export function TableView() {
                     />
                   </TableCell>
 
-                  {[t.subject, t.predicate, t.object].map((v: string, j: number) => {
+                  {[t.subject, t.predicate, objectToText(t.object)].map((v: string, j: number) => {
                     const uri = isURI(v)
                     const displayValue = showFullURI ? v : getShortName(v)
                     return (

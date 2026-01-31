@@ -28,10 +28,17 @@ export function OntologyProvider({ children }: { children: React.ReactNode }) {
 
   const toggleTriple = (triple: Triple) => {
     setSelectedTriples(prev => {
-      const exists = prev.some(
-        t => t.subject === triple.subject && t.predicate === triple.predicate && t.object === triple.object
-      )
-      return exists ? prev.filter(t => !(t.subject === triple.subject && t.predicate === triple.predicate && t.object === triple.object)) : [...prev, triple]
+      const objKey = typeof triple.object === 'string' ? triple.object : triple.object.value
+      const exists = prev.some(t => {
+        const tObj = typeof t.object === 'string' ? t.object : t.object.value
+        return t.subject === triple.subject && t.predicate === triple.predicate && tObj === objKey
+      })
+      return exists
+        ? prev.filter(t => {
+            const tObj = typeof t.object === 'string' ? t.object : t.object.value
+            return !(t.subject === triple.subject && t.predicate === triple.predicate && tObj === objKey)
+          })
+        : [...prev, triple]
     })
   }
 
