@@ -16,16 +16,18 @@ const CATEGORY_COLORS = {
 import type { Triple } from '../utils/ttlParser';
 
 // Hilfsfunktionen
-const isURI = (str: string): boolean => {
-  return str.startsWith('http://') || str.startsWith('https://') || str.startsWith('urn:');
+const isURI = (value: unknown): boolean => {
+  if (typeof value !== 'string') return false;
+  return value.startsWith('http://') || value.startsWith('https://') || value.startsWith('urn:');
 };
 
-const getShortName = (uri: string): string => {
-  if (isURI(uri)) {
-    const parts = uri.split(/[/#]/);
-    return parts[parts.length - 1] || uri;
+const getShortName = (value: unknown): string => {
+  if (typeof value !== 'string') return String(value);
+  if (isURI(value)) {
+    const parts = value.split(/[/#]/);
+    return parts[parts.length - 1] || value;
   }
-  return uri;
+  return value;
 };
 
 interface Node {
