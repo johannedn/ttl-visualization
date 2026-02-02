@@ -1,18 +1,6 @@
 // src/api/historyService.ts
 import apiClient from './axiosClient';
-
-export interface HistoryEntry {
-  version_id: string;
-  timestamp: string;
-  summary: string;
-  user: string;
-}
-
-export interface HistoryDetail extends HistoryEntry {
-  new_ontology?: string;
-  old_ontology?: string;
-  [key: string]: any;
-}
+import type { HistoryEntry, HistoryDetail } from 'types/history';
 
 export const historyService = {
   // GET /api/history - Get all history entries
