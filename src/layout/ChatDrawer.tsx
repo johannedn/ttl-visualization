@@ -76,7 +76,7 @@ export function ChatDrawer({ open, onClose, chatState, width, onWidthChange }: C
           border: '1px solid rgba(45, 79, 75, 0.15)',
           marginTop: '0px',
           height: '100vh',
-          pt: '105px',
+          pt: '121px',
           position: 'relative',
         },
       }}

@@ -257,7 +257,7 @@ const GraphViewComponent: React.FC<GraphViewProps> = ({ triples }) => {
           elevation={0}
           sx={{ 
             flex: selectedEntity ? 1 : '1 1 auto',
-            height: 'calc(100vh - 340px)',
+            height: 'calc(100vh - 180px)',
             border: '2px solid #fbbf24',
             borderRadius: 3,
             bgcolor: '#FFFFFF',
@@ -382,7 +382,7 @@ const GraphViewComponent: React.FC<GraphViewProps> = ({ triples }) => {
             elevation={0}
             sx={{
               width: 320,
-              height: 'calc(100vh - 340px)',
+              height: 'calc(100vh - 260px)',
               border: '2px solid #fbbf24',
               borderRadius: 3,
               bgcolor: '#FFFFFF',
