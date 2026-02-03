@@ -15,15 +15,22 @@ import {
   IconButton,
 } from '@mui/material';
 import { Visibility as VisibilityIcon } from '@mui/icons-material';
-import { historyService, type HistoryEntry } from '@api/historyService';
+import { historyService } from '@api/historyService';
+import type { HistoryEntry } from 'types/history';
 import { HistoryDetailDialog } from '@components/HistoryDetailDialog';
+import { usePageTitle } from '@context/PageContext';
 
 export function HistoryPage() {
+  const { setTitle } = usePageTitle()
   const [history, setHistory] = useState<HistoryEntry[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedVersionId, setSelectedVersionId] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
+
+  useEffect(() => {
+    setTitle('Ontology Change History')
+  }, [setTitle])
 
   useEffect(() => {
     const fetchHistory = async () => {
@@ -33,7 +40,7 @@ export function HistoryPage() {
         const data = await historyService.getAllHistory();
         // Sort by timestamp descending (newest first)
         const sorted = data.sort((a, b) => 
-          new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+          b.created_at - a.created_at
         );
         setHistory(sorted);
       } catch (err) {
@@ -84,7 +91,7 @@ export function HistoryPage() {
                 <TableCell><strong>Timestamp</strong></TableCell>
                 <TableCell><strong>User</strong></TableCell>
                 <TableCell><strong>Summary</strong></TableCell>
-                <TableCell align="center"><strong>Actions</strong></TableCell>
+                <TableCell align="center"><strong>See more</strong></TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -92,10 +99,10 @@ export function HistoryPage() {
                 <TableRow key={entry.version_id} hover>
                   <TableCell>{entry.version_id}</TableCell>
                   <TableCell>
-                    {new Date(entry.timestamp).toLocaleString('no-NO')}
+                    {new Date(entry.created_at * 1000).toLocaleString('no-NO')}
                   </TableCell>
-                  <TableCell>{entry.user}</TableCell>
-                  <TableCell>{entry.summary}</TableCell>
+                  <TableCell>{entry.actor}</TableCell>
+                  <TableCell>{entry.plan_summary}</TableCell>
                   <TableCell align="center">
                     <IconButton
                       size="small"

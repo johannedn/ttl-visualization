@@ -4,13 +4,16 @@ import './index.css'
 import App from './App2.tsx'
 import { BrowserRouter } from 'react-router-dom'
 import { OntologyProvider } from './context/OntologyContext.tsx'
+import { PageProvider } from './context/PageContext.tsx'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
-      <OntologyProvider>
-        <App />
-      </OntologyProvider>
+      <PageProvider>
+        <OntologyProvider>
+          <App />
+        </OntologyProvider>
+      </PageProvider>
     </BrowserRouter>
   </StrictMode>
 )

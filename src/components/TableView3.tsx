@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import type { Triple } from '../utils/ttlParser';
 
 interface TableViewProps {
@@ -26,20 +26,20 @@ const getNamespace = (uri: string): string => {
   return '';
 };
 
-export const TableView: React.FC<TableViewProps> = ({ triples }) => {
+const TableViewComponent: React.FC<TableViewProps> = ({ triples }) => {
   const [showFullURI, setShowFullURI] = useState(false);
   const [filter, setFilter] = useState('');
 
-  // Filtrer triples basert på søk
-  const filteredTriples = triples.filter(triple => {
-    if (!filter) return true;
+  // Filtrer triples basert på søk - memoized for performance
+  const filteredTriples = useMemo(() => {
+    if (!filter) return triples;
     const searchLower = filter.toLowerCase();
-    return (
+    return triples.filter(triple =>
       triple.subject.toLowerCase().includes(searchLower) ||
       triple.predicate.toLowerCase().includes(searchLower) ||
       triple.object.toLowerCase().includes(searchLower)
     );
-  });
+  }, [triples, filter]);
 
   const formatValue = (value: string, isFullURI: boolean) => {
     if (isFullURI) {
@@ -205,3 +205,5 @@ export const TableView: React.FC<TableViewProps> = ({ triples }) => {
     </div>
   );
 };
+
+export const TableView = React.memo(TableViewComponent);

@@ -1,7 +1,9 @@
-export const isURI = (str: string): boolean =>
-  str.startsWith('http://') ||
-  str.startsWith('https://') ||
-  str.startsWith('urn:')
+export const isURI = (str: unknown): boolean =>
+  typeof str === 'string' && (
+    str.startsWith('http://') ||
+    str.startsWith('https://') ||
+    str.startsWith('urn:')
+  )
 
 export const getShortName = (uri: string): string => {
   if (!isURI(uri)) return uri

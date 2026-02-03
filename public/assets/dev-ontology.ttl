@@ -1,0 +1,2176 @@
+@prefix de_heat: <http://example.org/ontology/de-heat-plan#> .
+@prefix oeo: <http://open-energy.org/ontology/core/> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+de_heat:CeilingSurface a owl:Class ;
+    rdfs:label "Deckenfläche"@de ;
+    rdfs:comment "An outer ceiling surface that consists only of surfaces visible from the outside of the building"@en ;
+    rdfs:isDefinedBy de_heat:Munich_lod2_Citygml ;
+    rdfs:subClassOf de_heat:BuildingSurface .
+
+de_heat:FloorSurface a owl:Class ;
+    rdfs:label "Bodenfläche"@de ;
+    rdfs:comment "An outer floor surface that consists only of surfaces visible from the outside of the building"@en ;
+    rdfs:isDefinedBy de_heat:Munich_lod2_Citygml ;
+    rdfs:subClassOf de_heat:BuildingSurface .
+
+de_heat:Munich_linked_data_specs rdfs:label "Ontology - Munich_linked_data_specs"@en .
+
+de_heat:Munich_oeo_specs rdfs:label "Ontology - Munich_oeo_specs"@en .
+
+de_heat:Munich_political_geocoding_specs rdfs:label "Ontology - Munich_political_geocoding_specs"@en .
+
+de_heat:Munich_qudt_units_specs rdfs:label "Ontology - Munich_qudt_units_specs"@en .
+
+de_heat:Munich_semantic_web_specs rdfs:label "Ontology - Munich_semantic_web_specs"@en .
+
+de_heat:RoofSurface a owl:Class ;
+    rdfs:label "Dachfläche"@de ;
+    rdfs:comment "A roof surface that consists only of surfaces visible from the outside of the building"@en ;
+    rdfs:isDefinedBy de_heat:Munich_lod2_Citygml ;
+    rdfs:subClassOf de_heat:BuildingSurface .
+
+de_heat:adjacentToStreetSegment a owl:ObjectProperty ;
+    rdfs:label "angrenzend an Straßenabschnitt"@de ;
+    rdfs:comment "Links a building to the street segment it is adjacent to."@en ;
+    rdfs:domain de_heat:HeatDemandBuilding ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase ;
+    rdfs:range de_heat:StreetSegment .
+
+de_heat:aggregatesHeatDemandFrom a owl:ObjectProperty ;
+    rdfs:label "aggregiert Wärmebedarf von"@de ;
+    rdfs:comment "Links a street segment to the buildings whose heat demand it aggregates"@en ;
+    rdfs:domain de_heat:HeatDemandStreetSegment ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase ;
+    rdfs:range de_heat:HeatDemandBuilding .
+
+de_heat:belongsToBuildingBlock a owl:ObjectProperty ;
+    rdfs:label "gehört zu Baublock"@de ;
+    rdfs:comment "Links a building to the building block it belongs to."@en,
+        "Relationship between building heat demand data and the building block it belongs to."@en ;
+    rdfs:domain de_heat:BuildingHeatDemand,
+        de_heat:HeatDemandBuilding ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase ;
+    rdfs:range de_heat:BuildingBlock .
+
+de_heat:belongsToMunicipality a owl:ObjectProperty ;
+    rdfs:label "gehört zu Gemeinde"@de ;
+    rdfs:comment "Links a building block to its municipality"@en ;
+    rdfs:domain de_heat:BuildingBlock ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape ;
+    rdfs:range de_heat:Municipality .
+
+de_heat:belongsToScenario a owl:ObjectProperty ;
+    rdfs:label "gehört zu Szenario"@de ;
+    rdfs:comment "Links a dataset to its corresponding scenario dataset"@en,
+        "Links building data to a specific heat demand scenario"@en ;
+    rdfs:domain de_heat:Dataset,
+        de_heat:HeatDemandBuilding ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:range de_heat:HeatDemandScenario,
+        de_heat:ScenarioDataset .
+
+de_heat:closestToHeatLine a owl:ObjectProperty ;
+    rdfs:label "nächste Wärmelinie"@de ;
+    rdfs:comment "Relationship between a building and the closest heat distribution line."@en ;
+    rdfs:domain de_heat:BuildingHeatDemand ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase ;
+    rdfs:range de_heat:HeatLine .
+
+de_heat:containsBuildingData a owl:ObjectProperty ;
+    rdfs:label "enthält Gebäudedaten"@de ;
+    rdfs:comment "Links a heat demand dataset to building heat demand records"@en,
+        "Links a heat technology catalog to building data records."@en ;
+    rdfs:domain de_heat:HeatDemandDataset,
+        de_heat:HeatTechnologyCatalog ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_meta,
+        de_heat:Koeln_KWW_Waermeplanung ;
+    rdfs:range de_heat:BuildingDataRecord,
+        de_heat:BuildingHeatDemand .
+
+de_heat:containsCluster a owl:ObjectProperty ;
+    rdfs:label "enthält Cluster"@de ;
+    rdfs:comment "Relates a municipal heat study to the heat clusters it contains."@en ;
+    rdfs:domain de_heat:MunicipalHeatStudy ;
+    rdfs:isDefinedBy de_heat:Koeln_Cluster_Szenarien_Waermestudie ;
+    rdfs:range de_heat:HeatCluster .
+
+de_heat:containsData a owl:ObjectProperty ;
+    rdfs:label "enthält Daten"@de ;
+    rdfs:comment "Relates a municipal heat study to its cluster scenario data."@en ;
+    rdfs:domain de_heat:MunicipalHeatStudy ;
+    rdfs:isDefinedBy de_heat:Koeln_Cluster_Szenarien_Waermestudie ;
+    rdfs:range de_heat:ClusterScenarioData .
+
+de_heat:containsGeothermalData a owl:ObjectProperty ;
+    rdfs:label "enthält Geothermiedaten"@de ;
+    rdfs:comment "Links a geothermal dataset to geothermal potential records"@en ;
+    rdfs:domain de_heat:GeothermalPotentialDataset ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:range de_heat:GeothermalPotential .
+
+de_heat:containsGeothermalReservoir a owl:ObjectProperty ;
+    rdfs:label "enthält geothermisches Reservoir"@de ;
+    rdfs:comment "Links a geothermal potential area to specific geothermal reservoirs within it."@en ;
+    rdfs:domain de_heat:GeothermalPotentialArea ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase ;
+    rdfs:range de_heat:GeothermalReservoir .
+
+de_heat:containsReservoir a owl:ObjectProperty ;
+    rdfs:label "enthält Reservoir"@de ;
+    rdfs:comment "Relationship between a raster cell and the geothermal reservoir it contains"@en ;
+    rdfs:domain de_heat:GeothermalPotentialRaster ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_TG_Raster_EPSG25832_Geodatabase ;
+    rdfs:range de_heat:GeothermalReservoir .
+
+de_heat:containsSolarThermalData a owl:ObjectProperty ;
+    rdfs:label "enthält Solarthermiedaten"@de ;
+    rdfs:comment "Links a solar thermal dataset to solar thermal potential records"@en ;
+    rdfs:domain de_heat:SolarThermalPotentialDataset ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:range de_heat:SolarThermalPotential .
+
+de_heat:containsTechnologyData a owl:ObjectProperty ;
+    rdfs:label "enthält Technologiedaten"@de ;
+    rdfs:comment "Links a heat technology catalog to technology data records."@en ;
+    rdfs:domain de_heat:HeatTechnologyCatalog ;
+    rdfs:isDefinedBy de_heat:Koeln_KWW_Waermeplanung ;
+    rdfs:range de_heat:TechnologyDataRecord .
+
+de_heat:describesCluster a owl:ObjectProperty ;
+    rdfs:label "beschreibt Cluster"@de ;
+    rdfs:comment "Relates cluster scenario data to the heat cluster it describes."@en ;
+    rdfs:domain de_heat:ClusterScenarioData ;
+    rdfs:isDefinedBy de_heat:Koeln_Cluster_Szenarien_Waermestudie ;
+    rdfs:range de_heat:HeatCluster .
+
+de_heat:describesScenario a owl:ObjectProperty ;
+    rdfs:label "beschreibt Szenario"@de ;
+    rdfs:comment "Relates cluster scenario data to the heat scenario it describes."@en ;
+    rdfs:domain de_heat:ClusterScenarioData ;
+    rdfs:isDefinedBy de_heat:Koeln_Cluster_Szenarien_Waermestudie ;
+    rdfs:range de_heat:HeatScenario .
+
+de_heat:developsInto a owl:ObjectProperty ;
+    rdfs:label "entwickelt sich zu"@de ;
+    rdfs:comment "Indicates that a heat cluster develops into a district heating cluster within a scenario."@en ;
+    rdfs:domain de_heat:HeatCluster ;
+    rdfs:isDefinedBy de_heat:Koeln_Cluster_Szenarien_Waermestudie ;
+    rdfs:range de_heat:DistrictHeatingCluster .
+
+de_heat:has2045AnnualYield a owl:DatatypeProperty ;
+    rdfs:label "hat Jahresertrag 2045"@de ;
+    rdfs:comment "Projected annual energy yield in kWh/a for year 2045."@en ;
+    rdfs:domain de_heat:ShallowGeothermalPotential ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_ONG_MTG_Baublock_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:has2045HeatingLoad a owl:DatatypeProperty ;
+    rdfs:label "hat Heizlast 2045"@de ;
+    rdfs:comment "Projected heating load in kW for year 2045."@en ;
+    rdfs:domain de_heat:HeatingLoad ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_ONG_MTG_Baublock_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:has2045MediumDepthYield a owl:DatatypeProperty ;
+    rdfs:label "hat mitteltiefen Ertrag 2045"@de ;
+    rdfs:comment "Projected annual energy yield from medium-depth geothermal in kWh/a for year 2045."@en ;
+    rdfs:domain de_heat:MediumDepthGeothermalPotential ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_ONG_MTG_Baublock_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasAnnualYieldFlatCollector a owl:DatatypeProperty ;
+    rdfs:label "hat Jahresertrag Flachkollektor"@de ;
+    rdfs:comment "Potential annual energy yield using flat plate solar thermal collectors at 60°C."@en ;
+    rdfs:domain de_heat:FlatPlateCollectorPotential ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasAnnualYieldParabolicTroughEW a owl:DatatypeProperty ;
+    rdfs:label "hat Jahresertrag Parabolrinne Ost-West"@de ;
+    rdfs:comment "Potential annual energy yield using parabolic trough collectors in east-west orientation at 150°C."@en ;
+    rdfs:domain de_heat:ParabolicTroughEWPotential ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasAnnualYieldParabolicTroughNS a owl:DatatypeProperty ;
+    rdfs:label "hat Jahresertrag Parabolrinne Nord-Süd"@de ;
+    rdfs:comment "Potential annual energy yield using parabolic trough collectors in north-south orientation at 150°C."@en ;
+    rdfs:domain de_heat:ParabolicTroughNSPotential ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasBlockID a owl:DatatypeProperty ;
+    rdfs:label "hat Baublock-ID"@de ;
+    rdfs:comment "Unique identifier for building block"@en ;
+    rdfs:domain de_heat:BuildingBlock ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape ;
+    rdfs:range xsd:string .
+
+de_heat:hasBlockId a owl:DatatypeProperty ;
+    rdfs:label "hat Baublock-ID"@de ;
+    rdfs:comment "Identifier for a building block."@en,
+        "Unique identifier for a building block"@en,
+        "Unique identifier for a building block."@en ;
+    rdfs:domain de_heat:BuildingBlock ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Potenzial_ONG_MTG_Baublock_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Potenzial_TG_Raster_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasBuildingFunction a owl:DatatypeProperty ;
+    rdfs:label "hat Gebäudefunktion"@de ;
+    rdfs:comment "Functional classification of the building (residential, commercial, etc.)"@en ;
+    rdfs:domain de_heat:Building ;
+    rdfs:isDefinedBy de_heat:Munich_lod2_Citygml ;
+    rdfs:range xsd:string .
+
+de_heat:hasBuildingID a owl:DatatypeProperty ;
+    rdfs:label "hat Gebäude-ID"@de ;
+    rdfs:comment "Unique identifier for a building in the LANUV heat demand model."@en,
+        "Unique identifier for a building in the heat demand model"@en ;
+    rdfs:domain de_heat:BuildingHeatDemand,
+        de_heat:HeatDemandBuilding ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:range xsd:string .
+
+de_heat:hasBuildingId a owl:DatatypeProperty ;
+    rdfs:label "hat Gebäude-ID"@de ;
+    rdfs:comment "Unique identifier for a building in the LANUV heat demand model."@en ;
+    rdfs:domain de_heat:BuildingHeatDemand ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasBuildingPart a owl:ObjectProperty ;
+    rdfs:label "hat Gebäudeteil"@de ;
+    rdfs:comment "Links a building to its constituent building parts (3D components)"@en ;
+    rdfs:domain de_heat:Building ;
+    rdfs:isDefinedBy de_heat:Munich_lod2_Citygml ;
+    rdfs:range de_heat:Building .
+
+de_heat:hasBuildingType a owl:DatatypeProperty ;
+    rdfs:label "hat Gebäudetyp"@de ;
+    rdfs:comment "The type of building (e.g., residential, commercial)."@en ;
+    rdfs:domain de_heat:BuildingDataRecord ;
+    rdfs:isDefinedBy de_heat:Koeln_KWW_Waermeplanung ;
+    rdfs:range xsd:string .
+
+de_heat:hasCityObjectMember a owl:ObjectProperty ;
+    rdfs:label "hat Stadtobjekt-Mitglied"@de ;
+    rdfs:comment "Links a CityModel to its constituent city object members"@en ;
+    rdfs:domain de_heat:CityModel ;
+    rdfs:isDefinedBy de_heat:Munich_lod2_Citygml ;
+    rdfs:range de_heat:CityObjectMember .
+
+de_heat:hasCleanedText a owl:DatatypeProperty ;
+    rdfs:label "hat bereinigten Text"@de ;
+    rdfs:comment "The cleaned text component used in UID generation."@en ;
+    rdfs:domain de_heat:UniqueIdentifier ;
+    rdfs:isDefinedBy de_heat:Koeln_KWW_Waermeplanung ;
+    rdfs:range xsd:string .
+
+de_heat:hasConstructionYearClass a owl:DatatypeProperty ;
+    rdfs:label "hat Baualtersklasse"@de ;
+    rdfs:comment "The construction year class of the building."@en ;
+    rdfs:domain de_heat:BuildingDataRecord ;
+    rdfs:isDefinedBy de_heat:Koeln_KWW_Waermeplanung ;
+    rdfs:range xsd:string .
+
+de_heat:hasContent a owl:DatatypeProperty ;
+    rdfs:label "hat Inhalt"@de ;
+    rdfs:comment "The content or description of the cluster scenario data."@en ;
+    rdfs:domain de_heat:ClusterScenarioData ;
+    rdfs:isDefinedBy de_heat:Koeln_Cluster_Szenarien_Waermestudie ;
+    rdfs:range xsd:string .
+
+de_heat:hasContentDescription a owl:DatatypeProperty ;
+    rdfs:label "hat Inhaltsbeschreibung"@de ;
+    rdfs:comment "Description of the dataset content"@en ;
+    rdfs:domain de_heat:Dataset ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:range xsd:string .
+
+de_heat:hasCoordinateReferenceSystem a owl:ObjectProperty ;
+    rdfs:label "hat Koordinatenreferenzsystem"@de ;
+    rdfs:comment "Links a CityModel to its coordinate reference system"@en ;
+    rdfs:domain de_heat:CityModel ;
+    rdfs:isDefinedBy de_heat:Munich_lod2_Citygml ;
+    rdfs:range de_heat:CoordinateReferenceSystem .
+
+de_heat:hasCostCurveParameter a owl:ObjectProperty ;
+    rdfs:label "hat Kostenkurvenparameter"@de ;
+    rdfs:comment "Links a technology data record to cost curve parameters."@en ;
+    rdfs:domain de_heat:TechnologyDataRecord ;
+    rdfs:isDefinedBy de_heat:Koeln_KWW_Waermeplanung ;
+    rdfs:range de_heat:CostCurveParameter .
+
+de_heat:hasCurrentAnnualYield a owl:DatatypeProperty ;
+    rdfs:label "hat aktuellen Jahresertrag"@de ;
+    rdfs:comment "Current annual energy yield in kWh/a."@en ;
+    rdfs:domain de_heat:ShallowGeothermalPotential ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_ONG_MTG_Baublock_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasCurrentGeothermalYield a owl:DatatypeProperty ;
+    rdfs:label "hat aktuellen Geothermieertrag"@de ;
+    rdfs:comment "Current potential annual yield from near-surface geothermal (kWh/a)"@en ;
+    rdfs:domain de_heat:NearSurfaceGeothermalPotential ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:range xsd:string .
+
+de_heat:hasCurrentHeatLoad a owl:DatatypeProperty ;
+    rdfs:label "hat aktuelle Heizlast"@de ;
+    rdfs:comment "Current aggregated heating load of buildings (kW)"@en ;
+    rdfs:domain de_heat:HeatLoad ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:range xsd:string .
+
+de_heat:hasCurrentHeatingLoad a owl:DatatypeProperty ;
+    rdfs:label "hat aktuelle Heizlast"@de ;
+    rdfs:comment "Current heating load in kW."@en ;
+    rdfs:domain de_heat:HeatingLoad ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_ONG_MTG_Baublock_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasCurrentMediumDepthYield a owl:DatatypeProperty ;
+    rdfs:label "hat aktuellen mitteltiefen Ertrag"@de ;
+    rdfs:comment "Current annual energy yield from medium-depth geothermal in kWh/a."@en,
+        "Current potential annual yield from medium-depth geothermal (kWh/a)"@en ;
+    rdfs:domain de_heat:MediumDepthGeothermalPotential ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_ONG_MTG_Baublock_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:range xsd:string .
+
+de_heat:hasDataSource a owl:DatatypeProperty ;
+    rdfs:label "hat Datenquelle"@de ;
+    rdfs:comment "Source organization providing the data (IFAM, LANUV, Geobasis)"@en ;
+    rdfs:domain de_heat:Dataset ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:range xsd:string .
+
+de_heat:hasDataVersion a owl:DatatypeProperty ;
+    rdfs:label "hat Datenstand"@de ;
+    rdfs:comment "Date of data version/update"@en ;
+    rdfs:domain de_heat:ScenarioDataset ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape ;
+    rdfs:range xsd:string .
+
+de_heat:hasDemandValue a owl:DatatypeProperty ;
+    rdfs:label "hat Bedarfswert"@de ;
+    rdfs:comment "The numerical value of covered heat demand."@en ;
+    rdfs:domain de_heat:HeatDemandCoverage ;
+    rdfs:isDefinedBy de_heat:Koeln_Cluster_Szenarien_Waermestudie ;
+    rdfs:range xsd:string .
+
+de_heat:hasDensityValue a owl:DatatypeProperty ;
+    rdfs:label "hat Dichtewert"@de ;
+    rdfs:comment "The numerical value of heat line density."@en ;
+    rdfs:domain de_heat:HeatLineDensity ;
+    rdfs:isDefinedBy de_heat:Koeln_Cluster_Szenarien_Waermestudie ;
+    rdfs:range xsd:string .
+
+de_heat:hasDimensioning a owl:ObjectProperty ;
+    rdfs:label "hat Dimensionierung"@de ;
+    rdfs:comment "Links a technology data record to its dimensioning information."@en ;
+    rdfs:domain de_heat:TechnologyDataRecord ;
+    rdfs:isDefinedBy de_heat:Koeln_KWW_Waermeplanung ;
+    rdfs:range de_heat:TechnologyDimensioning .
+
+de_heat:hasDimensioningUnit a owl:DatatypeProperty ;
+    rdfs:label "hat Dimensionierungseinheit"@de ;
+    rdfs:comment "The unit used for dimensioning calculations."@en ;
+    rdfs:domain de_heat:TechnologyDimensioning ;
+    rdfs:isDefinedBy de_heat:Koeln_KWW_Waermeplanung ;
+    rdfs:range xsd:string .
+
+de_heat:hasDimensioningValue a owl:ObjectProperty ;
+    rdfs:label "hat Dimensionierungswert"@de ;
+    rdfs:comment "Links a dimensioning process to its quantitative value."@en ;
+    rdfs:domain de_heat:TechnologyDimensioning ;
+    rdfs:isDefinedBy de_heat:Koeln_KWW_Waermeplanung ;
+    rdfs:range de_heat:DimensioningValue .
+
+de_heat:hasEastWestParabolicTroughYield a owl:DatatypeProperty ;
+    rdfs:label "hat Ost-West-Parabolrinnen-Ertrag"@de ;
+    rdfs:comment "Annual energy yield from east-west oriented parabolic troughs in kWh/a."@en ;
+    rdfs:domain de_heat:ParabolicTroughPotential ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_ONG_MTG_Baublock_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasEastWestParabolicYield a owl:DatatypeProperty ;
+    rdfs:label "hat Ost-West-Parabolrinnenertrag"@de ;
+    rdfs:comment "Potential annual yield from east-west oriented parabolic troughs at 150°C (kWh/a)"@en ;
+    rdfs:domain de_heat:ParabolicTroughPotential ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:range xsd:string .
+
+de_heat:hasEnergyCarrier a owl:DatatypeProperty ;
+    rdfs:label "hat Energieträger"@de ;
+    rdfs:comment "The energy carrier used for heat production."@en,
+        "The energy carrier used to cover heat demand."@en ;
+    rdfs:domain de_heat:HeatDemandCoverage,
+        de_heat:HeatProduction ;
+    rdfs:isDefinedBy de_heat:Koeln_Cluster_Szenarien_Waermestudie ;
+    rdfs:range xsd:string .
+
+de_heat:hasExternalReference a owl:ObjectProperty ;
+    rdfs:label "hat externe Referenz"@de ;
+    rdfs:comment "Links to external information systems or object references"@en ;
+    rdfs:domain de_heat:Building ;
+    rdfs:isDefinedBy de_heat:Munich_lod2_Citygml ;
+    rdfs:range de_heat:InformationContentEntity .
+
+de_heat:hasFeatureClassName a owl:DatatypeProperty ;
+    rdfs:label "hat Feature-Class-Name"@de ;
+    rdfs:comment "Name of the feature class in GIS"@en ;
+    rdfs:domain de_heat:Dataset ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:range xsd:string .
+
+de_heat:hasFestID a owl:DatatypeProperty ;
+    rdfs:label "hat Fest-ID"@de ;
+    rdfs:comment "Unique building ID from LANUV heat demand model"@en ;
+    rdfs:domain de_heat:HeatDemandBuilding ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasFlatCollectorYield a owl:DatatypeProperty ;
+    rdfs:label "hat Flachkollektor-Jahresertrag"@de,
+        "hat Flachkollektorertrag"@de ;
+    rdfs:comment "Annual yield from flat plate solar collectors at 60°C in kWh/a"@en,
+        "Potential annual yield from flat plate collectors at 60°C (kWh/a)"@en ;
+    rdfs:domain de_heat:FlatPlateCollectorPotential,
+        de_heat:SolarThermalPotential ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_TG_Raster_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:range xsd:string .
+
+de_heat:hasFlatPlateCollectorPotential a owl:ObjectProperty ;
+    rdfs:label "hat Flachkollektor-Potenzial"@de ;
+    rdfs:comment "Relationship between open-space solar thermal potential and flat plate collector potential."@en ;
+    rdfs:domain de_heat:OpenSpaceSolarThermalPotential ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase ;
+    rdfs:range de_heat:FlatPlateCollectorPotential .
+
+de_heat:hasFlatPlateCollectorYield a owl:DatatypeProperty ;
+    rdfs:label "hat Flachkollektor-Ertrag"@de ;
+    rdfs:comment "Annual energy yield from flat plate collectors in kWh/a."@en ;
+    rdfs:domain de_heat:FlatPlateCollectorPotential ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_ONG_MTG_Baublock_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasFractionInState a owl:DatatypeProperty ;
+    rdfs:label "hat Anteil im Bundesland"@de ;
+    rdfs:comment "Percentage of raster cell located within the state boundaries"@en,
+        "Percentage of the raster cell located within the state boundaries."@en ;
+    rdfs:domain de_heat:GeothermalPotentialRaster,
+        de_heat:GeothermalReservoir ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_ONG_MTG_Baublock_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Potenzial_TG_Raster_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasFullLoadHours a owl:DatatypeProperty ;
+    rdfs:label "hat Volllaststunden"@de ;
+    rdfs:comment "Full load hours per year"@en,
+        "Number of full load hours per year (h/a)."@en,
+        "Number of full load hours per year for geothermal energy production"@en,
+        "Number of full load hours per year."@en ;
+    rdfs:domain de_heat:GeothermalPotentialData,
+        de_heat:GeothermalPotentialRaster,
+        de_heat:GeothermalReservoir ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_ONG_MTG_Baublock_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Potenzial_TG_Raster_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape ;
+    rdfs:range xsd:string .
+
+de_heat:hasFutureGeothermalYield a owl:DatatypeProperty ;
+    rdfs:label "hat zukünftigen Geothermieertrag"@de ;
+    rdfs:comment "Potential annual yield from near-surface geothermal in 2045 (kWh/a)"@en ;
+    rdfs:domain de_heat:NearSurfaceGeothermalPotential ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:range xsd:string .
+
+de_heat:hasFutureHeatLoad a owl:DatatypeProperty ;
+    rdfs:label "hat zukünftige Heizlast"@de ;
+    rdfs:comment "Aggregated heating load of buildings in 2045 (kW)"@en ;
+    rdfs:domain de_heat:HeatLoad ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:range xsd:string .
+
+de_heat:hasFutureMediumDepthYield a owl:DatatypeProperty ;
+    rdfs:label "hat zukünftigen mitteltiefen Ertrag"@de ;
+    rdfs:comment "Potential annual yield from medium-depth geothermal in 2045 (kWh/a)"@en ;
+    rdfs:domain de_heat:MediumDepthGeothermalPotential ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:range xsd:string .
+
+de_heat:hasGeothermalPotential a owl:ObjectProperty ;
+    rdfs:label "hat Geothermie-Potenzial"@de,
+        "hat Geothermiepotenzial"@de ;
+    rdfs:comment "Links a building block to its geothermal potential"@en,
+        "Links a building block to its geothermal potential assessment"@en,
+        "Links a building block to its geothermal potential assessment."@en,
+        "Relationship between a building block and its geothermal energy potential."@en,
+        "Relationship between a raster cell and its geothermal energy potential"@en ;
+    rdfs:domain de_heat:BuildingBlock,
+        de_heat:GeothermalPotentialBlock,
+        de_heat:GeothermalPotentialRaster ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Potenzial_TG_Raster_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:range de_heat:GeothermalEnergyPotential,
+        de_heat:GeothermalPotential,
+        de_heat:GeothermalPotentialArea,
+        de_heat:GeothermalPotentialBlock .
+
+de_heat:hasGeothermalPotentialData a owl:ObjectProperty ;
+    rdfs:label "hat Geothermiepotenzialdaten"@de ;
+    rdfs:comment "Links a geothermal potential area to its potential data"@en ;
+    rdfs:domain de_heat:GeothermalPotentialArea ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape ;
+    rdfs:range de_heat:GeothermalPotentialData .
+
+de_heat:hasGeothermalPowerP10 a owl:DatatypeProperty ;
+    rdfs:label "hat geothermische Leistung P10"@de ;
+    rdfs:comment "Geothermal power output with 10% probability (MW)."@en ;
+    rdfs:domain de_heat:GeothermalReservoir ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasGeothermalPowerP50 a owl:DatatypeProperty ;
+    rdfs:label "hat geothermische Leistung P50"@de ;
+    rdfs:comment "Geothermal power output with 50% probability (MW)."@en ;
+    rdfs:domain de_heat:GeothermalReservoir ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasGeothermalPowerP90 a owl:DatatypeProperty ;
+    rdfs:label "hat geothermische Leistung P90"@de ;
+    rdfs:comment "Geothermal power output with 90% probability (MW)."@en ;
+    rdfs:domain de_heat:GeothermalReservoir ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasGeothermalReservoir a owl:ObjectProperty ;
+    rdfs:label "hat geothermisches Reservoir"@de ;
+    rdfs:comment "Relationship between a municipality and its geothermal reservoirs."@en ;
+    rdfs:domain de_heat:Municipality ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_ONG_MTG_Baublock_EPSG25832_Geodatabase ;
+    rdfs:range de_heat:GeothermalReservoir .
+
+de_heat:hasHeatDemand a owl:DatatypeProperty,
+        owl:ObjectProperty ;
+    rdfs:label "hat Heizlast"@de,
+        "hat Wärmebedarf"@de ;
+    rdfs:comment "Heating demand in kW"@en,
+        "Relationship between heat demand data and the building block it belongs to."@en ;
+    rdfs:domain de_heat:BuildingHeatDemand,
+        de_heat:HeatDemand ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Potenzial_TG_Raster_EPSG25832_Geodatabase ;
+    rdfs:range de_heat:BuildingBlock,
+        xsd:string .
+
+de_heat:hasHeatDemand2045 a owl:DatatypeProperty ;
+    rdfs:label "hat Heizlast 2045"@de ;
+    rdfs:comment "Projected heating demand in kW for the year 2045"@en ;
+    rdfs:domain de_heat:HeatDemand ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_TG_Raster_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasHeatDemandCoverage a owl:ObjectProperty ;
+    rdfs:label "hat gedeckten Wärmebedarf"@de ;
+    rdfs:comment "Relates a heat cluster to its covered heat demand by energy carrier."@en ;
+    rdfs:domain de_heat:HeatCluster ;
+    rdfs:isDefinedBy de_heat:Koeln_Cluster_Szenarien_Waermestudie ;
+    rdfs:range de_heat:HeatDemandCoverage .
+
+de_heat:hasHeatDemandData a owl:ObjectProperty ;
+    rdfs:label "hat Heizlastdaten"@de,
+        "hat Wärmebedarfsdaten"@de ;
+    rdfs:comment "Links a building block to its heat demand data"@en,
+        "Relationship between a building block and its heating demand data"@en ;
+    rdfs:domain de_heat:BuildingBlock ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_TG_Raster_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape ;
+    rdfs:range de_heat:HeatDemand,
+        de_heat:HeatDemandData .
+
+de_heat:hasHeatDensity a owl:DatatypeProperty ;
+    rdfs:label "hat Wärmedichte"@de ;
+    rdfs:comment "Heat demand (space heating + hot water + process heat) per street meter"@en,
+        "Heat demand per street meter (kWh/m)."@en ;
+    rdfs:domain de_heat:HeatDemandStreetSegment,
+        de_heat:StreetSegment ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasHeatLineDensity a owl:ObjectProperty ;
+    rdfs:label "hat Wärmeliniendichte"@de ;
+    rdfs:comment "Relates a district heating cluster to its heat line density."@en ;
+    rdfs:domain de_heat:DistrictHeatingCluster ;
+    rdfs:isDefinedBy de_heat:Koeln_Cluster_Szenarien_Waermestudie ;
+    rdfs:range de_heat:HeatLineDensity .
+
+de_heat:hasHeatLineID a owl:DatatypeProperty ;
+    rdfs:label "hat Wärmelinien-ID"@de ;
+    rdfs:comment "Identifier of the nearest heat distribution line"@en,
+        "Unique identifier for a heat line in the LANUV model."@en ;
+    rdfs:domain de_heat:BuildingHeatDemand,
+        de_heat:HeatLine ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:range xsd:string .
+
+de_heat:hasHeatLineId a owl:DatatypeProperty ;
+    rdfs:label "hat Wärmelinien-ID"@de ;
+    rdfs:comment "Identifier for the heat distribution line closest to an object."@en ;
+    rdfs:domain de_heat:HeatLine ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasHeatLoad a owl:ObjectProperty ;
+    rdfs:label "hat Heizlast"@de ;
+    rdfs:comment "Links a building block to its aggregated heating load"@en ;
+    rdfs:domain de_heat:BuildingBlock ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:range de_heat:HeatLoad .
+
+de_heat:hasHeatProduction a owl:ObjectProperty ;
+    rdfs:label "hat Wärmeproduktion"@de ;
+    rdfs:comment "Relates a heat cluster to its heat production for district heating."@en ;
+    rdfs:domain de_heat:HeatCluster ;
+    rdfs:isDefinedBy de_heat:Koeln_Cluster_Szenarien_Waermestudie ;
+    rdfs:range de_heat:HeatProduction .
+
+de_heat:hasHeatingLoad a owl:DatatypeProperty,
+        owl:ObjectProperty ;
+    rdfs:label "hat Heizlast"@de ;
+    rdfs:comment "Heating load in kW"@en,
+        "Relationship between a building block and its heating load."@en,
+        "Summed heating load of buildings in a building block in kW."@en ;
+    rdfs:domain de_heat:BuildingBlock,
+        de_heat:HeatDemandData ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Potenzial_ONG_MTG_Baublock_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape ;
+    rdfs:range de_heat:HeatingLoad,
+        xsd:string .
+
+de_heat:hasHeatingLoad2045 a owl:DatatypeProperty ;
+    rdfs:label "hat Heizlast (2045)"@de,
+        "hat Heizlast 2045"@de ;
+    rdfs:comment "Projected heating load for year 2045 in kW"@en,
+        "Summed heating load of buildings in a building block in the year 2045 in kW."@en,
+        "Summed heating load of buildings in the block in 2045 in kW"@en,
+        "Summed heating load of buildings in the block in year 2045 (kW)."@en ;
+    rdfs:domain de_heat:BuildingBlock,
+        de_heat:GeothermalPotentialBlock,
+        de_heat:HeatDemandData ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape ;
+    rdfs:range xsd:string .
+
+de_heat:hasHeatingLoadCurrent a owl:DatatypeProperty ;
+    rdfs:label "hat Heizlast (Ist)"@de,
+        "hat Heizlast (aktuell)"@de ;
+    rdfs:comment "Summed heating load of buildings in the block (current status) in kW"@en,
+        "Summed heating load of buildings in the block (kW)."@en ;
+    rdfs:domain de_heat:BuildingBlock,
+        de_heat:GeothermalPotentialBlock ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasHeatingSystemType a owl:ObjectProperty ;
+    rdfs:label "hat Heizungssystemtyp"@de ;
+    rdfs:comment "Links a building block to its dominant heating system type"@en ;
+    rdfs:domain de_heat:BuildingBlock ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape ;
+    rdfs:range de_heat:HeatingSystemType .
+
+de_heat:hasHeight a owl:DatatypeProperty ;
+    rdfs:label "hat Höhe"@de ;
+    rdfs:comment "Height of the building in meters"@en ;
+    rdfs:domain de_heat:Building ;
+    rdfs:isDefinedBy de_heat:Munich_lod2_Citygml ;
+    rdfs:range xsd:string .
+
+de_heat:hasHotWaterComponent a owl:ObjectProperty ;
+    rdfs:label "hat Warmwasserkomponente"@de ;
+    rdfs:comment "Links building heat demand to its hot water component"@en ;
+    rdfs:domain de_heat:BuildingHeatDemand ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:range de_heat:HotWaterDemand .
+
+de_heat:hasHotWaterDemand a owl:DatatypeProperty,
+        owl:ObjectProperty ;
+    rdfs:label "hat Warmwasserbedarf"@de ;
+    rdfs:comment "Hot water demand in kWh/a"@en,
+        "Hot water demand of buildings in kWh per year."@en,
+        "Links a building to its hot water demand data"@en ;
+    rdfs:domain de_heat:BuildingHeatDemand,
+        de_heat:HeatDemandBuilding,
+        de_heat:HeatDemandData ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape ;
+    rdfs:range de_heat:HotWaterDemand,
+        xsd:string .
+
+de_heat:hasHotWaterDemandAbsolute a owl:DatatypeProperty ;
+    rdfs:label "hat absoluten Warmwasserbedarf"@de ;
+    rdfs:comment "Absolute hot water demand (kWh/a)"@en,
+        "Absolute hot water demand in kWh/a"@en,
+        "Absolute hot water demand per year (kWh/a)."@en ;
+    rdfs:domain de_heat:HeatDemandBuilding,
+        de_heat:HotWaterDemand ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:range xsd:string .
+
+de_heat:hasHotWaterDemandPerArea a owl:DatatypeProperty ;
+    rdfs:label "hat flächenspezifischen Warmwasserbedarf"@de ;
+    rdfs:comment "Hot water demand per square meter (kWh/m²*a)"@en ;
+    rdfs:domain de_heat:HotWaterDemand ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:range xsd:string .
+
+de_heat:hasHotWaterDemandSpecific a owl:DatatypeProperty ;
+    rdfs:label "hat flächenspezifischen Warmwasserbedarf"@de ;
+    rdfs:comment "Area-specific hot water demand in kWh per m² per year."@en,
+        "Area-specific hot water demand in kWh/m²*a"@en,
+        "Hot water demand per square meter per year (kWh/m²*a)."@en,
+        "Specific hot water demand in kWh/m²*a"@en ;
+    rdfs:domain de_heat:BuildingHeatDemand,
+        de_heat:HeatDemandBuilding,
+        de_heat:HeatDemandData ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape ;
+    rdfs:range xsd:string .
+
+de_heat:hasLoD2MultiSurface a owl:ObjectProperty ;
+    rdfs:label "hat LoD2-Mehrfläche"@de ;
+    rdfs:comment "Points to the LoD2 surface geometry of a building surface"@en ;
+    rdfs:domain de_heat:BuildingSurface ;
+    rdfs:isDefinedBy de_heat:Munich_lod2_Citygml ;
+    rdfs:range de_heat:LoD2Geometry .
+
+de_heat:hasLoD3MultiSurface a owl:ObjectProperty ;
+    rdfs:label "hat LoD3-Mehrfläche"@de ;
+    rdfs:comment "Points to the LoD3 surface geometry of a building surface"@en ;
+    rdfs:domain de_heat:BuildingSurface ;
+    rdfs:isDefinedBy de_heat:Munich_lod2_Citygml ;
+    rdfs:range de_heat:LoD3Geometry .
+
+de_heat:hasLoDLevel a owl:DatatypeProperty ;
+    rdfs:label "hat LoD-Stufe"@de ;
+    rdfs:comment "Level of Detail (1, 2, or 3) for the building model"@en ;
+    rdfs:domain de_heat:CityModel ;
+    rdfs:isDefinedBy de_heat:Munich_lod2_Citygml ;
+    rdfs:range xsd:string .
+
+de_heat:hasMediumDepthGeothermalPotential a owl:DatatypeProperty,
+        owl:ObjectProperty ;
+    rdfs:label "hat mitteltiefes Geothermie-Potenzial"@de,
+        "hat mitteltiefes Geothermiepotenzial"@de ;
+    rdfs:comment "Links a building block to its medium-depth geothermal potential"@en,
+        "Potential annual energy yield from medium-depth geothermal energy using ground source heat probes in kWh per year."@en,
+        "Relationship between a building block and its medium-depth geothermal potential."@en ;
+    rdfs:domain de_heat:BuildingBlock,
+        de_heat:GeothermalPotential,
+        de_heat:GeothermalPotentialBlock ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Potenzial_ONG_MTG_Baublock_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase ;
+    rdfs:range de_heat:MediumDepthGeothermalPotential,
+        xsd:string .
+
+de_heat:hasMediumDepthGeothermalPotential2045 a owl:DatatypeProperty ;
+    rdfs:label "hat mitteltiefes Geothermie-Potenzial 2045"@de,
+        "hat potenziellen Jahresertrag mitteltiefe Geothermie (2045)"@de ;
+    rdfs:comment "Potential annual energy yield from medium-depth geothermal energy using ground source heat probes in the year 2045 in kWh per year."@en,
+        "Potential annual yield from medium-depth geothermal energy using ground source heat pumps in year 2045 (kWh/a)."@en ;
+    rdfs:domain de_heat:GeothermalPotential,
+        de_heat:GeothermalPotentialArea ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasMediumDepthGeothermalPotentialCurrent a owl:DatatypeProperty ;
+    rdfs:label "hat potenziellen Jahresertrag mitteltiefe Geothermie (aktuell)"@de ;
+    rdfs:comment "Potential annual yield from medium-depth geothermal energy using ground source heat pumps in current conditions (kWh/a)."@en ;
+    rdfs:domain de_heat:GeothermalPotentialArea ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasMediumDepthGeothermalYield a owl:DatatypeProperty ;
+    rdfs:label "hat mitteltiefes Geothermie-Jahresertrag"@de,
+        "hat mitteltiefes Geothermiepotenzial"@de ;
+    rdfs:comment "Annual yield potential from medium-depth geothermal energy in kWh/a"@en,
+        "Medium-depth geothermal yield in kWh/a"@en ;
+    rdfs:domain de_heat:GeothermalEnergyPotential,
+        de_heat:GeothermalPotentialData ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_TG_Raster_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape ;
+    rdfs:range xsd:string .
+
+de_heat:hasMediumDepthGeothermalYield2045 a owl:DatatypeProperty ;
+    rdfs:label "hat mitteltiefes Geothermiepotenzial 2045"@de,
+        "hat potenziellen Jahresertrag aus mitteltiefer Geothermie (2045)"@de ;
+    rdfs:comment "Potential annual yield from medium-depth geothermal resources using ground source heat probes in 2045 in kWh/a"@en,
+        "Projected medium-depth geothermal yield for 2045 in kWh/a"@en ;
+    rdfs:domain de_heat:GeothermalPotentialBlock,
+        de_heat:GeothermalPotentialData ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape ;
+    rdfs:range xsd:string .
+
+de_heat:hasMediumDepthGeothermalYieldCurrent a owl:DatatypeProperty ;
+    rdfs:label "hat potenziellen Jahresertrag aus mitteltiefer Geothermie (Ist)"@de ;
+    rdfs:comment "Potential annual yield from medium-depth geothermal resources using ground source heat probes (current status) in kWh/a"@en ;
+    rdfs:domain de_heat:GeothermalPotentialBlock ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasMunicipalityCode a owl:DatatypeProperty ;
+    rdfs:label "hat Amtlichen Gemeindeschlüssel"@de,
+        "hat Gemeindeschlüssel"@de ;
+    rdfs:comment "Official municipality code (AGS - Amtlicher Gemeindeschlüssel)"@en,
+        "Official municipality code (AGS - Amtlicher Gemeindeschlüssel)."@en,
+        "Official municipality code (AGS)"@en,
+        "Official municipality code (AGS) - 8-digit code identifying the municipality."@en ;
+    rdfs:domain de_heat:BuildingHeatDemand,
+        de_heat:Municipality ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Potenzial_TG_Raster_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape,
+        de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:range xsd:string .
+
+de_heat:hasMunicipalityName a owl:DatatypeProperty ;
+    rdfs:label "hat Gemeindename"@de,
+        "hat Gemeindenamen"@de ;
+    rdfs:comment "Name of the municipality"@en,
+        "Name of the municipality."@en ;
+    rdfs:domain de_heat:Municipality ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape ;
+    rdfs:range xsd:string .
+
+de_heat:hasName a owl:DatatypeProperty ;
+    rdfs:label "hat Name"@de ;
+    rdfs:comment "The name or identifier of a heat cluster."@en ;
+    rdfs:domain de_heat:HeatCluster ;
+    rdfs:isDefinedBy de_heat:Koeln_Cluster_Szenarien_Waermestudie ;
+    rdfs:range xsd:string .
+
+de_heat:hasNearSurfaceGeothermalPotential a owl:DatatypeProperty ;
+    rdfs:label "hat oberflächennahes Geothermie-Potenzial"@de ;
+    rdfs:comment "Potential annual energy yield from near-surface geothermal energy in kWh per year."@en ;
+    rdfs:domain de_heat:GeothermalPotential ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasNearSurfaceGeothermalPotential2045 a owl:DatatypeProperty ;
+    rdfs:label "hat oberflächennahes Geothermie-Potenzial 2045"@de ;
+    rdfs:comment "Potential annual energy yield from near-surface geothermal energy in the year 2045 in kWh per year."@en ;
+    rdfs:domain de_heat:GeothermalPotential ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasNearSurfaceGeothermalYield a owl:DatatypeProperty ;
+    rdfs:label "hat oberflächennahes Geothermiepotenzial"@de ;
+    rdfs:comment "Near-surface geothermal yield in kWh/a"@en ;
+    rdfs:domain de_heat:GeothermalPotentialData ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape ;
+    rdfs:range xsd:string .
+
+de_heat:hasNearSurfaceGeothermalYield2045 a owl:DatatypeProperty ;
+    rdfs:label "hat oberflächennahes Geothermiepotenzial 2045"@de ;
+    rdfs:comment "Projected near-surface geothermal yield for 2045 in kWh/a"@en ;
+    rdfs:domain de_heat:GeothermalPotentialData ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape ;
+    rdfs:range xsd:string .
+
+de_heat:hasNearestHeatLine a owl:ObjectProperty ;
+    rdfs:label "hat nächste Wärmelinie"@de,
+        "hat nächstgelegene Wärmelinie"@de ;
+    rdfs:comment "Links a building to the nearest heat distribution line"@en,
+        "Links a building to the nearest heat line in the network."@en ;
+    rdfs:domain de_heat:BuildingHeatDemand,
+        de_heat:HeatDemandBuilding ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:range de_heat:HeatLine .
+
+de_heat:hasNorthSouthParabolicTroughYield a owl:DatatypeProperty ;
+    rdfs:label "hat Nord-Süd-Parabolrinnen-Ertrag"@de ;
+    rdfs:comment "Annual energy yield from north-south oriented parabolic troughs in kWh/a."@en ;
+    rdfs:domain de_heat:ParabolicTroughPotential ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_ONG_MTG_Baublock_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasNorthSouthParabolicYield a owl:DatatypeProperty ;
+    rdfs:label "hat Nord-Süd-Parabolrinnenertrag"@de ;
+    rdfs:comment "Potential annual yield from north-south oriented parabolic troughs at 150°C (kWh/a)"@en ;
+    rdfs:domain de_heat:ParabolicTroughPotential ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:range xsd:string .
+
+de_heat:hasNumberOfAddresses a owl:DatatypeProperty ;
+    rdfs:label "hat Anzahl Adressen"@de,
+        "hat Anzahl der Adressen"@de ;
+    rdfs:comment "Number of addresses (main buildings) along the street segment."@en,
+        "Number of addresses (main buildings) per street segment"@en ;
+    rdfs:domain de_heat:HeatDemandStreetSegment,
+        de_heat:StreetSegment ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape ;
+    rdfs:range xsd:string .
+
+de_heat:hasNumberOfObjects a owl:DatatypeProperty ;
+    rdfs:label "hat Anzahl Objekte"@de,
+        "hat Anzahl der Objekte"@de ;
+    rdfs:comment "Number of objects ((partial) buildings) per street segment"@en,
+        "Number of objects (buildings or building parts) along the street segment."@en,
+        "Number of objects (buildings/parts) per street segment"@en ;
+    rdfs:domain de_heat:HeatDemandStreetSegment,
+        de_heat:StreetSegment ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape ;
+    rdfs:range xsd:string .
+
+de_heat:hasObjectID a owl:DatatypeProperty ;
+    rdfs:label "hat Objekt-ID"@de ;
+    rdfs:comment "GIS internal object identifier"@en,
+        "GIS-internal object identifier automatically generated"@en ;
+    rdfs:domain de_heat:BuildingBlock,
+        de_heat:HeatDemandBuilding ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape ;
+    rdfs:range xsd:string .
+
+de_heat:hasObjectIdentifier a owl:DatatypeProperty ;
+    rdfs:label "hat Objektkennung"@de ;
+    rdfs:comment "The unique object identifier (OID) for a building, starting with 'DE' followed by state abbreviation"@en ;
+    rdfs:domain de_heat:Building ;
+    rdfs:isDefinedBy de_heat:Munich_lod2_Citygml ;
+    rdfs:range xsd:string .
+
+de_heat:hasOfficialMunicipalityCode a owl:DatatypeProperty ;
+    rdfs:label "hat Amtlichen Gemeindeschlüssel"@de ;
+    rdfs:comment "Official municipality code (AGS - Amtlicher Gemeindeschlüssel)."@en ;
+    rdfs:domain de_heat:Municipality ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_ONG_MTG_Baublock_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasOpening a owl:ObjectProperty ;
+    rdfs:label "hat Öffnung"@de ;
+    rdfs:comment "Points to a CityGML Opening feature (Door or Window)"@en ;
+    rdfs:domain de_heat:BuildingSurface ;
+    rdfs:isDefinedBy de_heat:Munich_lod2_Citygml ;
+    rdfs:range de_heat:BuildingOpening .
+
+de_heat:hasP10Capacity a owl:DatatypeProperty ;
+    rdfs:label "hat P10-Leistung"@de ;
+    rdfs:comment "Geothermal capacity with 10% probability in MW."@en ;
+    rdfs:domain de_heat:GeothermalReservoir ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_ONG_MTG_Baublock_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasP10GeothermalPower a owl:DatatypeProperty ;
+    rdfs:label "hat P10 Geothermieleistung"@de ;
+    rdfs:comment "Geothermal power with 10% probability in MW"@en ;
+    rdfs:domain de_heat:GeothermalPotentialData ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape ;
+    rdfs:range xsd:string .
+
+de_heat:hasP10Power a owl:DatatypeProperty ;
+    rdfs:label "hat P10-Leistung"@de ;
+    rdfs:comment "Geothermal power output with 10% probability (P10) in MW"@en ;
+    rdfs:domain de_heat:GeothermalReservoir ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_TG_Raster_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasP50Capacity a owl:DatatypeProperty ;
+    rdfs:label "hat P50-Leistung"@de ;
+    rdfs:comment "Geothermal capacity with 50% probability in MW."@en ;
+    rdfs:domain de_heat:GeothermalReservoir ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_ONG_MTG_Baublock_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasP50GeothermalPower a owl:DatatypeProperty ;
+    rdfs:label "hat P50 Geothermieleistung"@de ;
+    rdfs:comment "Geothermal power with 50% probability in MW"@en ;
+    rdfs:domain de_heat:GeothermalPotentialData ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape ;
+    rdfs:range xsd:string .
+
+de_heat:hasP50Power a owl:DatatypeProperty ;
+    rdfs:label "hat P50-Leistung"@de ;
+    rdfs:comment "Geothermal power output with 50% probability (P50) in MW"@en ;
+    rdfs:domain de_heat:GeothermalReservoir ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_TG_Raster_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasP90Capacity a owl:DatatypeProperty ;
+    rdfs:label "hat P90-Leistung"@de ;
+    rdfs:comment "Geothermal capacity with 90% probability in MW."@en ;
+    rdfs:domain de_heat:GeothermalReservoir ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_ONG_MTG_Baublock_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasP90GeothermalPower a owl:DatatypeProperty ;
+    rdfs:label "hat P90 Geothermieleistung"@de ;
+    rdfs:comment "Geothermal power with 90% probability in MW"@en ;
+    rdfs:domain de_heat:GeothermalPotentialData ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape ;
+    rdfs:range xsd:string .
+
+de_heat:hasP90Power a owl:DatatypeProperty ;
+    rdfs:label "hat P90-Leistung"@de ;
+    rdfs:comment "Geothermal power output with 90% probability (P90) in MW"@en ;
+    rdfs:domain de_heat:GeothermalReservoir ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_TG_Raster_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasParabolicTroughEWPotential a owl:ObjectProperty ;
+    rdfs:label "hat Parabolrinnen-Ost-West-Potenzial"@de ;
+    rdfs:comment "Relationship between open-space solar thermal potential and parabolic trough east-west orientation potential."@en ;
+    rdfs:domain de_heat:OpenSpaceSolarThermalPotential ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase ;
+    rdfs:range de_heat:ParabolicTroughEWPotential .
+
+de_heat:hasParabolicTroughNSPotential a owl:ObjectProperty ;
+    rdfs:label "hat Parabolrinnen-Nord-Süd-Potenzial"@de ;
+    rdfs:comment "Relationship between open-space solar thermal potential and parabolic trough north-south orientation potential."@en ;
+    rdfs:domain de_heat:OpenSpaceSolarThermalPotential ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase ;
+    rdfs:range de_heat:ParabolicTroughNSPotential .
+
+de_heat:hasParabolicTroughNSYield a owl:DatatypeProperty ;
+    rdfs:label "hat Parabolrinnen-Nord-Süd-Jahresertrag"@de ;
+    rdfs:comment "Annual yield from parabolic trough collectors in north-south orientation at 150°C in kWh/a"@en ;
+    rdfs:domain de_heat:SolarThermalPotential ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_TG_Raster_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasParabolicTroughOWYield a owl:DatatypeProperty ;
+    rdfs:label "hat Parabolrinnen-Ost-West-Jahresertrag"@de ;
+    rdfs:comment "Annual yield from parabolic trough collectors in east-west orientation at 150°C in kWh/a"@en ;
+    rdfs:domain de_heat:SolarThermalPotential ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_TG_Raster_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasParameterName a owl:DatatypeProperty ;
+    rdfs:label "hat Parametername"@de ;
+    rdfs:comment "The name of the technology parameter."@en ;
+    rdfs:domain de_heat:TechnologyParameter ;
+    rdfs:isDefinedBy de_heat:Koeln_KWW_Waermeplanung ;
+    rdfs:range xsd:string .
+
+de_heat:hasParcelId a owl:DatatypeProperty ;
+    rdfs:label "hat Flurstücks-ID"@de ;
+    rdfs:comment "Unique identifier for a cadastral parcel in the land registry."@en ;
+    rdfs:domain de_heat:CadastralParcel ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasProcessHeatComponent a owl:ObjectProperty ;
+    rdfs:label "hat Prozesswärmekomponente"@de ;
+    rdfs:comment "Links building heat demand to its process heat component"@en ;
+    rdfs:domain de_heat:BuildingHeatDemand ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:range de_heat:ProcessHeatDemand .
+
+de_heat:hasProcessHeatDemand a owl:DatatypeProperty,
+        owl:ObjectProperty ;
+    rdfs:label "hat Prozesswärmebedarf"@de ;
+    rdfs:comment "Links a building to its process heat demand data"@en,
+        "Process heat demand for commercial/industrial use in kWh/a"@en,
+        "Process heat demand for trade, commerce, and services (GHD) in kWh per year."@en ;
+    rdfs:domain de_heat:BuildingHeatDemand,
+        de_heat:HeatDemandBuilding,
+        de_heat:HeatDemandData ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape ;
+    rdfs:range de_heat:ProcessHeatDemand,
+        xsd:string .
+
+de_heat:hasProcessHeatDemandAbsolute a owl:DatatypeProperty ;
+    rdfs:label "hat absoluten GHD-Prozesswärmebedarf"@de,
+        "hat absoluten Prozesswärmebedarf"@de ;
+    rdfs:comment "Absolute commercial, trade, services process heat demand per year (kWh/a)."@en,
+        "Absolute commercial/trade/service sector process heat demand in kWh/a"@en,
+        "Absolute process heat demand (kWh/a)"@en ;
+    rdfs:domain de_heat:HeatDemandBuilding,
+        de_heat:ProcessHeatDemand ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:range xsd:string .
+
+de_heat:hasProcessHeatDemandPerArea a owl:DatatypeProperty ;
+    rdfs:label "hat flächenspezifischen Prozesswärmebedarf"@de ;
+    rdfs:comment "Process heat demand per square meter (kWh/m²*a)"@en ;
+    rdfs:domain de_heat:ProcessHeatDemand ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:range xsd:string .
+
+de_heat:hasProcessHeatDemandSpecific a owl:DatatypeProperty ;
+    rdfs:label "hat flächenspezifischen GHD-Prozesswärmebedarf"@de,
+        "hat flächenspezifischen Prozesswärmebedarf"@de ;
+    rdfs:comment "Area-specific commercial/trade/service sector process heat demand in kWh/m²*a"@en,
+        "Area-specific process heat demand in kWh per m² per year."@en,
+        "Commercial, trade, services process heat demand per square meter per year (kWh/m²*a)."@en ;
+    rdfs:domain de_heat:BuildingHeatDemand,
+        de_heat:HeatDemandBuilding ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasProductionDate a owl:DatatypeProperty ;
+    rdfs:label "hat Erstellungsdatum"@de ;
+    rdfs:comment "The production date when LoD data was imported into the database"@en ;
+    rdfs:domain de_heat:Building ;
+    rdfs:isDefinedBy de_heat:Munich_lod2_Citygml ;
+    rdfs:range xsd:string .
+
+de_heat:hasProductionValue a owl:DatatypeProperty ;
+    rdfs:label "hat Produktionswert"@de ;
+    rdfs:comment "The numerical value of heat production."@en ;
+    rdfs:domain de_heat:HeatProduction ;
+    rdfs:isDefinedBy de_heat:Koeln_Cluster_Szenarien_Waermestudie ;
+    rdfs:range xsd:string .
+
+de_heat:hasReferenceTo2DBuilding a owl:DatatypeProperty ;
+    rdfs:label "hat Referenz zu 2D-Gebäude"@de ;
+    rdfs:comment "Reference to the 2D building polygon from ALKIS or ATKIS"@en ;
+    rdfs:domain de_heat:Building ;
+    rdfs:isDefinedBy de_heat:Munich_lod2_Citygml ;
+    rdfs:range xsd:string .
+
+de_heat:hasScenario a owl:ObjectProperty ;
+    rdfs:label "hat Szenario"@de ;
+    rdfs:comment "Relates a municipal heat study to its scenarios."@en ;
+    rdfs:domain de_heat:MunicipalHeatStudy ;
+    rdfs:isDefinedBy de_heat:Koeln_Cluster_Szenarien_Waermestudie ;
+    rdfs:range de_heat:HeatScenario .
+
+de_heat:hasScenarioDataset a owl:ObjectProperty ;
+    rdfs:label "hat Szenariodatensatz"@de ;
+    rdfs:comment "Links a scenario dataset to its geothermal potential data"@en,
+        "Links a scenario dataset to its heat demand data"@en ;
+    rdfs:domain de_heat:ScenarioDataset ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape ;
+    rdfs:range de_heat:GeothermalPotentialData,
+        de_heat:HeatDemandData .
+
+de_heat:hasScenarioName a owl:DatatypeProperty ;
+    rdfs:label "hat Szenarioname"@de ;
+    rdfs:comment "Name of the scenario (moderate, high, increased)"@en ;
+    rdfs:domain de_heat:ScenarioDataset ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:range xsd:string .
+
+de_heat:hasScenarioProjection a owl:ObjectProperty ;
+    rdfs:label "hat Szenarioprojektion"@de ;
+    rdfs:comment "Links a building to different heat demand scenario projections."@en ;
+    rdfs:domain de_heat:HeatDemandBuilding ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase ;
+    rdfs:range de_heat:HeatDemandScenario .
+
+de_heat:hasScenarioYear a owl:DatatypeProperty ;
+    rdfs:label "hat Szenario-Jahr"@de ;
+    rdfs:comment "Target year of the scenario (e.g., 2045)"@en ;
+    rdfs:domain de_heat:HeatDemandScenario ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasShallowGeothermalPotential a owl:ObjectProperty ;
+    rdfs:label "hat oberflächennahes Geothermiepotenzial"@de ;
+    rdfs:comment "Links a building block to its shallow geothermal potential"@en,
+        "Relationship between a building block and its shallow geothermal potential."@en ;
+    rdfs:domain de_heat:BuildingBlock,
+        de_heat:GeothermalPotentialBlock ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_ONG_MTG_Baublock_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase ;
+    rdfs:range de_heat:ShallowGeothermalPotential .
+
+de_heat:hasShallowGeothermalPotential2045 a owl:DatatypeProperty ;
+    rdfs:label "hat potenziellen Jahresertrag oberflächennahe Geothermie (2045)"@de ;
+    rdfs:comment "Potential annual yield from shallow geothermal energy in year 2045 (kWh/a)."@en ;
+    rdfs:domain de_heat:GeothermalPotentialArea ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasShallowGeothermalPotentialCurrent a owl:DatatypeProperty ;
+    rdfs:label "hat potenziellen Jahresertrag oberflächennahe Geothermie (aktuell)"@de ;
+    rdfs:comment "Potential annual yield from shallow geothermal energy in current conditions (kWh/a)."@en ;
+    rdfs:domain de_heat:GeothermalPotentialArea ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasShallowGeothermalYield a owl:DatatypeProperty ;
+    rdfs:label "hat oberflächennahes Geothermie-Jahresertrag"@de ;
+    rdfs:comment "Annual yield potential from shallow geothermal energy in kWh/a"@en ;
+    rdfs:domain de_heat:GeothermalEnergyPotential ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_TG_Raster_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasShallowGeothermalYield2045 a owl:DatatypeProperty ;
+    rdfs:label "hat potenziellen Jahresertrag aus oberflächennaher Geothermie (2045)"@de ;
+    rdfs:comment "Potential annual yield from shallow geothermal resources in 2045 in kWh/a"@en ;
+    rdfs:domain de_heat:GeothermalPotentialBlock ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasShallowGeothermalYieldCurrent a owl:DatatypeProperty ;
+    rdfs:label "hat potenziellen Jahresertrag aus oberflächennaher Geothermie (Ist)"@de ;
+    rdfs:comment "Potential annual yield from shallow geothermal resources (current status) in kWh/a"@en ;
+    rdfs:domain de_heat:GeothermalPotentialBlock ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasShapeArea a owl:DatatypeProperty ;
+    rdfs:label "hat Grundfläche"@de ;
+    rdfs:comment "Area of spatial region in square meters"@en ;
+    rdfs:domain de_heat:SpatialRegion ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape ;
+    rdfs:range xsd:string .
+
+de_heat:hasShapeLength a owl:DatatypeProperty ;
+    rdfs:label "hat Umfangslänge"@de ;
+    rdfs:comment "Perimeter length of spatial region in meters"@en ;
+    rdfs:domain de_heat:SpatialRegion ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape ;
+    rdfs:range xsd:string .
+
+de_heat:hasShapefileName a owl:DatatypeProperty ;
+    rdfs:label "hat Shapefile-Name"@de ;
+    rdfs:comment "Name of the shapefile containing the data"@en ;
+    rdfs:domain de_heat:Dataset ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:range xsd:string .
+
+de_heat:hasSolarThermalPotential a owl:ObjectProperty ;
+    rdfs:label "hat Solarthermie-Potenzial"@de,
+        "hat Solarthermiepotenzial"@de ;
+    rdfs:comment "Links a cadastral parcel to its solar thermal potential"@en,
+        "Relationship between a building block and its solar thermal potential."@en,
+        "Relationship between a cadastral parcel and its solar thermal energy potential."@en,
+        "Relationship between solar thermal potential and collector type"@en ;
+    rdfs:domain de_heat:BuildingBlock,
+        de_heat:CadastralParcel,
+        de_heat:SolarThermalPotential ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Potenzial_ONG_MTG_Baublock_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Potenzial_TG_Raster_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:range de_heat:OpenSpaceSolarThermalPotential,
+        de_heat:SolarCollectorType,
+        de_heat:SolarThermalPotential .
+
+de_heat:hasSource a owl:ObjectProperty ;
+    rdfs:label "hat Quelle"@de ;
+    rdfs:comment "Links a technology data record to its source references."@en ;
+    rdfs:domain de_heat:TechnologyDataRecord ;
+    rdfs:isDefinedBy de_heat:Koeln_KWW_Waermeplanung ;
+    rdfs:range de_heat:SourceReference .
+
+de_heat:hasSourceCitation a owl:DatatypeProperty ;
+    rdfs:label "hat Quellenzitat"@de ;
+    rdfs:comment "The citation or reference string for a source."@en ;
+    rdfs:domain de_heat:SourceReference ;
+    rdfs:isDefinedBy de_heat:Koeln_KWW_Waermeplanung ;
+    rdfs:range xsd:string .
+
+de_heat:hasSpaceHeatingComponent a owl:ObjectProperty ;
+    rdfs:label "hat Raumwärmekomponente"@de ;
+    rdfs:comment "Links building heat demand to its space heating component"@en ;
+    rdfs:domain de_heat:BuildingHeatDemand ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:range de_heat:SpaceHeatingDemand .
+
+de_heat:hasSpaceHeatingDemand a owl:DatatypeProperty,
+        owl:ObjectProperty ;
+    rdfs:label "hat Raumwärmebedarf"@de ;
+    rdfs:comment "Links a building to its space heating demand data"@en,
+        "Space heating demand in kWh/a"@en,
+        "Space heating demand of buildings in kWh per year."@en ;
+    rdfs:domain de_heat:BuildingHeatDemand,
+        de_heat:HeatDemandBuilding,
+        de_heat:HeatDemandData ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape ;
+    rdfs:range de_heat:SpaceHeatingDemand,
+        xsd:string .
+
+de_heat:hasSpaceHeatingDemandAbsolute a owl:DatatypeProperty ;
+    rdfs:label "hat absoluten Raumwärmebedarf"@de ;
+    rdfs:comment "Absolute space heating demand (kWh/a)"@en,
+        "Absolute space heating demand in kWh/a"@en,
+        "Absolute space heating demand per year (kWh/a)."@en ;
+    rdfs:domain de_heat:HeatDemandBuilding,
+        de_heat:SpaceHeatingDemand ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:range xsd:string .
+
+de_heat:hasSpaceHeatingDemandPerArea a owl:DatatypeProperty ;
+    rdfs:label "hat flächenspezifischen Raumwärmebedarf"@de ;
+    rdfs:comment "Space heating demand per square meter (kWh/m²*a)"@en ;
+    rdfs:domain de_heat:SpaceHeatingDemand ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:range xsd:string .
+
+de_heat:hasSpaceHeatingDemandSpecific a owl:DatatypeProperty ;
+    rdfs:label "hat flächenspezifischen Raumwärmebedarf"@de ;
+    rdfs:comment "Area-specific space heating demand in kWh per m² per year."@en,
+        "Area-specific space heating demand in kWh/m²*a"@en,
+        "Space heating demand per square meter per year (kWh/m²*a)."@en,
+        "Specific space heating demand in kWh/m²*a"@en ;
+    rdfs:domain de_heat:BuildingHeatDemand,
+        de_heat:HeatDemandBuilding,
+        de_heat:HeatDemandData ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape ;
+    rdfs:range xsd:string .
+
+de_heat:hasSpecificEnergyDemand a owl:DatatypeProperty ;
+    rdfs:label "hat spezifischen Energiebedarf"@de ;
+    rdfs:comment "The specific energy demand per square meter."@en ;
+    rdfs:domain de_heat:BuildingDataRecord ;
+    rdfs:isDefinedBy de_heat:Koeln_KWW_Waermeplanung ;
+    rdfs:range xsd:string .
+
+de_heat:hasStateAbbreviation a owl:DatatypeProperty ;
+    rdfs:label "hat Bundesland-Kürzel"@de ;
+    rdfs:comment "Two-character abbreviation of the German state (Bundesland)"@en ;
+    rdfs:domain de_heat:CityModel ;
+    rdfs:isDefinedBy de_heat:Munich_lod2_Citygml ;
+    rdfs:range xsd:string .
+
+de_heat:hasStreetLength a owl:DatatypeProperty ;
+    rdfs:label "hat Straßenlänge"@de ;
+    rdfs:comment "Length of street segment in meters"@en,
+        "Length of the street segment in meters"@en,
+        "Length of the street segment in meters."@en ;
+    rdfs:domain de_heat:HeatDemandStreetSegment,
+        de_heat:StreetSegment ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape ;
+    rdfs:range xsd:string .
+
+de_heat:hasStreetSegmentData a owl:ObjectProperty ;
+    rdfs:label "hat Straßenabschnittsdaten"@de ;
+    rdfs:comment "Links a street segment to its heat demand data"@en ;
+    rdfs:domain de_heat:StreetSegment ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape ;
+    rdfs:range de_heat:HeatDemandData .
+
+de_heat:hasSurfaceArea a owl:DatatypeProperty ;
+    rdfs:label "hat Oberflächenfläche"@de ;
+    rdfs:comment "Area of the building surface in square meters"@en ;
+    rdfs:domain de_heat:BuildingSurface ;
+    rdfs:isDefinedBy de_heat:Munich_lod2_Citygml ;
+    rdfs:range xsd:string .
+
+de_heat:hasSurfaceMember a owl:ObjectProperty ;
+    rdfs:label "hat Oberflächen-Mitglied"@de ;
+    rdfs:comment "Links a building surface to its geometric surface members"@en ;
+    rdfs:domain de_heat:BuildingSurface ;
+    rdfs:isDefinedBy de_heat:Munich_lod2_Citygml ;
+    rdfs:range de_heat:SurfaceMember .
+
+de_heat:hasTechnologyName a owl:DatatypeProperty ;
+    rdfs:label "hat Technologiename"@de ;
+    rdfs:comment "The name of the heating technology."@en ;
+    rdfs:domain de_heat:TechnologyDataRecord ;
+    rdfs:isDefinedBy de_heat:Koeln_KWW_Waermeplanung ;
+    rdfs:range xsd:string .
+
+de_heat:hasTechnologyParameter a owl:ObjectProperty ;
+    rdfs:label "hat Technologieparameter"@de ;
+    rdfs:comment "Links a technology data record to its associated parameters."@en ;
+    rdfs:domain de_heat:TechnologyDataRecord ;
+    rdfs:isDefinedBy de_heat:Koeln_KWW_Waermeplanung ;
+    rdfs:range de_heat:TechnologyParameter .
+
+de_heat:hasTileEdgeLength a owl:DatatypeProperty ;
+    rdfs:label "hat Kachel-Kantenlänge"@de ;
+    rdfs:comment "Edge length of the tile in kilometers"@en ;
+    rdfs:domain de_heat:CityModel ;
+    rdfs:isDefinedBy de_heat:Munich_lod2_Citygml ;
+    rdfs:range xsd:string .
+
+de_heat:hasTileLowerLeftX a owl:DatatypeProperty ;
+    rdfs:label "hat Kachel-Links-unten-X"@de ;
+    rdfs:comment "X coordinate of the lower left corner of the tile in kilometers"@en ;
+    rdfs:domain de_heat:CityModel ;
+    rdfs:isDefinedBy de_heat:Munich_lod2_Citygml ;
+    rdfs:range xsd:string .
+
+de_heat:hasTileLowerLeftY a owl:DatatypeProperty ;
+    rdfs:label "hat Kachel-Links-unten-Y"@de ;
+    rdfs:comment "Y coordinate of the lower left corner of the tile in kilometers"@en ;
+    rdfs:domain de_heat:CityModel ;
+    rdfs:isDefinedBy de_heat:Munich_lod2_Citygml ;
+    rdfs:range xsd:string .
+
+de_heat:hasTotalDemandAbsolute a owl:DatatypeProperty ;
+    rdfs:label "hat absoluten Gesamtbedarf"@de ;
+    rdfs:comment "Total absolute demand (space heating + hot water + process heat) in kWh/a"@en ;
+    rdfs:domain de_heat:HeatDemandBuilding ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasTotalDemandSpecific a owl:DatatypeProperty ;
+    rdfs:label "hat flächenspezifischen Gesamtbedarf"@de ;
+    rdfs:comment "Total area-specific demand (space heating + hot water + process heat) in kWh/m²*a"@en ;
+    rdfs:domain de_heat:HeatDemandBuilding ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasTotalHeatDemand a owl:DatatypeProperty ;
+    rdfs:label "hat Gesamtwärmebedarf"@de ;
+    rdfs:comment "Total heat demand (space heating + hot water + process heat) in kWh per year."@en,
+        "Total heat demand (space heating + hot water) in kWh/a"@en ;
+    rdfs:domain de_heat:BuildingHeatDemand,
+        de_heat:HeatDemandData ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape ;
+    rdfs:range xsd:string .
+
+de_heat:hasTotalHeatDemandAbsolute a owl:DatatypeProperty ;
+    rdfs:label "hat absoluten Gesamtwärmebedarf"@de ;
+    rdfs:comment "Absolute total heat demand (kWh/a)"@en,
+        "Absolute total heat demand per year (kWh/a)."@en ;
+    rdfs:domain de_heat:BuildingHeatDemand,
+        de_heat:HeatDemandBuilding ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:range xsd:string .
+
+de_heat:hasTotalHeatDemandPerArea a owl:DatatypeProperty ;
+    rdfs:label "hat flächenspezifischen Gesamtwärmebedarf"@de ;
+    rdfs:comment "Total heat demand per square meter (kWh/m²*a)"@en ;
+    rdfs:domain de_heat:BuildingHeatDemand ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:range xsd:string .
+
+de_heat:hasTotalHeatDemandSpecific a owl:DatatypeProperty ;
+    rdfs:label "hat flächenspezifischen Gesamtwärmebedarf"@de ;
+    rdfs:comment "Area-specific total heat demand in kWh per m² per year."@en,
+        "Total heat demand per square meter per year (kWh/m²*a)."@en ;
+    rdfs:domain de_heat:BuildingHeatDemand,
+        de_heat:HeatDemandBuilding ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasUIDString a owl:DatatypeProperty ;
+    rdfs:label "hat UID-String"@de ;
+    rdfs:comment "The string representation of the unique identifier."@en ;
+    rdfs:domain de_heat:UniqueIdentifier ;
+    rdfs:isDefinedBy de_heat:Koeln_KWW_Waermeplanung ;
+    rdfs:range xsd:string .
+
+de_heat:hasUTMZone a owl:DatatypeProperty ;
+    rdfs:label "hat UTM-Zone"@de ;
+    rdfs:comment "The UTM zone number for the coordinate reference system (32 or 33 for Germany)"@en ;
+    rdfs:domain de_heat:CoordinateReferenceSystem ;
+    rdfs:isDefinedBy de_heat:Munich_lod2_Citygml ;
+    rdfs:range xsd:string .
+
+de_heat:hasUncertainty a owl:ObjectProperty ;
+    rdfs:label "hat Unsicherheit"@de ;
+    rdfs:comment "Links a technology parameter to its uncertainty level."@en ;
+    rdfs:domain de_heat:TechnologyParameter ;
+    rdfs:isDefinedBy de_heat:Koeln_KWW_Waermeplanung ;
+    rdfs:range de_heat:UncertaintyLevel .
+
+de_heat:hasUncertaintyDescription a owl:DatatypeProperty ;
+    rdfs:label "hat Unsicherheitsbeschreibung"@de ;
+    rdfs:comment "A textual description of the uncertainty level."@en ;
+    rdfs:domain de_heat:UncertaintyLevel ;
+    rdfs:isDefinedBy de_heat:Koeln_KWW_Waermeplanung ;
+    rdfs:range xsd:string .
+
+de_heat:hasUniqueIdentifier a owl:ObjectProperty ;
+    rdfs:label "hat eindeutigen Identifikator"@de ;
+    rdfs:comment "Links a technology data record to its unique identifier."@en ;
+    rdfs:domain de_heat:TechnologyDataRecord ;
+    rdfs:isDefinedBy de_heat:Koeln_KWW_Waermeplanung ;
+    rdfs:range de_heat:UniqueIdentifier .
+
+de_heat:hasUnit a owl:DatatypeProperty ;
+    rdfs:label "hat Einheit"@de ;
+    rdfs:comment "The unit of measurement for a dimensioning value."@en,
+        "The unit of measurement for heat demand coverage (kWh/a)."@en,
+        "The unit of measurement for heat line density (kWh/m*a)."@en,
+        "The unit of measurement for heat production (kWh/a)."@en ;
+    rdfs:domain de_heat:DimensioningValue,
+        de_heat:HeatDemandCoverage,
+        de_heat:HeatLineDensity,
+        de_heat:HeatProduction ;
+    rdfs:isDefinedBy de_heat:Koeln_Cluster_Szenarien_Waermestudie,
+        de_heat:Koeln_KWW_Waermeplanung ;
+    rdfs:range xsd:string .
+
+de_heat:hasUsableArea a owl:DatatypeProperty ;
+    rdfs:label "hat nutzbare Fläche"@de ;
+    rdfs:comment "Sum of all effectively usable areas for open-space solar thermal energy (excluding 3m border)."@en,
+        "Sum of all effectively usable areas for solar thermal (m²)"@en,
+        "Usable area for solar thermal installations in m²"@en,
+        "Usable area for solar thermal systems in m²."@en ;
+    rdfs:domain de_heat:CadastralParcel,
+        de_heat:SolarThermalPotential ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Potenzial_ONG_MTG_Baublock_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Potenzial_TG_Raster_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:range xsd:string .
+
+de_heat:hasVacuumTubeCollectorYield a owl:DatatypeProperty ;
+    rdfs:label "hat Vakuumröhrenkollektor-Ertrag"@de ;
+    rdfs:comment "Annual energy yield from vacuum tube collectors in kWh/a."@en ;
+    rdfs:domain de_heat:VacuumTubeCollectorPotential ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_ONG_MTG_Baublock_EPSG25832_Geodatabase ;
+    rdfs:range xsd:string .
+
+de_heat:hasVacuumTubeYield a owl:DatatypeProperty ;
+    rdfs:label "hat Vakuumröhren-Jahresertrag"@de,
+        "hat Vakuumröhrenertrag"@de ;
+    rdfs:comment "Annual yield from vacuum tube collectors at 90°C in kWh/a"@en,
+        "Potential annual yield from vacuum tube collectors (kWh/a)"@en ;
+    rdfs:domain de_heat:SolarThermalPotential ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_TG_Raster_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:range xsd:string .
+
+de_heat:hasValue a owl:DatatypeProperty ;
+    rdfs:label "hat Wert"@de ;
+    rdfs:comment "The specific value of a technology parameter."@en ;
+    rdfs:domain de_heat:TechnologyParameter ;
+    rdfs:isDefinedBy de_heat:Koeln_KWW_Waermeplanung ;
+    rdfs:range xsd:string .
+
+de_heat:hasYear a owl:DatatypeProperty ;
+    rdfs:label "hat Jahr"@de ;
+    rdfs:comment "The target year of the heat scenario (e.g., 2045)."@en,
+        "The year associated with the technology data record."@en ;
+    rdfs:domain de_heat:HeatScenario,
+        de_heat:TechnologyDataRecord ;
+    rdfs:isDefinedBy de_heat:Koeln_Cluster_Szenarien_Waermestudie,
+        de_heat:Koeln_KWW_Waermeplanung ;
+    rdfs:range xsd:string .
+
+de_heat:isBasedOnSource a owl:ObjectProperty ;
+    rdfs:label "basiert auf Quelle"@de ;
+    rdfs:comment "Indicates that a technology parameter is based on a specific source reference."@en ;
+    rdfs:domain de_heat:TechnologyParameter ;
+    rdfs:isDefinedBy de_heat:Koeln_KWW_Waermeplanung ;
+    rdfs:range de_heat:SourceReference .
+
+de_heat:isPartOfBuilding a owl:ObjectProperty ;
+    rdfs:label "ist Teil von Gebäude"@de ;
+    rdfs:comment "Indicates that a building surface is part of a specific building"@en ;
+    rdfs:domain de_heat:BuildingSurface ;
+    rdfs:isDefinedBy de_heat:Munich_lod2_Citygml ;
+    rdfs:range de_heat:Building .
+
+de_heat:isSolarRadiationReceiving a owl:ObjectProperty ;
+    rdfs:label "empfängt Solareinstrahlung"@de ;
+    rdfs:comment "Indicates that a surface receives solar radiation"@en ;
+    rdfs:domain de_heat:BuildingSurface ;
+    rdfs:isDefinedBy de_heat:Munich_lod2_Citygml ;
+    rdfs:range de_heat:SolarRadiationReceivingSurface .
+
+de_heat:locatedInBuildingBlock a owl:ObjectProperty ;
+    rdfs:label "befindet sich in Baublock"@de ;
+    rdfs:comment "Links a building to its containing building block"@en ;
+    rdfs:domain de_heat:BuildingHeatDemand ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:range de_heat:BuildingBlock .
+
+de_heat:locatedInMunicipality a owl:ObjectProperty ;
+    rdfs:label "liegt in Gemeinde"@de ;
+    rdfs:comment "Links a building to its municipality"@en,
+        "Links a building to the municipality it is located in."@en,
+        "Relationship between a building block and its containing municipality"@en,
+        "Relationship between a building block and its containing municipality."@en,
+        "Relationship between a cadastral parcel and the municipality it is located in."@en ;
+    rdfs:domain de_heat:BuildingBlock,
+        de_heat:CadastralParcel,
+        de_heat:HeatDemandBuilding ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Potenzial_ONG_MTG_Baublock_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Potenzial_TG_Raster_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase ;
+    rdfs:range de_heat:Municipality .
+
+de_heat:merged_2026-01-14_211831 a owl:Ontology ;
+    rdfs:label "Integrated German Heat Planning Ontology"@en .
+
+de_heat:servesStreetSegment a owl:ObjectProperty ;
+    rdfs:label "versorgt Straßenabschnitt"@de ;
+    rdfs:comment "Links a heat line to the street segment it serves."@en ;
+    rdfs:domain de_heat:HeatLine ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase ;
+    rdfs:range de_heat:StreetSegment .
+
+de_heat:BuildingOpening a owl:Class ;
+    rdfs:label "Gebäudeöffnung"@de ;
+    rdfs:comment "An opening in a building surface such as a door or window"@en ;
+    rdfs:isDefinedBy de_heat:Munich_lod2_Citygml ;
+    rdfs:subClassOf oeo:BuildingComponent .
+
+de_heat:CityObjectMember a owl:Class ;
+    rdfs:label "Stadtobjekt-Mitglied"@de ;
+    rdfs:comment "A member object within a CityModel collection, representing individual city features"@en ;
+    rdfs:isDefinedBy de_heat:Munich_lod2_Citygml ;
+    rdfs:subClassOf oeo:SpatialObject .
+
+de_heat:CostCurveParameter a owl:Class ;
+    rdfs:label "Kostenkurvenparameter"@de ;
+    rdfs:comment "A parameter used in cost curve calculations for heating technologies."@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWW_Waermeplanung ;
+    rdfs:subClassOf oeo:Parameter .
+
+de_heat:GeothermalPotentialDataset a owl:Class ;
+    rdfs:label "Geothermiepotenzialdatensatz"@de ;
+    rdfs:comment "A dataset containing geothermal energy potential information"@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:subClassOf oeo:Dataset .
+
+de_heat:HeatDemandDataset a owl:Class ;
+    rdfs:label "Wärmebedarfsdatensatz"@de ;
+    rdfs:comment "A dataset containing building heat demand information for municipal heat planning"@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:subClassOf oeo:Dataset .
+
+de_heat:HeatingSystemType a owl:Class ;
+    rdfs:label "Heizungssystemtyp"@de ;
+    rdfs:comment "Type of heating system used in buildings"@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape ;
+    rdfs:subClassOf oeo:EnergyTransformationUnit .
+
+de_heat:LoD2Geometry a owl:Class ;
+    rdfs:label "LoD2-Geometrie"@de ;
+    rdfs:comment "Level of Detail 2 geometric representation of building surfaces"@en ;
+    rdfs:isDefinedBy de_heat:Munich_lod2_Citygml ;
+    rdfs:subClassOf oeo:GeometricRepresentation .
+
+de_heat:LoD3Geometry a owl:Class ;
+    rdfs:label "LoD3-Geometrie"@de ;
+    rdfs:comment "Level of Detail 3 geometric representation of building surfaces"@en ;
+    rdfs:isDefinedBy de_heat:Munich_lod2_Citygml ;
+    rdfs:subClassOf oeo:GeometricRepresentation .
+
+de_heat:SolarCollectorType a owl:Class ;
+    rdfs:label "Solarkollektor-Typ"@de ;
+    rdfs:comment "A type of solar collector used for thermal energy transformation"@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_TG_Raster_EPSG25832_Geodatabase ;
+    rdfs:subClassOf oeo:EnergyTransformationUnit .
+
+de_heat:SolarRadiationReceivingSurface a owl:Class ;
+    rdfs:label "Solareinstrahlungsempfangende Fläche"@de ;
+    rdfs:comment "A surface that receives solar energy via solar radiation"@en ;
+    rdfs:isDefinedBy de_heat:Munich_lod2_Citygml ;
+    rdfs:subClassOf oeo:Surface .
+
+de_heat:SolarThermalPotentialDataset a owl:Class ;
+    rdfs:label "Solarthermiepotenzialdatensatz"@de ;
+    rdfs:comment "A dataset containing solar thermal energy potential information"@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:subClassOf oeo:Dataset .
+
+de_heat:SurfaceMember a owl:Class ;
+    rdfs:label "Oberflächen-Mitglied"@de ;
+    rdfs:comment "A member surface within a geometric collection or multi-surface representation"@en ;
+    rdfs:isDefinedBy de_heat:Munich_lod2_Citygml ;
+    rdfs:subClassOf oeo:SpatialObject .
+
+de_heat:VacuumTubeCollectorPotential a owl:Class ;
+    rdfs:label "Vakuumröhrenkollektor-Potenzial"@de ;
+    rdfs:comment "Potential energy yield from vacuum tube solar thermal collectors."@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_ONG_MTG_Baublock_EPSG25832_Geodatabase ;
+    rdfs:subClassOf oeo:SolarThermalPotential .
+
+de_heat:CoordinateReferenceSystem a owl:Class ;
+    rdfs:label "Koordinatenreferenzsystem"@de ;
+    rdfs:comment "A reference coordinate system used for spatial data, such as ETRS89/UTM"@en ;
+    rdfs:isDefinedBy de_heat:Munich_lod2_Citygml ;
+    rdfs:subClassOf oeo:InformationContentEntity .
+
+de_heat:DimensioningValue a owl:Class ;
+    rdfs:label "Dimensionierungswert"@de ;
+    rdfs:comment "A quantitative value representing the dimensioning or sizing of a technology component."@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWW_Waermeplanung ;
+    rdfs:subClassOf oeo:QuantityValue .
+
+de_heat:DistrictHeatingCluster a owl:Class ;
+    rdfs:label "Fernwärmecluster"@de ;
+    rdfs:comment "A heat cluster that develops into a district heating cluster within a specific scenario."@en ;
+    rdfs:isDefinedBy de_heat:Koeln_Cluster_Szenarien_Waermestudie ;
+    rdfs:subClassOf de_heat:HeatCluster .
+
+de_heat:HeatTechnologyCatalog a owl:Class ;
+    rdfs:label "Wärmetechnikkatalog"@de ;
+    rdfs:comment "A catalog containing technology data for heat planning, including parameters, dimensioning, and sources."@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWW_Waermeplanung ;
+    rdfs:subClassOf oeo:DataCollection .
+
+de_heat:NearSurfaceGeothermalPotential a owl:Class ;
+    rdfs:label "Oberflächennahes Geothermiepotenzial"@de ;
+    rdfs:comment "Potential energy yield from near-surface geothermal sources"@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:subClassOf oeo:GeothermalEnergy .
+
+de_heat:ParabolicTroughEWPotential a owl:Class ;
+    rdfs:label "Parabolrinnen-Ost-West-Potenzial"@de ;
+    rdfs:comment "Potential energy yield using parabolic trough collectors in east-west orientation at 150°C."@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase ;
+    rdfs:subClassOf oeo:EnergyPotential .
+
+de_heat:ParabolicTroughNSPotential a owl:Class ;
+    rdfs:label "Parabolrinnen-Nord-Süd-Potenzial"@de ;
+    rdfs:comment "Potential energy yield using parabolic trough collectors in north-south orientation at 150°C."@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase ;
+    rdfs:subClassOf oeo:EnergyPotential .
+
+de_heat:UncertaintyLevel a owl:Class ;
+    rdfs:label "Unsicherheitsniveau"@de ;
+    rdfs:comment "A quality indicating the level of uncertainty associated with a parameter or data point."@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWW_Waermeplanung ;
+    rdfs:subClassOf oeo:Quality .
+
+de_heat:GeothermalEnergyPotential a owl:Class ;
+    rdfs:label "Geothermiepotenzial"@de ;
+    rdfs:comment "The potential geothermal energy that can be extracted from a specific location"@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_TG_Raster_EPSG25832_Geodatabase ;
+    rdfs:subClassOf oeo:GeothermalEnergy .
+
+de_heat:HeatDemand a owl:Class ;
+    rdfs:label "Heizlast"@de ;
+    rdfs:comment "The heating demand of buildings in a specific area"@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_TG_Raster_EPSG25832_Geodatabase ;
+    rdfs:subClassOf oeo:EnergyDemand .
+
+de_heat:HeatDemandScenario a owl:Class ;
+    rdfs:label "Wärmebedarfs-Szenario"@de,
+        "Wärmebedarfszenario"@de ;
+    rdfs:comment "A scenario representing different heat demand projections (moderate, high, increased) for future years."@en,
+        "Scenario for heat demand projections (e.g., current status, 2045 projections)"@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase ;
+    rdfs:subClassOf oeo:Scenario .
+
+de_heat:HeatLineDensity a owl:Class ;
+    rdfs:label "Wärmeliniendichte"@de ;
+    rdfs:comment "The density of heat distribution lines within a cluster, measured in kWh/m*a."@en ;
+    rdfs:isDefinedBy de_heat:Koeln_Cluster_Szenarien_Waermestudie ;
+    rdfs:subClassOf oeo:Quantity .
+
+de_heat:HeatLoad a owl:Class ;
+    rdfs:label "Heizlast"@de ;
+    rdfs:comment "The maximum heating power requirement of buildings"@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:subClassOf oeo:Power .
+
+de_heat:HeatScenario a owl:Class ;
+    rdfs:label "Wärmeszenario"@de ;
+    rdfs:comment "A scenario describing possible future states of a municipal heating system."@en ;
+    rdfs:isDefinedBy de_heat:Koeln_Cluster_Szenarien_Waermestudie ;
+    rdfs:subClassOf oeo:EnergyScenario .
+
+de_heat:HeatingLoad a owl:Class ;
+    rdfs:label "Heizlast"@de ;
+    rdfs:comment "Heating load or demand of buildings within a spatial unit."@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_ONG_MTG_Baublock_EPSG25832_Geodatabase ;
+    rdfs:subClassOf oeo:EnergyDemand .
+
+de_heat:MunicipalHeatStudy a owl:Class ;
+    rdfs:label "Kommunale Wärmestudie"@de ;
+    rdfs:comment "A study focusing on municipal heat planning and infrastructure development."@en ;
+    rdfs:isDefinedBy de_heat:Koeln_Cluster_Szenarien_Waermestudie ;
+    rdfs:subClassOf oeo:ScenarioStudy .
+
+de_heat:ShallowGeothermalPotential a owl:Class ;
+    rdfs:label "Oberflächennahes Geothermiepotenzial"@de ;
+    rdfs:comment "Potential energy yield from shallow geothermal resources"@en,
+        "Potential energy yield from shallow geothermal sources."@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_ONG_MTG_Baublock_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase ;
+    rdfs:subClassOf oeo:GeothermalEnergy,
+        oeo:GeothermalPotential .
+
+de_heat:SourceReference a owl:Class ;
+    rdfs:label "Quellenreferenz"@de ;
+    rdfs:comment "A reference to a source document or data source used in heat planning."@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWW_Waermeplanung ;
+    rdfs:subClassOf oeo:InformationContentEntity .
+
+de_heat:TechnologyDimensioning a owl:Class ;
+    rdfs:label "Technologiedimensionierung"@de ;
+    rdfs:comment "The process of determining the appropriate size or capacity of a heating technology."@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWW_Waermeplanung ;
+    rdfs:subClassOf oeo:Process .
+
+de_heat:UniqueIdentifier a owl:Class ;
+    rdfs:label "Eindeutiger Identifikator"@de ;
+    rdfs:comment "A unique identifier generated by concatenating specific attribute values for data point identification."@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWW_Waermeplanung ;
+    rdfs:subClassOf oeo:Identifier .
+
+de_heat:BuildingDataRecord a owl:Class ;
+    rdfs:label "Gebäudedatensatz"@de ;
+    rdfs:comment "A data record containing building-specific information for heat planning, such as energy demand and building type."@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWW_Waermeplanung ;
+    rdfs:subClassOf oeo:DataItem .
+
+de_heat:CadastralParcel a owl:Class ;
+    rdfs:label "Flurstück"@de ;
+    rdfs:comment "A cadastral parcel or land parcel with defined boundaries in the land registry."@en,
+        "A cadastral parcel or land plot for solar thermal potential assessment"@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:subClassOf oeo:SpatialRegion .
+
+de_heat:ClusterScenarioData a owl:Class ;
+    rdfs:label "Cluster-Szenario-Daten"@de ;
+    rdfs:comment "Dataset containing cluster-specific scenario data for municipal heat planning."@en ;
+    rdfs:isDefinedBy de_heat:Koeln_Cluster_Szenarien_Waermestudie ;
+    rdfs:subClassOf oeo:EmpiricalDataSet .
+
+de_heat:FlatPlateCollectorPotential a owl:Class ;
+    rdfs:label "Flachkollektor-Potenzial"@de,
+        "Flachkollektorpotenzial"@de ;
+    rdfs:comment "Potential energy yield from flat plate solar thermal collectors"@en,
+        "Potential energy yield from flat plate solar thermal collectors."@en,
+        "Potential energy yield using flat plate solar thermal collectors at 60°C."@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Potenzial_ONG_MTG_Baublock_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:subClassOf oeo:EnergyPotential,
+        oeo:SolarEnergy,
+        oeo:SolarThermalPotential .
+
+de_heat:GeothermalPotentialRaster a owl:Class ;
+    rdfs:label "Geothermiepotenzial-Raster"@de ;
+    rdfs:comment "A raster cell representing geothermal energy potential data for a specific geographic area"@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_TG_Raster_EPSG25832_Geodatabase ;
+    rdfs:subClassOf oeo:GeographicRegion .
+
+de_heat:HeatDemandCoverage a owl:Class ;
+    rdfs:label "Gedeckter Wärmebedarf"@de ;
+    rdfs:comment "The amount of heat demand covered by specific energy carriers within a cluster and scenario."@en ;
+    rdfs:isDefinedBy de_heat:Koeln_Cluster_Szenarien_Waermestudie ;
+    rdfs:subClassOf oeo:Quantity .
+
+de_heat:HeatProduction a owl:Class ;
+    rdfs:label "Erzeugte Wärmemenge"@de ;
+    rdfs:comment "The amount of heat produced for district heating by specific energy carriers within a cluster and scenario."@en ;
+    rdfs:isDefinedBy de_heat:Koeln_Cluster_Szenarien_Waermestudie ;
+    rdfs:subClassOf oeo:Quantity .
+
+de_heat:HotWaterDemand a owl:Class ;
+    rdfs:label "Warmwasserbedarf"@de ;
+    rdfs:comment "Energy demand for domestic hot water preparation"@en,
+        "The energy required for domestic hot water in a building"@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:subClassOf oeo:EnergyConsumption,
+        oeo:EnergyDemand .
+
+de_heat:MediumDepthGeothermalPotential a owl:Class ;
+    rdfs:label "Mitteltiefes Geothermiepotenzial"@de ;
+    rdfs:comment "Potential energy yield from medium-depth geothermal resources using ground source heat probes"@en,
+        "Potential energy yield from medium-depth geothermal sources using borehole heat exchangers"@en,
+        "Potential energy yield from medium-depth geothermal sources using borehole heat exchangers."@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_ONG_MTG_Baublock_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:subClassOf oeo:GeothermalEnergy,
+        oeo:GeothermalPotential .
+
+de_heat:OpenSpaceSolarThermalPotential a owl:Class ;
+    rdfs:label "Freiflächen-Solarthermie-Potenzial"@de ;
+    rdfs:comment "Potential for solar thermal energy generation in open spaces, considering different collector technologies."@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase ;
+    rdfs:subClassOf oeo:EnergyPotential .
+
+de_heat:ParabolicTroughPotential a owl:Class ;
+    rdfs:label "Parabolrinnen-Potenzial"@de,
+        "Parabolrinnenpotenzial"@de ;
+    rdfs:comment "Potential energy yield from parabolic trough solar thermal collectors"@en,
+        "Potential energy yield from parabolic trough solar thermal collectors."@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_ONG_MTG_Baublock_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:subClassOf oeo:SolarEnergy,
+        oeo:SolarThermalPotential .
+
+de_heat:ProcessHeatDemand a owl:Class ;
+    rdfs:label "Prozesswärmebedarf"@de ;
+    rdfs:comment "Energy demand for commercial, trade, and service sector process heat (GHD-Prozesswärme)"@en,
+        "The energy required for industrial or commercial process heating"@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:subClassOf oeo:EnergyConsumption,
+        oeo:EnergyDemand .
+
+de_heat:ScenarioDataset a owl:Class ;
+    rdfs:label "Szenariodatensatz"@de ;
+    rdfs:comment "A dataset containing data for specific energy scenarios (moderate, high, increased)"@en,
+        "Dataset containing scenario-specific energy data for municipal heat planning"@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape,
+        de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:subClassOf oeo:Dataset,
+        oeo:ScenarioTimeSeries .
+
+de_heat:SpaceHeatingDemand a owl:Class ;
+    rdfs:label "Raumwärmebedarf"@de ;
+    rdfs:comment "Energy demand for space heating in buildings"@en,
+        "The energy required for space heating in a building"@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:subClassOf oeo:EnergyConsumption,
+        oeo:EnergyDemand .
+
+de_heat:HeatDemandStreetSegment a owl:Class ;
+    rdfs:label "Straßenabschnitt mit Wärmebedarf"@de ;
+    rdfs:comment "A street segment with aggregated heat demand data from adjacent buildings"@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase ;
+    rdfs:subClassOf oeo:GridInfrastructure .
+
+de_heat:HeatLine a owl:Class ;
+    rdfs:label "Wärmelinie"@de ;
+    rdfs:comment "A heat distribution line or network segment for district heating"@en,
+        "A heat distribution line or network segment in district heating systems"@en,
+        "A heat distribution line or network segment that supplies thermal energy to buildings."@en,
+        "Heat distribution line or network segment for district heating."@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:subClassOf oeo:GridInfrastructure .
+
+de_heat:TechnologyParameter a owl:Class ;
+    rdfs:label "Technologieparameter"@de ;
+    rdfs:comment "A specific parameter associated with a heating technology, such as investment costs, efficiency, or capacity."@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWW_Waermeplanung ;
+    rdfs:subClassOf oeo:Parameter .
+
+de_heat:GeothermalPotential a owl:Class ;
+    rdfs:label "Geothermie-Potenzial"@de,
+        "Geothermiepotenzial"@de ;
+    rdfs:comment "Potential energy yield from geothermal sources."@en,
+        "Potential for geothermal energy extraction, including near-surface and medium-depth geothermal energy."@en,
+        "The potential energy yield from geothermal sources"@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Potenzial_ONG_MTG_Baublock_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:subClassOf oeo:EnergyPotential .
+
+de_heat:Municipality a owl:Class ;
+    rdfs:label "Gemeinde"@de ;
+    rdfs:comment "A municipality as an administrative region for energy planning"@en,
+        "A municipality with associated administrative codes and heat planning data."@en,
+        "A municipality with official administrative codes and boundaries"@en,
+        "Municipality as administrative region."@en,
+        "Municipality or administrative region with official municipality code (AGS)."@en,
+        "Municipality with official municipality code (AGS)"@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Potenzial_ONG_MTG_Baublock_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Potenzial_TG_Raster_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape ;
+    rdfs:subClassOf oeo:AdministrativeRegion,
+        oeo:AdministrativeUnit,
+        oeo:SpatialRegion .
+
+de_heat:CityModel a owl:Class ;
+    rdfs:label "Stadtmodell"@de ;
+    rdfs:comment "A CityGML CityModel representing a collection of 3D city objects within a specific spatial extent"@en ;
+    rdfs:isDefinedBy de_heat:Munich_lod2_Citygml ;
+    rdfs:subClassOf oeo:SpatialObject .
+
+de_heat:GeothermalPotentialArea a owl:Class ;
+    rdfs:label "Geothermiepotenzialgebiet"@de ;
+    rdfs:comment "A geographic area with assessed geothermal energy potential for shallow, medium-depth, or deep geothermal resources."@en,
+        "An area with potential for geothermal energy extraction"@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape ;
+    rdfs:subClassOf oeo:GeographicRegion,
+        oeo:SpatialRegion .
+
+de_heat:HeatCluster a owl:Class ;
+    rdfs:label "Wärmecluster"@de ;
+    rdfs:comment "A spatial cluster used for municipal heat planning, representing an area with similar heating characteristics and infrastructure potential."@en ;
+    rdfs:isDefinedBy de_heat:Koeln_Cluster_Szenarien_Waermestudie ;
+    rdfs:subClassOf oeo:Region .
+
+de_heat:StreetSegment a owl:Class ;
+    rdfs:label "Straßenabschnitt"@de ;
+    rdfs:comment "A segment of a street with aggregated building energy demand data"@en,
+        "A street segment with aggregated heat demand data from adjacent buildings."@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape ;
+    rdfs:subClassOf oeo:GeographicRegion,
+        oeo:SpatialRegion .
+
+de_heat:SolarThermalPotential a owl:Class ;
+    rdfs:label "Solarthermiepotenzial"@de ;
+    rdfs:comment "Potential energy yield from solar thermal systems."@en,
+        "The potential energy yield from solar thermal collectors"@en,
+        "The potential solar thermal energy that can be harvested from a specific location"@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_ONG_MTG_Baublock_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Potenzial_TG_Raster_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:subClassOf oeo:EnergyPotential,
+        oeo:SolarEnergy .
+
+de_heat:TechnologyDataRecord a owl:Class ;
+    rdfs:label "Technologiedatensatz"@de ;
+    rdfs:comment "A data record containing technology-specific parameters and dimensioning information for heat planning."@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWW_Waermeplanung ;
+    rdfs:subClassOf oeo:DataItem .
+
+de_heat:Building a owl:Class ;
+    rdfs:label "Gebäude"@de ;
+    rdfs:comment "A 3D building representation in CityGML format with geometric and semantic properties"@en ;
+    rdfs:isDefinedBy de_heat:Munich_lod2_Citygml ;
+    rdfs:subClassOf oeo:Building .
+
+de_heat:BuildingSurface a owl:Class ;
+    rdfs:label "Gebäudeoberfläche"@de ;
+    rdfs:comment "A surface that is part of a building's exterior shell, such as wall, roof, or floor surfaces"@en ;
+    rdfs:isDefinedBy de_heat:Munich_lod2_Citygml ;
+    rdfs:subClassOf oeo:Surface .
+
+de_heat:GeothermalPotentialBlock a owl:Class ;
+    rdfs:label "Baublock mit Geothermiepotenzial"@de ;
+    rdfs:comment "A building block with geothermal energy potential data for shallow and medium-depth geothermal resources"@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase ;
+    rdfs:subClassOf oeo:GeographicRegion .
+
+de_heat:GeothermalPotentialData a owl:Class ;
+    rdfs:label "Geothermiepotenzialdaten"@de ;
+    rdfs:comment "Data representing geothermal energy potential values"@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape ;
+    rdfs:subClassOf oeo:EnergyValue .
+
+de_heat:HeatDemandData a owl:Class ;
+    rdfs:label "Wärmebedarfsdaten"@de ;
+    rdfs:comment "Data representing heat demand values for spatial regions"@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape ;
+    rdfs:subClassOf oeo:EnergyValue .
+
+de_heat:GeothermalReservoir a owl:Class ;
+    rdfs:label "Geothermisches Reservoir"@de ;
+    rdfs:comment "A geothermal reservoir with assessed potential for energy extraction at different probability levels (P10, P50, P90)."@en,
+        "A geothermal reservoir with specific performance characteristics."@en,
+        "A subsurface geological formation containing geothermal energy resources"@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_ONG_MTG_Baublock_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Potenzial_TG_Raster_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase ;
+    rdfs:subClassOf oeo:GeothermalEnergy,
+        oeo:GeothermalResource .
+
+de_heat:BuildingBlock a owl:Class ;
+    rdfs:label "Baublock"@de ;
+    rdfs:comment "A block of buildings or urban development block used for aggregated heat demand calculations."@en,
+        "A block of buildings with aggregated heat demand and geothermal potential data."@en,
+        "A building block containing aggregated building data for energy planning purposes"@en,
+        "A building block representing a spatial unit for municipal heat planning analysis."@en,
+        "A spatial region representing a building block with aggregated building data"@en,
+        "A spatial unit representing a building block or group of buildings"@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Potenzial_ONG_MTG_Baublock_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Potenzial_TG_Raster_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape,
+        de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:subClassOf oeo:GeographicRegion,
+        oeo:SpatialRegion .
+
+de_heat:BuildingHeatDemand a owl:Class ;
+    rdfs:label "Gebäudewärmebedarf"@de ;
+    rdfs:comment "Heat demand of buildings including space heating, hot water, and process heat requirements."@en,
+        "The heat demand of a building including space heating and hot water requirements"@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW_meta ;
+    rdfs:subClassOf oeo:EnergyConsumption,
+        oeo:EnergyDemand .
+
+de_heat:HeatDemandBuilding a owl:Class ;
+    rdfs:label "Gebäude mit Wärmebedarf"@de,
+        "Wärmebedarf Gebäude"@de ;
+    rdfs:comment "A building with associated heat demand data including space heating, hot water, and process heat requirements"@en,
+        "A building with associated heat demand data including space heating, hot water, and process heat requirements."@en ;
+    rdfs:isDefinedBy de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase,
+        de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase ;
+    rdfs:subClassOf oeo:Building .
+
+de_heat:Koeln_Cluster_Szenarien_Waermestudie rdfs:label "Ontology - Koeln_Cluster_Szenarien_Waermestudie"@en ;
+    rdfs:comment "Dataset containing cluster scenarios for municipal heat planning in Cologne, including district heating clusters, energy carriers, and heat demand/production data for different scenarios and years."@en .
+
+de_heat:Koeln_KWP-NRW-Potenzial_TG_Raster_EPSG25832_Geodatabase rdfs:label "Ontology - Koeln_KWP-NRW-Potenzial_TG_Raster_EPSG25832_Geodatabase"@en ;
+    rdfs:comment "Geospatial dataset containing potential geothermal energy and solar thermal energy resources for municipal heat planning in North Rhine-Westphalia, Germany. Includes raster data with geothermal potential, building heat demand, and solar thermal yield calculations."@en .
+
+de_heat:Koeln_KWW_Waermeplanung rdfs:label "Ontology - Koeln_KWW_Waermeplanung"@en ;
+    rdfs:comment "German municipal heat planning dataset containing technology catalog data for heat planning, including technology parameters, dimensioning, sources, uncertainties, and building data for Cologne heat planning."@en .
+
+de_heat:Koeln_KWP-NRW-Potenzial_ONG_MTG_Baublock_EPSG25832_Geodatabase rdfs:label "Ontology - Koeln_KWP-NRW-Potenzial_ONG_MTG_Baublock_EPSG25832_Geodatabase"@en ;
+    rdfs:comment "Dataset containing potential analysis for geothermal and solar thermal energy at building block level for municipal heat planning in North Rhine-Westphalia, Germany."@en .
+
+de_heat:Munich_lod2_Citygml rdfs:label "Ontology - Munich_lod2_Citygml"@en ;
+    rdfs:comment "3D building models in CityGML format for Munich at Level of Detail 2 (LoD2), following the Official 3D Building Model of Germany specification"@en .
+
+de_heat:Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape rdfs:label "Ontology - Koeln_KWP-NRW_05315000_Koeln_EPSG25832_Shape"@en ;
+    rdfs:comment "Municipal heat planning dataset for Cologne containing building energy demand, geothermal potential, and infrastructure data for heat planning scenarios"@en .
+
+de_heat:Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase rdfs:label "Ontology - Koeln_KWP-NRW-Waermelinien_EPSG25832_Geodatabase"@en ;
+    rdfs:comment "Geodatabase containing heat demand data, geothermal potential, and infrastructure for municipal heat planning in Cologne and NRW, including building-level heat demand, geothermal energy potential, and heat network infrastructure."@en .
+
+de_heat:Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase rdfs:label "Ontology - Koeln_KWP-NRW-Potenzial_FF_Solarthermie_Flur_EPSG25832_Geodatabase"@en ;
+    rdfs:comment "Geodatabase containing potential analysis for open-space solar thermal energy in Cologne/NRW, including cadastral parcels, solar thermal potential calculations, and heat demand data for municipal heat planning."@en .
+
+de_heat:Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase rdfs:label "Ontology - Koeln_KWP-NRW-Waermebedarf_EPSG25832_Geodatabase"@en ;
+    rdfs:comment "Geodatabase containing heat demand data for Cologne and NRW, including building-level heat demand, geothermal potential, and scenario-based projections for municipal heat planning"@en .
+
+de_heat:Koeln_KWP-NRW_meta rdfs:label "Ontology - Koeln_KWP-NRW_meta"@en ;
+    rdfs:comment "Metadata documentation for Cologne municipal heat planning dataset containing building heat demand, geothermal potential, and solar thermal potential data across different scenarios"@en .
+

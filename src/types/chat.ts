@@ -6,7 +6,12 @@ export type ChatResponse =
       selected_triples?: Array<{
         subject: string
         predicate: string
-        object: string
+        object: string | {
+          kind: 'literal'
+          value: string
+          datatype?: string
+          lang?: string
+        }
       }>
     }
   | {
