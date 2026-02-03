@@ -1,5 +1,5 @@
 // src/pages/HistoryPage.tsx
-import React, { useEffect, useState, useMemo } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import {
   Box,
   Paper,
@@ -13,8 +13,6 @@ import {
   Alert,
   IconButton,
   TextField,
-  Autocomplete,
-  Stack,
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import { Visibility as VisibilityIcon } from '@mui/icons-material';
@@ -31,11 +29,6 @@ export function HistoryPage() {
   const [selectedVersionId, setSelectedVersionId] = useState<string | null>(null);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
-  const [columnFilters, setColumnFilters] = useState({
-    versionId: [] as string[],
-    actor: [] as string[],
-    summary: [] as string[],
-  });
 
   useEffect(() => {
     setTitle('Ontology Change History')
@@ -63,30 +56,9 @@ export function HistoryPage() {
     fetchHistory();
   }, []);
 
-  // Column options für Filter
-  const columnOptions = useMemo(() => {
-    const filtered = history.filter(entry => {
-      if (columnFilters.versionId.length > 0 && !columnFilters.versionId.includes(entry.version_id)) return false;
-      if (columnFilters.actor.length > 0 && !columnFilters.actor.includes(entry.actor)) return false;
-      if (columnFilters.summary.length > 0 && !columnFilters.summary.includes(entry.plan_summary)) return false;
-      return true;
-    });
-
-    return {
-      versionId: Array.from(new Set(filtered.map(e => e.version_id))).sort(),
-      actor: Array.from(new Set(filtered.map(e => e.actor))).sort(),
-      summary: Array.from(new Set(filtered.map(e => e.plan_summary))).sort(),
-    };
-  }, [history, columnFilters]);
-
   // Filter logic
   const filteredHistory = useMemo(() => {
     return history.filter(entry => {
-      // Column filters
-      if (columnFilters.versionId.length > 0 && !columnFilters.versionId.includes(entry.version_id)) return false;
-      if (columnFilters.actor.length > 0 && !columnFilters.actor.includes(entry.actor)) return false;
-      if (columnFilters.summary.length > 0 && !columnFilters.summary.includes(entry.plan_summary)) return false;
-
       // Search term
       if (searchTerm.trim()) {
         const lowerSearch = searchTerm.toLowerCase();
@@ -98,7 +70,7 @@ export function HistoryPage() {
       }
       return true;
     });
-  }, [history, searchTerm, columnFilters]);
+  }, [history, searchTerm]);
 
   const handleViewDetails = (versionId: string) => {
     setSelectedVersionId(versionId);
@@ -113,29 +85,31 @@ export function HistoryPage() {
   return (
     <Box sx={{ 
       width: '100%', 
-      maxWidth: { xs: '100%', sm: '95%' },
+      maxWidth: '95%',
       mx: 'auto', 
       display: 'flex', 
       flexDirection: 'column', 
-      gap: { xs: 1, sm: 1.5 },
-      pb: 3,
-      px: { xs: 1, sm: 2, md: 0 },
+      gap: 1.5,
+      position: 'relative',
     }}>
-      {/* Filter Bar */}
-      <Stack 
-        direction="row" 
-        spacing={2} 
-        alignItems="flex-start" 
-        sx={{ display: 'flex', flexWrap: 'wrap' }}
-      >
-        {/* Search Box */}
+      {/* Toolbar */}
+      <Paper 
+        elevation={0}
+        sx={{ 
+          p: 3, 
+          borderRadius: 3, 
+          bgcolor: '#FFFFFF', 
+          border: '2px solid #fbbf24',
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
+        }}>
         <TextField
           value={searchTerm}
           onChange={e => setSearchTerm(e.target.value)}
-          placeholder="Search…"
+          placeholder="Search history entries…"
           size="small"
+          fullWidth
           sx={{ 
-            maxWidth: 300,
+            maxWidth: 520,
             '& .MuiOutlinedInput-root': {
               color: '#2d4f4b',
               '& fieldset': {
@@ -161,134 +135,7 @@ export function HistoryPage() {
             ),
           }}
         />
-
-        {/* Column Filters */}
-        <Autocomplete
-          multiple
-          size="small"
-          options={columnOptions.versionId}
-          value={columnFilters.versionId}
-          onChange={(_, value) =>
-            setColumnFilters(prev => ({
-              ...prev,
-              versionId: value,
-            }))
-          }
-          filterSelectedOptions
-          sx={{ 
-            flex: 1,
-            minWidth: 180,
-            '& .MuiOutlinedInput-root': {
-              color: '#2d4f4b',
-              '& fieldset': {
-                borderColor: 'rgba(45, 79, 75, 0.3)',
-              },
-              '&:hover fieldset': {
-                borderColor: 'rgba(45, 79, 75, 0.5)',
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: '#fbbf24',
-              },
-            },
-            '& .MuiChip-root': {
-              bgcolor: '#fbbf24',
-              color: '#2d4f4b',
-              fontWeight: 600,
-            },
-          }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Version ID"
-              placeholder="Filter IDs"
-            />
-          )}
-        />
-
-        <Autocomplete
-          multiple
-          size="small"
-          options={columnOptions.actor}
-          value={columnFilters.actor}
-          onChange={(_, value) =>
-            setColumnFilters(prev => ({
-              ...prev,
-              actor: value,
-            }))
-          }
-          filterSelectedOptions
-          sx={{ 
-            flex: 1,
-            minWidth: 180,
-            '& .MuiOutlinedInput-root': {
-              color: '#2d4f4b',
-              '& fieldset': {
-                borderColor: 'rgba(45, 79, 75, 0.3)',
-              },
-              '&:hover fieldset': {
-                borderColor: 'rgba(45, 79, 75, 0.5)',
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: '#fbbf24',
-              },
-            },
-            '& .MuiChip-root': {
-              bgcolor: '#fbbf24',
-              color: '#2d4f4b',
-              fontWeight: 600,
-            },
-          }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="User"
-              placeholder="Filter users"
-            />
-          )}
-        />
-
-        <Autocomplete
-          multiple
-          size="small"
-          options={columnOptions.summary}
-          value={columnFilters.summary}
-          onChange={(_, value) =>
-            setColumnFilters(prev => ({
-              ...prev,
-              summary: value,
-            }))
-          }
-          filterSelectedOptions
-          sx={{ 
-            flex: 1,
-            minWidth: 180,
-            '& .MuiOutlinedInput-root': {
-              color: '#2d4f4b',
-              '& fieldset': {
-                borderColor: 'rgba(45, 79, 75, 0.3)',
-              },
-              '&:hover fieldset': {
-                borderColor: 'rgba(45, 79, 75, 0.5)',
-              },
-              '&.Mui-focused fieldset': {
-                borderColor: '#fbbf24',
-              },
-            },
-            '& .MuiChip-root': {
-              bgcolor: '#fbbf24',
-              color: '#2d4f4b',
-              fontWeight: 600,
-            },
-          }}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              label="Summary"
-              placeholder="Filter summaries"
-            />
-          )}
-        />
-      </Stack>
+      </Paper>
 
       {loading && (
         <Box display="flex" justifyContent="center" p={3}>
@@ -307,85 +154,113 @@ export function HistoryPage() {
       )}
 
       {!loading && !error && filteredHistory.length > 0 && (
-        <Paper 
+        <TableContainer
+          component={Paper}
           elevation={0}
           sx={{
-            borderRadius: { xs: 2, sm: 3 },
+            height: 'calc(100vh - 320px)',
             bgcolor: '#FFFFFF',
             border: '2px solid #fbbf24',
             boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
-            overflow: 'auto',
-            overflowX: { xs: 'auto', md: 'visible' },
+            '&::-webkit-scrollbar': {
+              width: '12px',
+              height: '12px',
+            },
+            '&::-webkit-scrollbar-track': {
+              bgcolor: '#f5f5f5',
+              borderRadius: 3,
+            },
+            '&::-webkit-scrollbar-thumb': {
+              bgcolor: 'rgba(45, 79, 75, 0.3)',
+              borderRadius: 3,
+              border: '2px solid #f5f5f5',
+              '&:hover': {
+                bgcolor: 'rgba(45, 79, 75, 0.5)',
+              },
+            },
+            '&::-webkit-scrollbar-corner': {
+              bgcolor: '#f5f5f5',
+              borderRadius: 3,
+            },
           }}
         >
-          <TableContainer>
-            <Table>
-              <TableHead>
-                <TableRow
+          <Table stickyHeader size="medium" sx={{ minWidth: 980, tableLayout: 'fixed', width: '100%' }}>
+            <TableHead>
+              <TableRow
+                sx={{
+                  '& th': {
+                    bgcolor: '#fafafa',
+                    borderBottom: '2px solid #fbbf24',
+                    py: 2,
+                    px: 2,
+                    position: 'sticky',
+                    top: 0,
+                    zIndex: 11,
+                    fontSize: 14,
+                    fontWeight: 700,
+                    color: '#2d4f4b',
+                    letterSpacing: 0.5,
+                    textTransform: 'uppercase',
+                  },
+                }}
+              >
+                <TableCell sx={{ width: '20%' }}>Version ID</TableCell>
+                <TableCell sx={{ width: '20%' }}>Timestamp</TableCell>
+                <TableCell sx={{ width: '15%' }}>User</TableCell>
+                <TableCell sx={{ width: '35%' }}>Summary</TableCell>
+                <TableCell align="center" sx={{ width: '10%' }}>See more</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {filteredHistory.map((entry, i) => (
+                <TableRow 
+                  key={entry.version_id} 
+                  hover
                   sx={{
-                    '& th': {
-                      fontSize: { xs: 13, sm: 14, md: 16 },
-                      fontWeight: 700,
-                      py: { xs: 1.5, sm: 2 },
-                      px: { xs: 1, sm: 2 },
-                      bgcolor: '#fafafa',
-                      color: '#2d4f4b',
-                      letterSpacing: 0.5,
-                      textTransform: 'uppercase',
-                      borderBottom: '2px solid #fbbf24',
+                    bgcolor: i % 2 === 0 ? '#FFFFFF' : '#f5faf9',
+                    '&:hover': {
+                      bgcolor: 'rgba(251, 191, 36, 0.08) !important',
+                    },
+                    '& td': { 
+                      py: 1.5,
+                      px: 2,
+                      borderBottom: '1px solid rgba(224, 224, 224, 1)', 
+                      color: '#1a3330',
+                      fontSize: 14,
                     },
                   }}
                 >
-                  <TableCell><strong>Version ID</strong></TableCell>
-                  <TableCell><strong>Timestamp</strong></TableCell>
-                  <TableCell><strong>User</strong></TableCell>
-                  <TableCell><strong>Summary</strong></TableCell>
-                  <TableCell align="center"><strong>See more</strong></TableCell>
+                  <TableCell>{entry.version_id}</TableCell>
+                  <TableCell>
+                    {new Date(entry.created_at * 1000).toLocaleString('no-NO')}
+                  </TableCell>
+                  <TableCell>{entry.actor}</TableCell>
+                  <TableCell>{entry.plan_summary}</TableCell>
+                  <TableCell align="center">
+                    <IconButton
+                      size="small"
+                      onClick={() => handleViewDetails(entry.version_id)}
+                      title="View details"
+                      sx={{
+                        color: '#2d4f4b',
+                        '&:hover': { 
+                          bgcolor: 'rgba(45, 79, 75, 0.1)',
+                          color: '#1a3330',
+                        },
+                        '&:focus': {
+                          outline: '2px solid #fbbf24',
+                          outlineOffset: '2px',
+                        }
+                      }}
+                    >
+                      <VisibilityIcon />
+                    </IconButton>
+                  </TableCell>
                 </TableRow>
-              </TableHead>
-              <TableBody>
-                {filteredHistory.map((entry, i) => (
-                  <TableRow 
-                    key={entry.version_id} 
-                    hover
-                    sx={{
-                      bgcolor: i % 2 === 0 ? '#f5faf9' : '#FFFFFF',
-                      '& td': { 
-                        py: { xs: 1.5, sm: 2 },
-                        px: { xs: 1, sm: 2 },
-                        borderBottom: '1px solid rgba(45, 79, 75, 0.1)', 
-                        color: '#1a3330',
-                      },
-                    }}
-                  >
-                    <TableCell>{entry.version_id}</TableCell>
-                    <TableCell>
-                      {new Date(entry.created_at * 1000).toLocaleString('no-NO')}
-                    </TableCell>
-                    <TableCell>{entry.actor}</TableCell>
-                    <TableCell>{entry.plan_summary}</TableCell>
-                    <TableCell align="center">
-                      <IconButton
-                        size="small"
-                        onClick={() => handleViewDetails(entry.version_id)}
-                        title="View details"
-                        sx={{
-                          color: '#2d4f4b',
-                          '&:hover': { 
-                            bgcolor: 'rgba(45, 79, 75, 0.1)',
-                            color: '#1a3330',
-                          }
-                        }}
-                      >
-                        <VisibilityIcon />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Paper>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       )}
 
       <HistoryDetailDialog

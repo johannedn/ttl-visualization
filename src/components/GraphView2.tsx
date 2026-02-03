@@ -249,6 +249,8 @@ const GraphViewComponent: React.FC<GraphViewProps> = ({ triples }) => {
         gap: 2,
         px: 3,
         position: 'relative',
+        height: 'calc(100vh - 240px)',
+        overflow: 'hidden',
       }}
     >
       {/* Filter Bar */}
@@ -263,13 +265,14 @@ const GraphViewComponent: React.FC<GraphViewProps> = ({ triples }) => {
       />
 
       {/* Main Graph View */}
-      <Box sx={{ display: 'flex', gap: 2, width: '100%', position: 'relative' }}>
+      <Box sx={{ display: 'flex', gap: 2, width: '100%', position: 'relative', flex: 1, minHeight: 0 }}>
         {/* Graph */}
         <Paper 
           elevation={0}
           sx={{ 
             flex: selectedEntity ? 1 : '1 1 auto',
-            height: 'calc(100vh - 180px)',
+            height: '100%',
+            minHeight: 0,
             border: '2px solid #fbbf24',
             borderRadius: 3,
             bgcolor: '#FFFFFF',
@@ -397,8 +400,11 @@ const GraphViewComponent: React.FC<GraphViewProps> = ({ triples }) => {
           <Paper
             elevation={0}
             sx={{
-              width: 320,
-              height: 'calc(100vh - 190px)',
+              width: 450,
+              minWidth: 320,
+              maxWidth: 800,
+              height: '100%',
+              minHeight: 0,
               border: '2px solid #fbbf24',
               borderRadius: 3,
               bgcolor: '#FFFFFF',
@@ -407,6 +413,7 @@ const GraphViewComponent: React.FC<GraphViewProps> = ({ triples }) => {
               flexDirection: 'column',
               position: 'relative',
               overflow: 'hidden',
+              resize: 'horizontal',
             }}
           >
             <Box sx={{ 
@@ -437,15 +444,16 @@ const GraphViewComponent: React.FC<GraphViewProps> = ({ triples }) => {
             </Box>
 
             <Box sx={{ 
-              overflowY: 'auto', 
+              overflowY: 'hidden', 
               p: 2,
               flex: 1,
+              overflowX: 'hidden',
             }}>
               <Box sx={{ fontSize: 12, fontWeight: 600, color: '#2d4f4b', mb: 1 }}>As Subject:</Box>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mb: 2 }}>
                 {filteredTriples
                   .filter(t => t.subject === selectedEntity)
-                  .slice(0, 10)
+                  .slice(0, 6)
                   .map((triple, idx) => {
                     const isSelected = isTripleSelected(triple); // ✅ Sjekk om triple er selected
                     return (
@@ -486,14 +494,14 @@ const GraphViewComponent: React.FC<GraphViewProps> = ({ triples }) => {
                           }}
                         />
                         <Box sx={{ flex: 1 }}>
-                          <Box sx={{ fontWeight: 600, color: '#2d4f4b' }}>{getShortName(triple.predicate)}</Box>
-                          <Box sx={{ color: '#666', mt: 0.5 }}>{getShortName(getRDFValue(triple.object))}</Box>
+                          <Box sx={{ fontWeight: 600, color: '#2d4f4b', wordBreak: 'break-word', overflowWrap: 'break-word' }}>{getShortName(triple.predicate)}</Box>
+                          <Box sx={{ color: '#666', mt: 0.5, wordBreak: 'break-word', overflowWrap: 'break-word' }}>{getShortName(getRDFValue(triple.object))}</Box>
                         </Box>
                       </Box>
                     );
                   })}
-                {filteredTriples.filter(t => t.subject === selectedEntity).length > 10 && (
-                  <Box sx={{ fontSize: 10, color: '#999', mt: 1 }}>+{filteredTriples.filter(t => t.subject === selectedEntity).length - 10} more...</Box>
+                {filteredTriples.filter(t => t.subject === selectedEntity).length > 6 && (
+                  <Box sx={{ fontSize: 10, color: '#999', mt: 1 }}>+{filteredTriples.filter(t => t.subject === selectedEntity).length - 6} more...</Box>
                 )}
               </Box>
 
@@ -501,7 +509,7 @@ const GraphViewComponent: React.FC<GraphViewProps> = ({ triples }) => {
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                 {filteredTriples
                   .filter(t => getRDFValue(t.object) === selectedEntity)
-                  .slice(0, 10)
+                  .slice(0, 6)
                   .map((triple, idx) => {
                     const isSelected = isTripleSelected(triple); // ✅ Sjekk om triple er selected
                     return (
@@ -542,14 +550,14 @@ const GraphViewComponent: React.FC<GraphViewProps> = ({ triples }) => {
                           }}
                         />
                         <Box sx={{ flex: 1 }}>
-                          <Box sx={{ fontWeight: 600, color: '#2d4f4b' }}>{getShortName(triple.subject)}</Box>
-                          <Box sx={{ color: '#999', mt: 0.5 }}>{getShortName(triple.predicate)}</Box>
+                          <Box sx={{ fontWeight: 600, color: '#2d4f4b', wordBreak: 'break-word', overflowWrap: 'break-word' }}>{getShortName(triple.subject)}</Box>
+                          <Box sx={{ color: '#999', mt: 0.5, wordBreak: 'break-word', overflowWrap: 'break-word' }}>{getShortName(triple.predicate)}</Box>
                         </Box>
                       </Box>
                     );
                   })}
-                {filteredTriples.filter(t => getRDFValue(t.object) === selectedEntity).length > 10 && (
-                  <Box sx={{ fontSize: 10, color: '#999', mt: 1 }}>+{filteredTriples.filter(t => getRDFValue(t.object) === selectedEntity).length - 10} more...</Box>
+                {filteredTriples.filter(t => getRDFValue(t.object) === selectedEntity).length > 6 && (
+                  <Box sx={{ fontSize: 10, color: '#999', mt: 1 }}>+{filteredTriples.filter(t => getRDFValue(t.object) === selectedEntity).length - 6} more...</Box>
                 )}
               </Box>
             </Box>

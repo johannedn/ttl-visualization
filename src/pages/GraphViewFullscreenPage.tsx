@@ -1,10 +1,11 @@
 import { useEffect, useState, useMemo, useRef, useCallback } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
-import { Box, TextField, Autocomplete, IconButton, Paper } from '@mui/material'
+import { Box, TextField, Autocomplete, IconButton, Paper, Checkbox } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
 import CloseIcon from '@mui/icons-material/Close'
 import ForceGraph2D, { type ForceGraphMethods } from 'react-force-graph-2d'
 import { usePageTitle } from '@context/PageContext'
+import { useOntology } from '@context/OntologyContext'
 import type { Triple } from '../utils/ttlParser'
 import { getShortName, isURI, getRDFValue } from '../utils/ttlParser'  
 
@@ -42,12 +43,21 @@ export function GraphViewFullscreenPage({ triples }: GraphViewFullscreenPageProp
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const { setTitle } = usePageTitle()
+  const { selectedTriples, toggleTriple } = useOntology()
   
   // Titel entfernen für Fullscreen
   useEffect(() => {
     setTitle('')
     return () => setTitle('Ontology Graph Visualization')
   }, [setTitle])
+
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.body.style.overflow = previousOverflow
+    }
+  }, [])
   
   // States initialisieren aus URL-Parametern
   const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '')
@@ -97,6 +107,14 @@ const columnOptions = useMemo(() => {
       return true
     })
   }, [triples, searchTerm, columnFilters])
+
+  const isTripleSelected = useCallback(
+    (t: any) =>
+      selectedTriples.some(
+        s => s.subject === t.subject && s.predicate === t.predicate && s.object === t.object
+      ),
+    [selectedTriples]
+  )
   // Full Graph
   const fullGraph = useMemo<GraphData>(() => {
     const nodeMap = new Map<string, Node>();
@@ -422,7 +440,9 @@ const columnOptions = useMemo(() => {
                 position: 'absolute',
                 top: 16,
                 right: 16,
-                width: 350,
+                width: 450,
+                minWidth: 320,
+                maxWidth: 800,
                 maxHeight: 'calc(100vh - 180px)',
                 bgcolor: '#FFFFFF',
                 border: '2px solid #fbbf24',
@@ -431,6 +451,7 @@ const columnOptions = useMemo(() => {
                 display: 'flex',
                 flexDirection: 'column',
                 overflow: 'hidden',
+                resize: 'horizontal',
               }}
             >
               {/* Fixed Header */}
@@ -462,39 +483,120 @@ const columnOptions = useMemo(() => {
 
               {/* Scrollable Content */}
               <Box sx={{ 
-                overflowY: 'auto', 
+                overflowY: 'hidden', 
                 p: 3,
                 flex: 1,
+                overflowX: 'hidden',
               }}>
-                <Box sx={{ fontSize: 12, fontWeight: 600, color: '#2d4f4b', mb: 1 }}>Als Subject:</Box>
+                <Box sx={{ fontSize: 12, fontWeight: 600, color: '#2d4f4b', mb: 1 }}>As Subject:</Box>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mb: 2 }}>
                 {filteredTriples
                   .filter(t => t.subject === selectedEntity)
-                  .slice(0, 10)
-                  .map((triple, idx) => (
-                    <Box key={idx} sx={{ fontSize: 11, color: '#555', bgcolor: 'rgba(251, 191, 36, 0.1)', p: 1, borderRadius: 1, fontFamily: 'monospace' }}>
-                      <Box sx={{ fontWeight: 600, color: '#2d4f4b' }}>{getShortName(triple.predicate)}</Box>
-                      <Box sx={{ color: '#666', mt: 0.5 }}>{getShortName(triple.object)}</Box>
-                    </Box>
-                  ))}
-                {filteredTriples.filter(t => t.subject === selectedEntity).length > 10 && (
-                  <Box sx={{ fontSize: 10, color: '#999', mt: 1 }}>+{filteredTriples.filter(t => t.subject === selectedEntity).length - 10} more...</Box>
+                  .slice(0, 6)
+                  .map((triple, idx) => {
+                    const isSelected = isTripleSelected(triple)
+                    return (
+                      <Box
+                        key={idx}
+                        sx={{
+                          fontSize: 11,
+                          color: '#555',
+                          bgcolor: isSelected ? 'rgba(251, 191, 36, 0.3)' : 'rgba(251, 191, 36, 0.1)',
+                          p: 1,
+                          borderRadius: 1,
+                          fontFamily: 'monospace',
+                          border: isSelected ? '2px solid #fbbf24' : 'none',
+                          display: 'flex',
+                          alignItems: 'flex-start',
+                          gap: 1,
+                          cursor: 'pointer',
+                          '&:hover': {
+                            bgcolor: 'rgba(251, 191, 36, 0.2)',
+                          },
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          toggleTriple(triple)
+                        }}
+                      >
+                        <Checkbox
+                          size="small"
+                          checked={isSelected}
+                          onChange={() => toggleTriple(triple)}
+                          onClick={(e) => e.stopPropagation()}
+                          sx={{
+                            p: 0,
+                            color: 'rgba(251, 191, 36, 0.6)',
+                            '&.Mui-checked': {
+                              color: '#f59e0b',
+                            },
+                          }}
+                        />
+                        <Box sx={{ flex: 1 }}>
+                          <Box sx={{ fontWeight: 600, color: '#2d4f4b', wordBreak: 'break-word', overflowWrap: 'break-word' }}>{getShortName(triple.predicate)}</Box>
+                          <Box sx={{ color: '#666', mt: 0.5, wordBreak: 'break-word', overflowWrap: 'break-word' }}>{getShortName(triple.object)}</Box>
+                        </Box>
+                      </Box>
+                    )
+                  })}
+                {filteredTriples.filter(t => t.subject === selectedEntity).length > 6 && (
+                  <Box sx={{ fontSize: 10, color: '#999', mt: 1 }}>+{filteredTriples.filter(t => t.subject === selectedEntity).length - 6} more...</Box>
                 )}
               </Box>
 
-              <Box sx={{ fontSize: 12, fontWeight: 600, color: '#2d4f4b', mt: 2, mb: 1 }}>Als Object:</Box>
+              <Box sx={{ fontSize: 12, fontWeight: 600, color: '#2d4f4b', mt: 2, mb: 1 }}>As Object:</Box>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                 {filteredTriples
                   .filter(t => getRDFValue(t.object) === selectedEntity)
-                  .slice(0, 10)
-                  .map((triple, idx) => (
-                    <Box key={idx} sx={{ fontSize: 11, color: '#555', bgcolor: 'rgba(251, 191, 36, 0.1)', p: 1, borderRadius: 1, fontFamily: 'monospace' }}>
-                      <Box sx={{ fontWeight: 600, color: '#2d4f4b' }}>{getShortName(triple.subject)}</Box>
-                      <Box sx={{ color: '#999', mt: 0.5 }}>{getShortName(triple.predicate)}</Box>
-                    </Box>
-                  ))}
-                {filteredTriples.filter(t => getRDFValue(t.object) === selectedEntity).length > 10 && (
-                  <Box sx={{ fontSize: 10, color: '#999', mt: 1 }}>+{filteredTriples.filter(t => t.object === selectedEntity).length - 10} more...</Box>
+                  .slice(0, 6)
+                  .map((triple, idx) => {
+                    const isSelected = isTripleSelected(triple)
+                    return (
+                      <Box
+                        key={idx}
+                        sx={{
+                          fontSize: 11,
+                          color: '#555',
+                          bgcolor: isSelected ? 'rgba(251, 191, 36, 0.3)' : 'rgba(251, 191, 36, 0.1)',
+                          p: 1,
+                          borderRadius: 1,
+                          fontFamily: 'monospace',
+                          border: isSelected ? '2px solid #fbbf24' : 'none',
+                          display: 'flex',
+                          alignItems: 'flex-start',
+                          gap: 1,
+                          cursor: 'pointer',
+                          '&:hover': {
+                            bgcolor: 'rgba(251, 191, 36, 0.2)',
+                          },
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          toggleTriple(triple)
+                        }}
+                      >
+                        <Checkbox
+                          size="small"
+                          checked={isSelected}
+                          onChange={() => toggleTriple(triple)}
+                          onClick={(e) => e.stopPropagation()}
+                          sx={{
+                            p: 0,
+                            color: 'rgba(251, 191, 36, 0.6)',
+                            '&.Mui-checked': {
+                              color: '#f59e0b',
+                            },
+                          }}
+                        />
+                        <Box sx={{ flex: 1 }}>
+                          <Box sx={{ fontWeight: 600, color: '#2d4f4b', wordBreak: 'break-word', overflowWrap: 'break-word' }}>{getShortName(triple.subject)}</Box>
+                          <Box sx={{ color: '#999', mt: 0.5, wordBreak: 'break-word', overflowWrap: 'break-word' }}>{getShortName(triple.predicate)}</Box>
+                        </Box>
+                      </Box>
+                    )
+                  })}
+                {filteredTriples.filter(t => getRDFValue(t.object) === selectedEntity).length > 6 && (
+                  <Box sx={{ fontSize: 10, color: '#999', mt: 1 }}>+{filteredTriples.filter(t => getRDFValue(t.object) === selectedEntity).length - 6} more...</Box>
                 )}
               </Box>
               </Box>

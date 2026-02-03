@@ -26,9 +26,10 @@ export default function App() {
       <Box 
         sx={{
           width: '100%',
+          maxWidth: '95%',
+          mx: 'auto',
           display: 'flex',
           flexDirection: 'column',
-          px: 3,
           mt: 8,
           mb: 3,
         }}
