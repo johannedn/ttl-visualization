@@ -6,6 +6,8 @@ import CloseIcon from '@mui/icons-material/Close'
 import ForceGraph2D, { type ForceGraphMethods } from 'react-force-graph-2d'
 import { usePageTitle } from '@context/PageContext'
 import type { Triple } from '../utils/ttlParser'
+import { getShortName, isURI, getRDFValue } from '../utils/ttlParser'  
+
 
 // Farben für die Kategorien
 const CATEGORY_COLORS = {
@@ -61,38 +63,40 @@ export function GraphViewFullscreenPage({ triples }: GraphViewFullscreenPageProp
   const graphContainerRef = useRef<HTMLDivElement | null>(null)
 
   // Column Options für Filter
-  const columnOptions = useMemo(() => {
-    const filtered = triples.filter((t: any) => {
-      if (columnFilters.subject.length > 0 && !columnFilters.subject.includes(t.subject)) return false
-      if (columnFilters.predicate.length > 0 && !columnFilters.predicate.includes(t.predicate)) return false
-      if (columnFilters.object.length > 0 && !columnFilters.object.includes(t.object)) return false
-      return true
-    })
+const columnOptions = useMemo(() => {
+  const filtered = triples.filter((t: any) => {
+    const objectValue = getRDFValue(t.object);  // ✅ Legg til denne
+    if (columnFilters.subject.length > 0 && !columnFilters.subject.includes(t.subject)) return false
+    if (columnFilters.predicate.length > 0 && !columnFilters.predicate.includes(t.predicate)) return false
+    if (columnFilters.object.length > 0 && !columnFilters.object.includes(objectValue)) return false  // ✅ Endre denne
+    return true
+  })
 
-    return {
-      subject: Array.from(new Set(filtered.map((t: any) => t.subject))).sort(),
-      predicate: Array.from(new Set(filtered.map((t: any) => t.predicate))).sort(),
-      object: Array.from(new Set(filtered.map((t: any) => t.object))).sort(),
-    }
-  }, [triples, columnFilters])
+  return {
+    subject: Array.from(new Set(filtered.map((t: any) => t.subject))).sort(),
+    predicate: Array.from(new Set(filtered.map((t: any) => t.predicate))).sort(),
+    object: Array.from(new Set(filtered.map((t: any) => getRDFValue(t.object)))).sort(),  // ✅ Endre denne
+  }
+}, [triples, columnFilters])
 
   // Gefilterte Triples
   const filteredTriples = useMemo(() => {
     return triples.filter((triple: any) => {
+      const objectValue = getRDFValue(triple.object);  // ✅ Legg til denne
+      
       if (searchTerm) {
         const search = searchTerm.toLowerCase()
         const subjectMatch = triple.subject.toLowerCase().includes(search)
         const predicateMatch = triple.predicate.toLowerCase().includes(search)
-        const objectMatch = triple.object.toLowerCase().includes(search)
+        const objectMatch = objectValue.toLowerCase().includes(search)  // ✅ Endre denne
         if (!subjectMatch && !predicateMatch && !objectMatch) return false
       }
       if (columnFilters.subject.length > 0 && !columnFilters.subject.includes(triple.subject)) return false
       if (columnFilters.predicate.length > 0 && !columnFilters.predicate.includes(triple.predicate)) return false
-      if (columnFilters.object.length > 0 && !columnFilters.object.includes(triple.object)) return false
+      if (columnFilters.object.length > 0 && !columnFilters.object.includes(objectValue)) return false  // ✅ Endre denne
       return true
     })
   }, [triples, searchTerm, columnFilters])
-
   // Full Graph
   const fullGraph = useMemo<GraphData>(() => {
     const nodeMap = new Map<string, Node>();
@@ -123,20 +127,21 @@ export function GraphViewFullscreenPage({ triples }: GraphViewFullscreenPageProp
         label: 'has',
       });
 
-      if (isURI(triple.object)) {
-        if (!nodeMap.has(triple.object)) {
-          nodeMap.set(triple.object, {
-            id: triple.object,
-            name: getShortName(triple.object),
+      const objectValue = getRDFValue(triple.object); 
+      if (isURI(objectValue)) {  
+        if (!nodeMap.has(objectValue)) {  
+          nodeMap.set(objectValue, {  
+            id: objectValue,  
+            name: getShortName(objectValue),  
             category: 'object',
-            state: triple.object === selectedEntity ? 'selected' : undefined,
+            state: objectValue === selectedEntity ? 'selected' : undefined,  
           });
         }
 
         // Predicate → Object Link
         links.push({
           source: triple.predicate,
-          target: triple.object,
+          target: objectValue,
           label: 'pointsTo',
         });
       }
@@ -476,7 +481,7 @@ export function GraphViewFullscreenPage({ triples }: GraphViewFullscreenPageProp
               <Box sx={{ fontSize: 12, fontWeight: 600, color: '#2d4f4b', mt: 2, mb: 1 }}>Als Object:</Box>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                 {filteredTriples
-                  .filter(t => t.object === selectedEntity)
+                  .filter(t => getRDFValue(t.object) === selectedEntity)
                   .slice(0, 10)
                   .map((triple, idx) => (
                     <Box key={idx} sx={{ fontSize: 11, color: '#555', bgcolor: 'rgba(251, 191, 36, 0.1)', p: 1, borderRadius: 1, fontFamily: 'monospace' }}>
@@ -484,7 +489,7 @@ export function GraphViewFullscreenPage({ triples }: GraphViewFullscreenPageProp
                       <Box sx={{ color: '#999', mt: 0.5 }}>{getShortName(triple.predicate)}</Box>
                     </Box>
                   ))}
-                {filteredTriples.filter(t => t.object === selectedEntity).length > 10 && (
+                {filteredTriples.filter(t => getRDFValue(t.object) === selectedEntity).length > 10 && (
                   <Box sx={{ fontSize: 10, color: '#999', mt: 1 }}>+{filteredTriples.filter(t => t.object === selectedEntity).length - 10} more...</Box>
                 )}
               </Box>
@@ -516,16 +521,3 @@ export function GraphViewFullscreenPage({ triples }: GraphViewFullscreenPageProp
     </Box>
   );
 }
-
-// Helper functions
-const isURI = (str: string): boolean => {
-  return str.startsWith('http://') || str.startsWith('https://') || str.startsWith('urn:');
-};
-
-const getShortName = (uri: string): string => {
-  if (isURI(uri)) {
-    const parts = uri.split(/[/#]/);
-    return parts[parts.length - 1] || uri;
-  }
-  return uri;
-};

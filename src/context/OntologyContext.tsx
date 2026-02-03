@@ -9,6 +9,7 @@ interface OntologyContextValue {
   setTriples: (triples: Triple[]) => void
 
   selectedTriples: Triple[]
+  setSelectedTriples: React.Dispatch<React.SetStateAction<Triple[]>>  // ✅ Legg til denne
   toggleTriple: (t: Triple) => void
   clearSelection: () => void
 
@@ -104,6 +105,7 @@ export function OntologyProvider({ children }: { children: React.ReactNode }) {
         triples,
         setTriples,
         selectedTriples,
+        setSelectedTriples,  // ✅ Legg til denne
         toggleTriple,
         clearSelection,
         loading,

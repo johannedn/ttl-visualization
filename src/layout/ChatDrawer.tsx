@@ -13,7 +13,16 @@ interface ChatDrawerProps {
 }
 
 export function ChatDrawer({ open, onClose, chatState, width, onWidthChange }: ChatDrawerProps) {
-  const { messages, send, pendingId, connected, clearHistory, selectedTriples } = chatState
+  const { 
+    messages, 
+    send, 
+    pendingId, 
+    connected, 
+    clearHistory, 
+    selectedTriples,
+    removeTripleAt,
+    clearSelection 
+  } = chatState
   const [isResizing, setIsResizing] = useState(false)
   const drawerRef = useRef<HTMLDivElement>(null)
 
@@ -67,7 +76,7 @@ export function ChatDrawer({ open, onClose, chatState, width, onWidthChange }: C
           border: '1px solid rgba(45, 79, 75, 0.15)',
           marginTop: '0px',
           height: '100vh',
-          pt: '105px',
+          pt: '121px',
           position: 'relative',
         },
       }}
@@ -107,6 +116,8 @@ export function ChatDrawer({ open, onClose, chatState, width, onWidthChange }: C
           pending={!!pendingId}
           connected={connected}
           selectedTriples={selectedTriples}
+          onRemoveTriple={removeTripleAt}  
+          onClearTriples={clearSelection}  
         />
       </Box>
     </Drawer>

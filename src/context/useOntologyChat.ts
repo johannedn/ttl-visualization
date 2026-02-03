@@ -3,9 +3,8 @@ import { useOntology } from '@context/OntologyContext'
 import { parseTTL } from '@utils/ttlParser'
 import type { ChatResponse } from 'types/chat'
 
-
 export function useOntologyChat() {
-  const { selectedTriples, setTriples, clearSelection } = useOntology()
+  const { selectedTriples, setTriples, clearSelection, setSelectedTriples } = useOntology()
 
   const [messages, setMessages] = useState<ChatResponse[]>([])
   const [pendingId, setPendingId] = useState<string | null>(null)
@@ -18,47 +17,37 @@ export function useOntologyChat() {
     if (initializedRef.current) return
     initializedRef.current = true
 
-    console.log('Initializing WebSocket connection...')
     const ws = new WebSocket('ws://localhost:8000/ws/chat')
     wsRef.current = ws
 
     ws.onopen = () => {
-      console.log('WebSocket connected')
       setConnected(true)
       // Hent ontology ved oppstart
-      console.log('Fetching initial ontology...')
       ws.send(JSON.stringify({ type: 'get_ontology' }))
     }
 
     ws.onmessage = async (e) => {
       const msg: ChatResponse = JSON.parse(e.data)
-      console.log('Received message:', msg)
-      console.log('Message type:', msg.type)
-      console.log('Message content:', JSON.stringify(msg, null, 2))
-      
+
       if ('pending_id' in msg && msg.pending_id) setPendingId(msg.pending_id)
       
       // Legg til melding i historikk (unntatt ontology_content)
       if (msg.type !== 'ontology_content') {
         setMessages((prev) => {
           const updated = [...prev, msg]
-          console.log('All messages:', updated)
           return updated
         })
       }
 
       // Hent oppdatert ontology når endring er applisert
       if (msg.type === 'change_applied') {
-        console.log('Change applied, fetching updated ontology...')
         ws.send(JSON.stringify({ type: 'get_ontology' }))
       }
 
       // Parse og oppdater ontology når vi får ontology_content
       if (msg.type === 'ontology_content' && msg.content) {
-        console.log('Received ontology content, parsing...')
         try {
           const parsed = await parseTTL(msg.content)
-          console.log(`Parsed ontology: ${parsed.length} triples`)
           setTriples(parsed)
         } catch (err) {
           console.error('Failed to parse ontology:', err)
@@ -73,12 +62,10 @@ export function useOntologyChat() {
 
     ws.onerror = (err) => console.error('WebSocket error:', err)
     ws.onclose = () => {
-      console.log('WebSocket closed')
       setConnected(false)
     }
 
     return () => {
-      console.log('Cleaning up WebSocket')
       if (wsRef.current && wsRef.current.readyState === WebSocket.OPEN) {
         wsRef.current.close()
       }
@@ -88,16 +75,11 @@ export function useOntologyChat() {
 
   const send = (text: string) => {
     const ws = wsRef.current
-    console.log('send() called, ws:', ws, 'readyState:', ws?.readyState)
     
     if (!ws || ws.readyState !== WebSocket.OPEN) {
-      console.log('WebSocket not ready')
       return
     }
 
-    console.log('Sending:', text, 'pendingId:', pendingId, 'selected triples:', selectedTriples)
-    console.log('selected_triples payload:', JSON.stringify(selectedTriples, null, 2))
-    
     // selectedTriples er allerede i riktig format
     const userMessage: ChatResponse = {
       type: 'answer',
@@ -117,8 +99,11 @@ export function useOntologyChat() {
       ws.send(JSON.stringify(chatPayload))
     }
     
-    // Fjern selected triples etter sending
     clearSelection()
+  }
+
+  const removeTripleAt = (index: number) => {
+    setSelectedTriples(prev => prev.filter((_, i) => i !== index))
   }
 
   const clearHistory = () => {

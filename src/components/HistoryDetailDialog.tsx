@@ -19,8 +19,15 @@ import {
   Alert,
   Grid,
 } from '@mui/material';
-import { historyService, type HistoryDetail } from '@api/historyService';
-import { parseTTL, type Triple } from '@utils/ttlParser';
+import { historyService } from '@api/historyService';
+import type {  HistoryDetail, DiffTriple } from 'types/history';
+
+
+const termToString = (term: Triple['object'] | undefined): string => {
+  if (!term) return '';
+  if (typeof term === 'string') return term;
+  return term.value;
+};
 
 interface HistoryDetailDialogProps {
   open: boolean;
@@ -32,8 +39,9 @@ export function HistoryDetailDialog({ open, versionId, onClose }: HistoryDetailD
   const [detail, setDetail] = useState<HistoryDetail | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [oldTriples, setOldTriples] = useState<Triple[]>([]);
-  const [newTriples, setNewTriples] = useState<Triple[]>([]);
+
+  // const [oldTriples, setOldTriples] = useState<Triple[]>([]);
+  // const [newTriples, setNewTriples] = useState<Triple[]>([]);
 
   useEffect(() => {
     if (!open || !versionId) return;
@@ -44,21 +52,8 @@ export function HistoryDetailDialog({ open, versionId, onClose }: HistoryDetailD
       try {
         const data = await historyService.getHistoryEntry(versionId);
         setDetail(data);
+        setError(null)
 
-        // Parse old and new ontologies
-        if (data.old_ontology) {
-          const parsed = await parseTTL(data.old_ontology);
-          setOldTriples(parsed);
-        } else {
-          setOldTriples([]);
-        }
-        
-        if (data.new_ontology) {
-          const parsed = await parseTTL(data.new_ontology);
-          setNewTriples(parsed);
-        } else {
-          setNewTriples([]);
-        }
       } catch (err) {
         setError('Failed to load history details');
         console.error(err);
@@ -69,6 +64,9 @@ export function HistoryDetailDialog({ open, versionId, onClose }: HistoryDetailD
 
     fetchDetail();
   }, [open, versionId]);
+
+  const removedTriples = detail?.diff?.removed || [];
+  const addedTriples = detail?.diff?.added || [];
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="xl" fullWidth>
@@ -88,13 +86,18 @@ export function HistoryDetailDialog({ open, versionId, onClose }: HistoryDetailD
           <Box>
             <Box mb={3}>
               <Typography variant="body2" color="text.secondary">
-                <strong>Timestamp:</strong> {new Date(detail.timestamp).toLocaleString('no-NO')}
+                <strong>Timestamp:</strong> {new Date(detail.created_at * 1000).toLocaleString('no-NO')}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                <strong>User:</strong> {detail.user}
+                <strong>User:</strong> {detail.actor}
               </Typography>
+              {detail.instruction && (
+                <Typography variant="body2" color="text.secondary">
+                  <strong>Request:</strong> {detail.instruction}
+                </Typography>
+              )}
               <Typography variant="body2" color="text.secondary" mt={1}>
-                <strong>Summary:</strong> {detail.summary}
+                <strong>Summary:</strong> {detail.plan_summary}
               </Typography>
             </Box>
 
@@ -132,21 +135,21 @@ export function HistoryDetailDialog({ open, versionId, onClose }: HistoryDetailD
 						</TableHead>
 
 						<TableBody>
-						{Array.from({ length: Math.max(oldTriples.length, newTriples.length) }).map((_, idx) => {
-							const oldTriple = oldTriples[idx];
-							const newTriple = newTriples[idx];
+						{Array.from({ length: Math.max(removedTriples.length, addedTriples.length) }).map((_, idx) => {
+							const removedTriple = removedTriples[idx];
+							const addedTriple = addedTriples[idx];
 
 							return (
 							<TableRow key={idx}>
 								{/* Before */}
-								<TableCell sx={{ wordBreak: 'break-word', maxWidth: 200 }}>{oldTriple?.subject || ''}</TableCell>
-								<TableCell sx={{ wordBreak: 'break-word', maxWidth: 200 }}>{oldTriple?.predicate || ''}</TableCell>
-								<TableCell sx={{ wordBreak: 'break-word', maxWidth: 250 }}>{oldTriple?.object || ''}</TableCell>
+								<TableCell sx={{ wordBreak: 'break-word', maxWidth: 200 }}>{removedTriple?.s?.value || ''}</TableCell>
+								<TableCell sx={{ wordBreak: 'break-word', maxWidth: 200 }}>{removedTriple?.p?.value || ''}</TableCell>
+								<TableCell sx={{ wordBreak: 'break-word', maxWidth: 250 }}>{removedTriple?.o?.value || ''}</TableCell>
 
 								{/* After */}
-								<TableCell sx={{ wordBreak: 'break-word', maxWidth: 200 }}>{newTriple?.subject || ''}</TableCell>
-								<TableCell sx={{ wordBreak: 'break-word', maxWidth: 200 }}>{newTriple?.predicate || ''}</TableCell>
-								<TableCell sx={{ wordBreak: 'break-word', maxWidth: 250 }}>{newTriple?.object || ''}</TableCell>
+								<TableCell sx={{ wordBreak: 'break-word', maxWidth: 200 }}>{addedTriple?.s?.value || ''}</TableCell>
+								<TableCell sx={{ wordBreak: 'break-word', maxWidth: 200 }}>{addedTriple?.p?.value || ''}</TableCell>
+								<TableCell sx={{ wordBreak: 'break-word', maxWidth: 250 }}>{addedTriple?.o?.value || ''}</TableCell>
 							</TableRow>
 							);
 						})}
