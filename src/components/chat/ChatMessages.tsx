@@ -59,7 +59,6 @@ export function ChatMessages({ messages, onClearHistory }: ChatMessagesProps) {
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' })
   }, [messages])
-  console.log('Rendering messages:', messages)
   
   return (
     <Box flex={1} overflow="auto" p={2} display="flex" flexDirection="column">
@@ -78,7 +77,6 @@ export function ChatMessages({ messages, onClearHistory }: ChatMessagesProps) {
       )}
       
       {messages.map((m, i) => {
-        console.log(`Message ${i}:`, m)
         
         if (m.type === 'ontology_content') {
           return null

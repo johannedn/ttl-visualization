@@ -1,7 +1,9 @@
 // src/chat/ChatInput.tsx
 import { useState } from 'react'
-import { Box, Button, TextField, Chip, Typography } from '@mui/material'
+import { Box, Button, TextField, Chip, Typography, IconButton } from '@mui/material'
 import SendIcon from '@mui/icons-material/Send'
+import CloseIcon from '@mui/icons-material/Close'
+import ClearAllIcon from '@mui/icons-material/ClearAll'
 
 interface Props {
   onSend: (text: string) => void
@@ -10,11 +12,20 @@ interface Props {
   selectedTriples?: Array<{
     subject: string
     predicate: string
-    object: string
+    object: string | { value: string }
   }> | null
+  onRemoveTriple?: (index: number) => void
+  onClearTriples?: () => void
 }
 
-export function ChatInput({ onSend, pending, connected = true, selectedTriples }: Props) {
+export function ChatInput({ 
+  onSend, 
+  pending, 
+  connected = true, 
+  selectedTriples,
+  onRemoveTriple,
+  onClearTriples 
+}: Props) {
   const [value, setValue] = useState('')
 
   const handleSend = () => {
@@ -30,30 +41,68 @@ export function ChatInput({ onSend, pending, connected = true, selectedTriples }
     }
   }
 
+  const getObjectValue = (obj: string | { value: string }) => {
+    return typeof obj === 'string' ? obj : obj.value
+  }
+
   return (
     <Box p={1} borderTop={1} borderColor="divider">
       {/* Vis markerte tripler */}
       {selectedTriples && selectedTriples.length > 0 && (
         <Box mb={1} p={1} bgcolor="grey.50" borderRadius={1}>
-          <Typography variant="caption" color="text.secondary" mb={0.5} display="block">
-            Selected triples ({selectedTriples.length}):
-          </Typography>
+          <Box display="flex" justifyContent="space-between" alignItems="center" mb={0.5}>
+            <Typography variant="caption" color="text.secondary">
+              Selected triples ({selectedTriples.length}):
+            </Typography>
+            {onClearTriples && (
+              <Button
+                size="small"
+                onClick={onClearTriples}
+                startIcon={<ClearAllIcon fontSize="small" />}
+                sx={{
+                  fontSize: '0.7rem',
+                  py: 0.25,
+                  px: 1,
+                  minWidth: 'auto',
+                  color: '#d32f2f',
+                  '&:hover': {
+                    bgcolor: 'rgba(211, 47, 47, 0.08)',
+                  },
+                }}
+              >
+                Clear all
+              </Button>
+            )}
+          </Box>
           <Box display="flex" flexDirection="column" gap={0.5}>
             {selectedTriples.map((triple, idx) => (
               <Chip
                 key={idx}
-                label={`${triple.subject} → ${triple.predicate} → ${triple.object}`}
+                label={`${triple.subject} → ${triple.predicate} → ${getObjectValue(triple.object)}`}
                 size="small"
                 color="primary"
                 variant="outlined"
+                onDelete={onRemoveTriple ? () => onRemoveTriple(idx) : undefined}
+                deleteIcon={
+                  <CloseIcon 
+                    sx={{ 
+                      fontSize: '1rem',
+                      '&:hover': { color: '#d32f2f' }
+                    }} 
+                  />
+                }
                 sx={{ 
                   fontSize: '0.7rem',
                   height: 'auto',
                   py: 0.5,
                   '& .MuiChip-label': { 
                     whiteSpace: 'normal',
-                    textAlign: 'left'
-                  }
+                    textAlign: 'left',
+                    pr: onRemoveTriple ? 0.5 : 1,
+                  },
+                  '& .MuiChip-deleteIcon': {
+                    margin: '0 4px 0 -4px',
+                  },
                 }}
               />
             ))}

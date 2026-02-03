@@ -2,35 +2,35 @@ import React, { useMemo, useState, useCallback, useEffect } from 'react'
 import {
   Box,
   Checkbox,
-  Chip,
-  Autocomplete,
   Paper,
   Stack,
-  Switch,
   Table,
   TableBody,
   TableCell,
-  TableContainer,
   TableHead,
   TableRow,
   TablePagination,
-  TextField,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material'
-import SearchIcon from '@mui/icons-material/Search'
 
 import { useOntology } from '@context/OntologyContext'
 import { isURI, getShortName, getNamespace } from '@utils/tripleUtils'
+import { FilterBar } from './FilterBar'
 
 export function TableView() {
   const { triples, selectedTriples, toggleTriple } = useOntology()
+  const theme = useTheme()
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'))
+  const isTablet = useMediaQuery(theme.breakpoints.down('md'))
 
   const objectToText = useCallback((v: any) => (typeof v === 'string' ? v : v?.value ?? ''), [])
 
   const [showFullURI, setShowFullURI] = useState(false)
   const [filter, setFilter] = useState('')
   const [page, setPage] = useState(0)
-  const [rowsPerPage, setRowsPerPage] = useState(200)
+  const [rowsPerPage, setRowsPerPage] = useState(50)
   const [columnFilters, setColumnFilters] = useState({
     subject: [] as string[],
     predicate: [] as string[],
@@ -38,11 +38,11 @@ export function TableView() {
   })
 
   const columnOptions = useMemo(() => {
-    // Filter triples based on currently active column filters
     const filtered = triples.filter((t: any) => {
+      const objectValue = objectToText(t.object)
       if (columnFilters.subject.length > 0 && !columnFilters.subject.includes(t.subject)) return false
       if (columnFilters.predicate.length > 0 && !columnFilters.predicate.includes(t.predicate)) return false
-      if (columnFilters.object.length > 0 && !columnFilters.object.includes(t.object)) return false
+      if (columnFilters.object.length > 0 && !columnFilters.object.includes(objectValue)) return false
       return true
     })
 
@@ -51,7 +51,7 @@ export function TableView() {
       predicate: Array.from(new Set(filtered.map(t => t.predicate))).sort(),
       object: Array.from(new Set(filtered.map(t => objectToText(t.object)))).sort(),
     }
-  }, [triples, columnFilters])
+  }, [triples, columnFilters, objectToText])
 
   const optionFilter = useCallback(
     (options: string[], { inputValue }: { inputValue: string }) => {
@@ -89,7 +89,7 @@ export function TableView() {
 
       return true
     })
-  }, [triples, filter, columnFilters])
+  }, [triples, filter, columnFilters, objectToText])
 
   const visibleTriples = useMemo(() => {
     const start = page * rowsPerPage
@@ -107,155 +107,68 @@ export function TableView() {
     )
 
   const formatPrimary = useCallback((v: string) => (showFullURI ? v : getShortName(v)), [showFullURI])
-  const containerHeight = 'calc(100vh - 320px)'
 
   return (
     <Box sx={{ 
       width: '100%', 
-      maxWidth: '95%', 
+      maxWidth: { xs: '100%', sm: '95%' },
       mx: 'auto', 
       display: 'flex', 
       flexDirection: 'column', 
-      gap: 1.5,
-      position: 'relative',
+      gap: { xs: 1, sm: 1.5 },
+      pb: 3,
+      px: { xs: 1, sm: 2, md: 0 },
     }}>
-      {/* Toolbar */}
-      <Paper 
-        elevation={0}
-        sx={{ 
-          p: 3, 
-          borderRadius: 3, 
-          bgcolor: '#FFFFFF', 
-          border: '2px solid #fbbf24',
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
-        }}>
-        <Stack
-          direction={{ xs: 'column', md: 'row' }}
-          spacing={2}
-          alignItems={{ xs: 'stretch', md: 'center' }}
-          justifyContent="space-between"
-        >
-          <TextField
-            value={filter}
-            onChange={e => setFilter(e.target.value)}
-            placeholder="Search triples…"
-            size="small"
-            fullWidth
-            sx={{ 
-              maxWidth: { md: 520 },
-              '& .MuiOutlinedInput-root': {
-                color: '#2d4f4b',
-                '& fieldset': {
-                  borderColor: 'rgba(45, 79, 75, 0.3)',
-                },
-                '&:hover fieldset': {
-                  borderColor: 'rgba(45, 79, 75, 0.5)',
-                },
-                '&.Mui-focused fieldset': {
-                  borderColor: '#fbbf24',
-                },
-              },
-              '& .MuiInputBase-input::placeholder': {
-                color: 'rgba(45, 79, 75, 0.5)',
-                opacity: 1,
-              },
-            }}
-            InputProps={{
-              startAdornment: (
-                <Box sx={{ display: 'flex', alignItems: 'center', mr: 1, color: 'rgba(45, 79, 75, 0.7)' }}>
-                  <SearchIcon fontSize="small" />
-                </Box>
-              ),
-            }}
-          />
-
-          <Stack direction="row" spacing={2} alignItems="center" justifyContent="flex-end">
-            <Stack direction="row" spacing={1} alignItems="center">
-              <Typography variant="body2" sx={{ fontSize: 14, color: '#2d4f4b', fontWeight: 500 }}>
-                Full URIs
-              </Typography>
-              <Switch 
-                checked={showFullURI} 
-                onChange={e => setShowFullURI(e.target.checked)}
-                sx={{
-                  '& .MuiSwitch-switchBase.Mui-checked': {
-                    color: '#fbbf24',
-                  },
-                  '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-                    backgroundColor: '#fbbf24',
-                  },
-                }}
-              />
-            </Stack>
-
-            <Chip
-              label={`${filteredTriples.length} / ${triples.length}`}
-              size="small"
-              sx={{
-                bgcolor: 'rgba(251, 191, 36, 0.2)',
-                color: '#f59e0b',
-                borderColor: '#fbbf24',
-                fontWeight: 600,
-              }}
-            />
-          </Stack>
-        </Stack>
-      </Paper>
+      {/* Filter Bar */}
+      <FilterBar
+        searchTerm={filter}
+        onSearchChange={setFilter}
+        columnFilters={columnFilters}
+        onColumnFiltersChange={setColumnFilters}
+        columnOptions={columnOptions}
+        showFullURI={showFullURI}
+        onFullURIChange={setShowFullURI}
+        filteredCount={filteredTriples.length}
+        totalCount={triples.length}
+        optionFilter={optionFilter}
+      />
 
       {/* Table */}
-      <TableContainer
-        component={Paper}
+      <Paper 
         elevation={0}
         sx={{
-          borderRadius: 3,
-          overflow: 'auto',
-          height: containerHeight,
-          minHeight: containerHeight,
-          maxHeight: containerHeight,
-          flex: 1,
+          borderRadius: { xs: 2, sm: 3 },
           bgcolor: '#FFFFFF',
           border: '2px solid #fbbf24',
           boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)',
-          '&::-webkit-scrollbar': {
-            width: '12px',
-            height: '12px',
-          },
-          '&::-webkit-scrollbar-track': {
-            bgcolor: '#f5f5f5',
-            borderRadius: 3,
-          },
-          '&::-webkit-scrollbar-thumb': {
-            bgcolor: 'rgba(45, 79, 75, 0.3)',
-            borderRadius: 3,
-            border: '2px solid #f5f5f5',
-            '&:hover': {
-              bgcolor: 'rgba(45, 79, 75, 0.5)',
-            },
-          },
-          '&::-webkit-scrollbar-corner': {
-            bgcolor: '#f5f5f5',
-            borderRadius: 3,
-          },
+          overflow: 'auto',
+          // Horizontal scroll på små skjermer
+          overflowX: { xs: 'auto', md: 'visible' },
         }}
       >
-        <Table stickyHeader size="medium" sx={{ minWidth: 980, tableLayout: 'fixed', width: '100%' }}>
+        <Table 
+          size={isMobile ? 'small' : 'medium'} 
+          sx={{ 
+            minWidth: { xs: 600, sm: 800, md: 980 }, 
+            tableLayout: 'fixed', 
+            width: '100%' 
+          }}
+        >
           <TableHead>
             <TableRow
               sx={{
                 '& th': {
-                  fontSize: 16,
+                  fontSize: { xs: 13, sm: 14, md: 16 },
                   fontWeight: 700,
-                  py: 2,
+                  py: { xs: 1.5, sm: 2 },
+                  px: { xs: 1, sm: 2 },
                   bgcolor: '#fafafa',
                   color: '#2d4f4b',
                   letterSpacing: 0.5,
                   textTransform: 'uppercase',
                   width: '33.33%',
-                  borderBottom: 'none',
-                  position: 'sticky',
-                  top: 0,
-                  zIndex: 11,
-                  '&:first-of-type': { width: '50px' },
+                  borderBottom: '2px solid #fbbf24',
+                  '&:first-of-type': { width: { xs: '40px', sm: '50px' } },
                 },
               }}
             >
@@ -263,124 +176,6 @@ export function TableView() {
               <TableCell>Subject</TableCell>
               <TableCell>Predicate</TableCell>
               <TableCell>Object</TableCell>
-            </TableRow>
-
-            <TableRow
-              sx={{
-                '& th': {
-                  bgcolor: '#fafafa',
-                  borderBottom: '2px solid #fbbf24',
-                  py: 1.5,
-                  width: '33.33%',
-                  position: 'sticky',
-                  top: 64,
-                  zIndex: 10,
-                  '&:first-of-type': { width: '50px' },
-                },
-              }}
-            >
-              <TableCell padding="checkbox" />
-
-              {(['subject', 'predicate', 'object'] as const).map(key => (
-                <TableCell key={key} sx={{ minWidth: 240 }}>
-                  <Autocomplete
-                    multiple
-                    size="small"
-                    options={columnOptions[key]}
-                    value={columnFilters[key]}
-                    filterOptions={optionFilter}
-                    onChange={(_, value) =>
-                      setColumnFilters(prev => ({
-                        ...prev,
-                        [key]: value,
-                      }))
-                    }
-                    disableCloseOnSelect
-                    limitTags={1}
-                    popupIcon={null}
-                    clearIcon={null}
-                    ChipProps={{ size: 'small' }}
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        px: 1,
-                        py: 0.25,
-                        borderRadius: 1.5,
-                        bgcolor: 'background.default',
-                      },
-                    }}
-                    slotProps={{
-                      popper: { disablePortal: true },
-                      paper: { sx: { maxHeight: 320 } },
-                    }}
-                    getOptionLabel={option => formatPrimary(option)}
-                    isOptionEqualToValue={(option, value) => option === value}
-                    renderOption={(props, option, { selected }) => (
-                      <li {...props}>
-                        <Checkbox
-                          size="small"
-                          checked={selected}
-                          sx={{ 
-                            mr: 1, 
-                            p: 0.25,
-                            color: 'rgba(251, 191, 36, 0.6)',
-                            '&.Mui-checked': {
-                              color: '#f59e0b',
-                            },
-                            '&:hover': {
-                              bgcolor: 'rgba(251, 191, 36, 0.08)',
-                            },
-                            '& .MuiSvgIcon-root': {
-                              color: 'inherit',
-                            },
-                          }}
-                        />
-                        <Stack spacing={0.25} sx={{ minWidth: 0 }}>
-                          <Typography variant="body2" sx={{ fontWeight: isURI(option) ? 600 : 400 }}>
-                            {formatPrimary(option)}
-                          </Typography>
-                          {!showFullURI && isURI(option) && (
-                            <Typography variant="caption" color="text.secondary" sx={{ wordBreak: 'break-word' }}>
-                              {getNamespace(option)}
-                            </Typography>
-                          )}
-                        </Stack>
-                      </li>
-                    )}
-                    renderInput={params => (
-                      <TextField
-                        {...params}
-                        variant="outlined"
-                        placeholder={`Filter ${key}`}
-                        inputProps={{
-                          ...params.inputProps,
-                          'aria-label': `${key} filter`,
-                        }}
-                        sx={{
-                          '& .MuiOutlinedInput-root': {
-                            '&.Mui-focused fieldset': {
-                              borderColor: '#fbbf24',
-                            },
-                          },
-                        }}
-                      />
-                    )}
-                    renderTags={(value, getTagProps) =>
-                      value.slice(0, 2).map((option, index) => {
-                        const tagProps = getTagProps({ index })
-                        return (
-                          <Chip
-                            {...tagProps}
-                            key={option}
-                            size="small"
-                            label={formatPrimary(option)}
-                            sx={{ maxWidth: '100%' }}
-                          />
-                        )
-                      })
-                    }
-                  />
-                </TableCell>
-              ))}
             </TableRow>
           </TableHead>
 
@@ -398,7 +193,8 @@ export function TableView() {
                     cursor: 'pointer',
                     bgcolor: (page * rowsPerPage + i) % 2 === 0 ? '#f5faf9' : '#FFFFFF',
                     '& td': { 
-                      py: 2, 
+                      py: { xs: 1.5, sm: 2 },
+                      px: { xs: 1, sm: 2 },
                       borderBottom: '1px solid rgba(45, 79, 75, 0.1)', 
                       color: '#1a3330',
                     },
@@ -413,6 +209,7 @@ export function TableView() {
                 >
                   <TableCell padding="checkbox" onClick={e => e.stopPropagation()}>
                     <Checkbox 
+                      size={isMobile ? 'small' : 'medium'}
                       checked={selected} 
                       onChange={() => toggleTriple(t)}
                       sx={{
@@ -433,7 +230,7 @@ export function TableView() {
                           <Typography
                             variant="body1"
                             sx={{
-                              fontSize: 17,
+                              fontSize: { xs: 14, sm: 15, md: 17 },
                               fontWeight: uri ? 600 : 400,
                               fontStyle: !uri ? 'italic' : 'normal',
                               lineHeight: 1.5,
@@ -449,7 +246,13 @@ export function TableView() {
                           {!showFullURI && uri && (
                             <Typography
                               variant="caption"
-                              sx={{ fontSize: 13, wordBreak: 'break-word', letterSpacing: 0.3, color: 'rgba(26, 51, 48, 0.6)' }}
+                              sx={{ 
+                                fontSize: { xs: 11, sm: 12, md: 13 }, 
+                                wordBreak: 'break-word', 
+                                letterSpacing: 0.3, 
+                                color: 'rgba(26, 51, 48, 0.6)',
+                                display: { xs: 'none', sm: 'block' }, // Skjul namespace på mobil
+                              }}
                             >
                               {getNamespace(v)}
                             </Typography>
@@ -463,8 +266,9 @@ export function TableView() {
             })}
           </TableBody>
         </Table>
-      </TableContainer>
+      </Paper>
 
+      {/* Pagination */}
       <TablePagination
         component="div"
         count={filteredTriples.length}
@@ -475,7 +279,18 @@ export function TableView() {
           setRowsPerPage(parseInt(event.target.value, 10))
           setPage(0)
         }}
-        rowsPerPageOptions={[50, 100, 200, 500]}
+        rowsPerPageOptions={isMobile ? [50, 100] : [50, 100, 200, 500]}
+        sx={{
+          borderTop: '1px solid rgba(45, 79, 75, 0.1)',
+          bgcolor: '#FFFFFF',
+          '& .MuiTablePagination-toolbar': {
+            px: { xs: 1, sm: 2 },
+            minHeight: { xs: 52, sm: 64 },
+          },
+          '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows': {
+            fontSize: { xs: 12, sm: 14 },
+          },
+        }}
       />
     </Box>
   )
