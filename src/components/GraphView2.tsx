@@ -1,13 +1,14 @@
 // src/components/GraphView.tsx
 import React, { useMemo, useState, useRef, useCallback, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { Box, Paper, IconButton } from '@mui/material';
+import { Box, Paper, IconButton, Checkbox } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import FullscreenIcon from '@mui/icons-material/Fullscreen';
 import type { Triple } from '../utils/ttlParser';
 import { getShortName, isURI, getRDFValue } from '../utils/ttlParser';
 import ForceGraph2D, { type ForceGraphMethods } from 'react-force-graph-2d';
 import { FilterBar } from './FilterBar';
+import { useOntology } from '@context/OntologyContext';
 
 // Farben für die Kategorien
 const CATEGORY_COLORS = {
@@ -42,7 +43,8 @@ interface GraphViewProps {
 const GraphViewComponent: React.FC<GraphViewProps> = ({ triples }) => {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  
+  const {selectedTriples, toggleTriple} = useOntology();
+
   const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '');
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
   const [selectedEntity, setSelectedEntity] = useState<string | null>(null);
@@ -228,6 +230,16 @@ const GraphViewComponent: React.FC<GraphViewProps> = ({ triples }) => {
     }
   }, []);
 
+  const isTripleSelected = useCallback((triple: Triple) => {
+    const objValue = getRDFValue(triple.object);
+    return selectedTriples.some(t => {
+      const tObjValue = getRDFValue(t.object);
+      return t.subject === triple.subject && 
+             t.predicate === triple.predicate && 
+             tObjValue === objValue;
+    });
+  }, [selectedTriples]);
+
   return (
     <Box 
       sx={{ 
@@ -376,13 +388,13 @@ const GraphViewComponent: React.FC<GraphViewProps> = ({ triples }) => {
           </Box>
         </Paper>
 
-        {/* Entity Card */}
+        {/* Entity Card */}        {/* Entity Card */}
         {selectedEntity && (
           <Paper
             elevation={0}
             sx={{
               width: 320,
-              height: 'calc(100vh - 260px)',
+              height: 'calc(100vh - 190px)',
               border: '2px solid #fbbf24',
               borderRadius: 3,
               bgcolor: '#FFFFFF',
@@ -430,12 +442,52 @@ const GraphViewComponent: React.FC<GraphViewProps> = ({ triples }) => {
                 {filteredTriples
                   .filter(t => t.subject === selectedEntity)
                   .slice(0, 10)
-                  .map((triple, idx) => (
-                    <Box key={idx} sx={{ fontSize: 11, color: '#555', bgcolor: 'rgba(251, 191, 36, 0.1)', p: 1, borderRadius: 1, fontFamily: 'monospace' }}>
-                      <Box sx={{ fontWeight: 600, color: '#2d4f4b' }}>{getShortName(triple.predicate)}</Box>
-                      <Box sx={{ color: '#666', mt: 0.5 }}>{getShortName(triple.object)}</Box>
-                    </Box>
-                  ))}
+                  .map((triple, idx) => {
+                    const isSelected = isTripleSelected(triple); // ✅ Sjekk om triple er selected
+                    return (
+                      <Box 
+                        key={idx} 
+                        sx={{ 
+                          fontSize: 11, 
+                          color: '#555', 
+                          bgcolor: isSelected ? 'rgba(251, 191, 36, 0.3)' : 'rgba(251, 191, 36, 0.1)', // ✅ Highlight hvis selected
+                          p: 1, 
+                          borderRadius: 1, 
+                          fontFamily: 'monospace',
+                          border: isSelected ? '2px solid #fbbf24' : 'none', // ✅ Border hvis selected
+                          display: 'flex',
+                          alignItems: 'flex-start',
+                          gap: 1,
+                          cursor: 'pointer',
+                          '&:hover': {
+                            bgcolor: 'rgba(251, 191, 36, 0.2)',
+                          }
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleTriple(triple); // ✅ Toggle selection
+                        }}
+                      >
+                        <Checkbox 
+                          size="small"
+                          checked={isSelected}
+                          onChange={() => toggleTriple(triple)}
+                          onClick={(e) => e.stopPropagation()}
+                          sx={{
+                            p: 0,
+                            color: 'rgba(251, 191, 36, 0.6)',
+                            '&.Mui-checked': {
+                              color: '#f59e0b',
+                            },
+                          }}
+                        />
+                        <Box sx={{ flex: 1 }}>
+                          <Box sx={{ fontWeight: 600, color: '#2d4f4b' }}>{getShortName(triple.predicate)}</Box>
+                          <Box sx={{ color: '#666', mt: 0.5 }}>{getShortName(getRDFValue(triple.object))}</Box>
+                        </Box>
+                      </Box>
+                    );
+                  })}
                 {filteredTriples.filter(t => t.subject === selectedEntity).length > 10 && (
                   <Box sx={{ fontSize: 10, color: '#999', mt: 1 }}>+{filteredTriples.filter(t => t.subject === selectedEntity).length - 10} more...</Box>
                 )}
@@ -446,12 +498,52 @@ const GraphViewComponent: React.FC<GraphViewProps> = ({ triples }) => {
                 {filteredTriples
                   .filter(t => getRDFValue(t.object) === selectedEntity)
                   .slice(0, 10)
-                  .map((triple, idx) => (
-                    <Box key={idx} sx={{ fontSize: 11, color: '#555', bgcolor: 'rgba(251, 191, 36, 0.1)', p: 1, borderRadius: 1, fontFamily: 'monospace' }}>
-                      <Box sx={{ fontWeight: 600, color: '#2d4f4b' }}>{getShortName(triple.subject)}</Box>
-                      <Box sx={{ color: '#999', mt: 0.5 }}>{getShortName(triple.predicate)}</Box>
-                    </Box>
-                  ))}
+                  .map((triple, idx) => {
+                    const isSelected = isTripleSelected(triple); // ✅ Sjekk om triple er selected
+                    return (
+                      <Box 
+                        key={idx} 
+                        sx={{ 
+                          fontSize: 11, 
+                          color: '#555', 
+                          bgcolor: isSelected ? 'rgba(251, 191, 36, 0.3)' : 'rgba(251, 191, 36, 0.1)', // ✅ Highlight hvis selected
+                          p: 1, 
+                          borderRadius: 1, 
+                          fontFamily: 'monospace',
+                          border: isSelected ? '2px solid #fbbf24' : 'none', // ✅ Border hvis selected
+                          display: 'flex',
+                          alignItems: 'flex-start',
+                          gap: 1,
+                          cursor: 'pointer',
+                          '&:hover': {
+                            bgcolor: 'rgba(251, 191, 36, 0.2)',
+                          }
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          toggleTriple(triple); // ✅ Toggle selection
+                        }}
+                      >
+                        <Checkbox 
+                          size="small"
+                          checked={isSelected}
+                          onChange={() => toggleTriple(triple)}
+                          onClick={(e) => e.stopPropagation()}
+                          sx={{
+                            p: 0,
+                            color: 'rgba(251, 191, 36, 0.6)',
+                            '&.Mui-checked': {
+                              color: '#f59e0b',
+                            },
+                          }}
+                        />
+                        <Box sx={{ flex: 1 }}>
+                          <Box sx={{ fontWeight: 600, color: '#2d4f4b' }}>{getShortName(triple.subject)}</Box>
+                          <Box sx={{ color: '#999', mt: 0.5 }}>{getShortName(triple.predicate)}</Box>
+                        </Box>
+                      </Box>
+                    );
+                  })}
                 {filteredTriples.filter(t => getRDFValue(t.object) === selectedEntity).length > 10 && (
                   <Box sx={{ fontSize: 10, color: '#999', mt: 1 }}>+{filteredTriples.filter(t => getRDFValue(t.object) === selectedEntity).length - 10} more...</Box>
                 )}
