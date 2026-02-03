@@ -437,7 +437,7 @@ const GraphViewComponent: React.FC<GraphViewProps> = ({ triples }) => {
               p: 2,
               flex: 1,
             }}>
-              <Box sx={{ fontSize: 12, fontWeight: 600, color: '#2d4f4b', mb: 1 }}>Als Subject:</Box>
+              <Box sx={{ fontSize: 12, fontWeight: 600, color: '#2d4f4b', mb: 1 }}>As Subject:</Box>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1, mb: 2 }}>
                 {filteredTriples
                   .filter(t => t.subject === selectedEntity)
@@ -493,7 +493,7 @@ const GraphViewComponent: React.FC<GraphViewProps> = ({ triples }) => {
                 )}
               </Box>
 
-              <Box sx={{ fontSize: 12, fontWeight: 600, color: '#2d4f4b', mt: 2, mb: 1 }}>Als Object:</Box>
+              <Box sx={{ fontSize: 12, fontWeight: 600, color: '#2d4f4b', mt: 2, mb: 1 }}>As Object:</Box>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                 {filteredTriples
                   .filter(t => getRDFValue(t.object) === selectedEntity)
