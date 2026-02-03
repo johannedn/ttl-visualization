@@ -363,14 +363,6 @@ const columnOptions = useMemo(() => {
             d3VelocityDecay={0.3}
             cooldownTicks={0}
             enableNodeDrag={false}
-            d3Force={(simulation: any) => {
-              simulation
-                .force('charge').strength(-300)
-                .force('link').distance(80)
-                .force('center').strength(0.5)
-                .force('x').strength(0.1)
-                .force('y').strength(0.1);
-            }}
             onEngineStop={() => {}}
             nodeCanvasObject={(node: any, ctx: CanvasRenderingContext2D, globalScale: number) => {
               const label = node.name;
