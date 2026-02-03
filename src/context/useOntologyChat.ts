@@ -88,16 +88,16 @@ export function useOntologyChat() {
     }
     setMessages((prev) => [...prev, userMessage])
     
-    const chatPayload = {
-      type: 'chat',
-      data: {
-        text,
-        selected_triples: selectedTriples || null,
-        pending_id: pendingId || null
-      }
+    if (pendingId) {
+      const confirmPayload = { type: 'confirm', data: { pending_id: pendingId, reply: text } }
+      console.log('Sending confirmation:', JSON.stringify(confirmPayload, null, 2))
+      ws.send(JSON.stringify(confirmPayload))
+      setPendingId(null)
+    } else {
+      const chatPayload = { type: 'chat', data: { text, selected_triples: selectedTriples || null } }
+      console.log('Sending chat message:', JSON.stringify(chatPayload, null, 2))
+      ws.send(JSON.stringify(chatPayload))
     }
-    ws.send(JSON.stringify(chatPayload))
-    if (pendingId) setPendingId(null)
     
     clearSelection()
   }
@@ -110,14 +110,5 @@ export function useOntologyChat() {
     setMessages([])
   }
 
-  return { 
-    messages, 
-    send, 
-    pendingId, 
-    connected, 
-    clearHistory, 
-    selectedTriples,
-    removeTripleAt,    
-    clearSelection      
-  }
+  return { messages, send, pendingId, connected, clearHistory, selectedTriples }
 }

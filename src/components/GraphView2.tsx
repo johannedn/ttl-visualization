@@ -16,6 +16,22 @@ const CATEGORY_COLORS = {
   predicate: '#FF9800',  // Orange
   object: '#2196F3',     // Blau
 };
+import type { Triple } from '../utils/ttlParser';
+
+// Hilfsfunktionen
+const isURI = (value: unknown): boolean => {
+  if (typeof value !== 'string') return false;
+  return value.startsWith('http://') || value.startsWith('https://') || value.startsWith('urn:');
+};
+
+const getShortName = (value: unknown): string => {
+  if (typeof value !== 'string') return String(value);
+  if (isURI(value)) {
+    const parts = value.split(/[/#]/);
+    return parts[parts.length - 1] || value;
+  }
+  return value;
+};
 
 interface Node {
   id: string;
