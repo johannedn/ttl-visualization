@@ -106,13 +106,18 @@ export function ChatMessages({ messages, onClearHistory }: ChatMessagesProps) {
                   borderRadius: 2,
                   bgcolor: isUser ? 'rgba(45, 79, 75, 0.1)' : '#f5faf9',
                   border: isUser ? '1px solid rgba(45, 79, 75, 0.2)' : 'none',
-                  color: '#2d4f4b'
+                  color: '#2d4f4b',
+                  wordBreak: 'break-word',
+                  overflowWrap: 'break-word',
+                  overflow: 'hidden'
                 }}
               >
                 <Typography
                   variant="body2"
                   component="div"
                   sx={{
+                    wordBreak: 'break-word',
+                    overflowWrap: 'break-word',
                     '& .md-ol-item': { marginTop: 0.5 },
                     '& .md-ol-num': { fontWeight: 700, marginRight: '6px' },
                     '& .md-ul-item': { marginTop: 0.5 }

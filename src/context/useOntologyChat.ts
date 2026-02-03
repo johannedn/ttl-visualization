@@ -98,8 +98,7 @@ export function useOntologyChat() {
     }
     ws.send(JSON.stringify(chatPayload))
     if (pendingId) setPendingId(null)
-    
-    clearSelection()
+    // Keep selection until the user explicitly clears it (better UX for follow-up questions/edits).
   }
 
   const removeTripleAt = (index: number) => {
