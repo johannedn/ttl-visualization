@@ -16,13 +16,6 @@ export const ontologyService = {
   },
 
   // // POST /api/ontologies - Create/update ontology
-  // updateOntology: async (prompt: string): Promise<OntologyResponse> => {
-  //   const response = await apiClient.post<OntologyResponse>(
-  //     '/api/ontologies',
-  //     { prompt }
-  //   );
-  //   return response.data;
-  // },
   updateOntology: async (
     prompt: string,
     triples: Triple[]

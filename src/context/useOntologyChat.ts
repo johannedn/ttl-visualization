@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 import { useOntology } from '@context/OntologyContext'
-import { parseTTL } from '@utils/ttlParser'
 import type { ChatResponse } from 'types/chat'
 
 export function useOntologyChat() {
-  const { selectedTriples, setTriples, clearSelection, setSelectedTriples } = useOntology()
+  const { selectedTriples, setTriples, clearSelection, setSelectedTriples, loadFromAPI } = useOntology()
 
   const [messages, setMessages] = useState<ChatResponse[]>([])
   const [pendingId, setPendingId] = useState<string | null>(null)
@@ -22,39 +21,31 @@ export function useOntologyChat() {
 
     ws.onopen = () => {
       setConnected(true)
-      // Hent ontology ved oppstart
-      ws.send(JSON.stringify({ type: 'get_ontology' }))
     }
 
     ws.onmessage = async (e) => {
       const msg: ChatResponse = JSON.parse(e.data)
 
+      // ✅ Ignore ontology_content messages completely
+      if (msg.type === 'ontology_content') {
+        console.log('Ignoring WebSocket ontology_content message')
+        return
+      }
+
       if ('pending_id' in msg && msg.pending_id) setPendingId(msg.pending_id)
       
-      // Legg til melding i historikk (unntatt ontology_content)
-      if (msg.type !== 'ontology_content') {
-        setMessages((prev) => {
-          const updated = [...prev, msg]
-          return updated
-        })
-      }
+      // Add message to history
+      setMessages((prev) => [...prev, msg])
 
-      // Hent oppdatert ontology når endring er applisert
+      // Fetch updated ontology when change is applied
       if (msg.type === 'change_applied') {
-        ws.send(JSON.stringify({ type: 'get_ontology' }))
-      }
-
-      // Parse og oppdater ontology når vi får ontology_content
-      if (msg.type === 'ontology_content' && msg.content) {
         try {
-          const parsed = await parseTTL(msg.content)
-          setTriples(parsed)
+          await loadFromAPI() // ✅ Use HTTP GET instead of WebSocket
         } catch (err) {
-          console.error('Failed to parse ontology:', err)
-          // Legg til error melding i chat
+          console.error('Failed to reload ontology:', err)
           setMessages((prev) => [...prev, {
             type: 'error',
-            message: `Failed to parse ontology: ${err instanceof Error ? err.message : 'Unknown error'}`
+            message: `Failed to reload ontology: ${err instanceof Error ? err.message : 'Unknown error'}`
           }])
         }
       }
@@ -71,7 +62,7 @@ export function useOntologyChat() {
       }
       setConnected(false)
     }
-  }, [setTriples])
+  }, [loadFromAPI])
 
   const send = (text: string) => {
     const ws = wsRef.current
@@ -80,7 +71,6 @@ export function useOntologyChat() {
       return
     }
 
-    // selectedTriples er allerede i riktig format
     const userMessage: ChatResponse = {
       type: 'answer',
       message: text,
@@ -98,7 +88,6 @@ export function useOntologyChat() {
     }
     ws.send(JSON.stringify(chatPayload))
     if (pendingId) setPendingId(null)
-    // Keep selection until the user explicitly clears it (better UX for follow-up questions/edits).
   }
 
   const removeTripleAt = (index: number) => {

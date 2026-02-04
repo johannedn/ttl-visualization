@@ -35,14 +35,6 @@ export type ChatResponse =
       candidates?: string[]
     }
   | {
-      type: 'ontology_content'
-      content: string
-      stats?: {
-        triples?: number
-        classes?: number
-      }
-    }
-  | {
       type: 'error'
       message: string
     }
