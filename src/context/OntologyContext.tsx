@@ -46,13 +46,17 @@ export function OntologyProvider({ children }: { children: React.ReactNode }) {
   const clearSelection = () => setSelectedTriples([])
 
   const loadFromAPI = async () => {
+    console.log('🔍 loadFromAPI called')
     setLoading(true)
     setError(null)
     try {
       const ontology = await ontologyService.getLatestOntology()
+      console.log('📊 Received ontology:', ontology.filename)
       const parsed = await parseTTL(ontology.content)
+      console.log(`✅ Parsed ${parsed.length} triples`)
       setTriples(parsed)
-    } catch {
+    } catch (err) {
+      console.error('❌ Error loading ontology:', err)
       setError('Failed to load ontology from server')
     } finally {
       setLoading(false)

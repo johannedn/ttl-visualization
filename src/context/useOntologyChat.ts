@@ -25,6 +25,7 @@ export function useOntologyChat() {
 
     ws.onmessage = async (e) => {
       const msg: ChatResponse = JSON.parse(e.data)
+      console.log('📨 Received WebSocket message:', msg.type)
 
       // ✅ Ignore ontology_content messages completely
       if (msg.type === 'ontology_content') {
@@ -39,10 +40,17 @@ export function useOntologyChat() {
 
       // Fetch updated ontology when change is applied
       if (msg.type === 'change_applied') {
+        console.log('🔄 Ontology change detected! Reloading in 300ms...')
         try {
-          await loadFromAPI() // ✅ Use HTTP GET instead of WebSocket
+          // Small delay to ensure backend has finished writing the file
+          await new Promise(resolve => setTimeout(resolve, 300))
+          console.log('📥 Loading updated ontology...')
+          await loadFromAPI()
+          // Clear selection after successful edit
+          clearSelection()
+          console.log('✅ Ontology reloaded successfully')
         } catch (err) {
-          console.error('Failed to reload ontology:', err)
+          console.error('❌ Failed to reload ontology:', err)
           setMessages((prev) => [...prev, {
             type: 'error',
             message: `Failed to reload ontology: ${err instanceof Error ? err.message : 'Unknown error'}`
