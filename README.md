@@ -19,9 +19,7 @@ A React-based web application for visualizing and managing RDF/TTL (Turtle) onto
   - Search functionality across all triple components
 
 ### Data Management
-- **Data Sources**:
-  - Auto-fetch latest ontology from backend API on load
-  - Manual refresh from API
+- **Data Source**: Backend API with auto-fetch on load and manual refresh capability
 - **Change History**:
   - View complete ontology modification history
   - Compare versions side-by-side
@@ -98,9 +96,7 @@ These URLs are defined in:
 
 ### Basic Workflow
 
-1. **Load an Ontology**: 
-   - The latest ontology is automatically loaded on startup
-   - Manually refresh from API using the reload button
+1. **Load an Ontology**: The latest ontology is automatically loaded on startup. Use the reload button to manually refresh from the API.
 
 2. **Explore the Ontology**:
    - **Graph View**: Navigate the interactive graph, click nodes to see relationships
@@ -196,7 +192,7 @@ The application connects to a backend API for ontology management:
 
 ## Usage
 
-1. **Load an Ontology**: Either upload a local `.ttl` file or fetch from the API
+1. **Load an Ontology**: The ontology is automatically fetched from the API on startup
 2. **Explore Data**: Switch between graph and table views to analyze the ontology
 3. **Select Triples**: In table view, select specific triples of interest
 4. **Provide Feedback**: Use the chat drawer to send prompts and selected triples to update the ontology

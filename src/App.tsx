@@ -1,8 +1,6 @@
-import { useState } from 'react'
 import { Routes, Route, Navigate } from 'react-router-dom'
-import { Box, Button, Typography } from '@mui/material'
+import { Box, Typography } from '@mui/material'
 import { DashboardLayout } from './layout/DashboardLayout'
-import { TTLUploader } from './components/TTLUploader'
 import { GraphViewPage } from './pages/GraphViewPage'
 import { GraphViewFullscreenPage } from './pages/GraphViewFullscreenPage'
 import { TableViewPage } from './pages/TableViewPage'
@@ -10,16 +8,9 @@ import { HistoryPage } from './pages/HistoryPage'
 import { useOntology } from '@context/OntologyContext'
 import { usePageTitle } from '@context/PageContext'
 
-type LoadMode = 'upload' | 'api'
-
 export default function App() {
-  const { triples, loadFromAPI, loadFromFile, loading, error } = useOntology()
+  const { triples } = useOntology()
   const { title } = usePageTitle()
-  const [loadMode, setLoadMode] = useState<LoadMode>('api')
-
-  const handleFileLoad = async (content: string) => {
-    await loadFromFile(content)
-  }
 
   return (
     <DashboardLayout>
