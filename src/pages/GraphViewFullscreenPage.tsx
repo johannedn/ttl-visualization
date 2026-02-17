@@ -7,10 +7,8 @@ import ForceGraph2D, { type ForceGraphMethods } from 'react-force-graph-2d'
 import { usePageTitle } from '@context/PageContext'
 import { useOntology } from '@context/OntologyContext'
 import type { Triple } from '../utils/ttlParser'
-import { getShortName, isURI, getRDFValue } from '../utils/ttlParser'  
+import { getShortName, isURI, getRDFValue } from '../utils/ttlParser'
 
-
-// Farben für die Kategorien
 const CATEGORY_COLORS = {
   subject: '#4CAF50',
   predicate: '#FF9800',
@@ -45,7 +43,6 @@ export function GraphViewFullscreenPage({ triples }: GraphViewFullscreenPageProp
   const { setTitle } = usePageTitle()
   const { selectedTriples, toggleTriple } = useOntology()
   
-  // Titel entfernen für Fullscreen
   useEffect(() => {
     setTitle('')
     return () => setTitle('Ontology Graph Visualization')
@@ -59,7 +56,6 @@ export function GraphViewFullscreenPage({ triples }: GraphViewFullscreenPageProp
     }
   }, [])
   
-  // States initialisieren aus URL-Parametern
   const [searchTerm, setSearchTerm] = useState(searchParams.get('search') || '')
   const [hoveredNode, setHoveredNode] = useState<string | null>(null)
   const [selectedEntity, setSelectedEntity] = useState<string | null>(null)
@@ -72,38 +68,36 @@ export function GraphViewFullscreenPage({ triples }: GraphViewFullscreenPageProp
   const fgRef = useRef<ForceGraphMethods | undefined>(undefined)
   const graphContainerRef = useRef<HTMLDivElement | null>(null)
 
-  // Column Options für Filter
 const columnOptions = useMemo(() => {
   const filtered = triples.filter((t: any) => {
-    const objectValue = getRDFValue(t.object);  // ✅ Legg til denne
+    const objectValue = getRDFValue(t.object);
     if (columnFilters.subject.length > 0 && !columnFilters.subject.includes(t.subject)) return false
     if (columnFilters.predicate.length > 0 && !columnFilters.predicate.includes(t.predicate)) return false
-    if (columnFilters.object.length > 0 && !columnFilters.object.includes(objectValue)) return false  // ✅ Endre denne
+    if (columnFilters.object.length > 0 && !columnFilters.object.includes(objectValue)) return false
     return true
   })
 
   return {
     subject: Array.from(new Set(filtered.map((t: any) => t.subject))).sort(),
     predicate: Array.from(new Set(filtered.map((t: any) => t.predicate))).sort(),
-    object: Array.from(new Set(filtered.map((t: any) => getRDFValue(t.object)))).sort(),  // ✅ Endre denne
+    object: Array.from(new Set(filtered.map((t: any) => getRDFValue(t.object)))).sort(),
   }
 }, [triples, columnFilters])
 
-  // Gefilterte Triples
   const filteredTriples = useMemo(() => {
     return triples.filter((triple: any) => {
-      const objectValue = getRDFValue(triple.object);  // ✅ Legg til denne
+      const objectValue = getRDFValue(triple.object);
       
       if (searchTerm) {
         const search = searchTerm.toLowerCase()
         const subjectMatch = triple.subject.toLowerCase().includes(search)
         const predicateMatch = triple.predicate.toLowerCase().includes(search)
-        const objectMatch = objectValue.toLowerCase().includes(search)  // ✅ Endre denne
+        const objectMatch = objectValue.toLowerCase().includes(search)
         if (!subjectMatch && !predicateMatch && !objectMatch) return false
       }
       if (columnFilters.subject.length > 0 && !columnFilters.subject.includes(triple.subject)) return false
       if (columnFilters.predicate.length > 0 && !columnFilters.predicate.includes(triple.predicate)) return false
-      if (columnFilters.object.length > 0 && !columnFilters.object.includes(objectValue)) return false  // ✅ Endre denne
+      if (columnFilters.object.length > 0 && !columnFilters.object.includes(objectValue)) return false
       return true
     })
   }, [triples, searchTerm, columnFilters])
@@ -115,7 +109,7 @@ const columnOptions = useMemo(() => {
       ),
     [selectedTriples]
   )
-  // Full Graph
+
   const fullGraph = useMemo<GraphData>(() => {
     const nodeMap = new Map<string, Node>();
     const links: Link[] = [];
@@ -145,18 +139,17 @@ const columnOptions = useMemo(() => {
         label: 'has',
       });
 
-      const objectValue = getRDFValue(triple.object); 
-      if (isURI(objectValue)) {  
-        if (!nodeMap.has(objectValue)) {  
-          nodeMap.set(objectValue, {  
-            id: objectValue,  
-            name: getShortName(objectValue),  
+      const objectValue = getRDFValue(triple.object);
+      if (isURI(objectValue)) {
+        if (!nodeMap.has(objectValue)) {
+          nodeMap.set(objectValue, {
+            id: objectValue,
+            name: getShortName(objectValue),
             category: 'object',
-            state: objectValue === selectedEntity ? 'selected' : undefined,  
+            state: objectValue === selectedEntity ? 'selected' : undefined,
           });
         }
 
-        // Predicate → Object Link
         links.push({
           source: triple.predicate,
           target: objectValue,
@@ -171,7 +164,6 @@ const columnOptions = useMemo(() => {
     };
   }, [filteredTriples, selectedEntity]);
 
-  // Display Graph mit Filter
   const displayGraph = useMemo<GraphData>(() => {
     if (!selectedEntity) {
       return fullGraph;
@@ -248,7 +240,6 @@ const columnOptions = useMemo(() => {
     navigate('/graph');
   };
 
-  // Zentriere und passe Graph beim Laden an
   useEffect(() => {
     if (fgRef.current) {
       setTimeout(() => {
@@ -261,14 +252,12 @@ const columnOptions = useMemo(() => {
 
   return (
     <Box sx={{ display: 'flex', height: '100vh', bgcolor: '#FFFFFF' }}>
-      {/* Main Area */}
       <Box sx={{ 
         flex: 1, 
         display: 'flex',
         flexDirection: 'column',
         overflow: 'hidden',
       }}>
-        {/* Filter Bar */}
         <Box sx={{ 
           p: 2, 
           bgcolor: '#FFFFFF',
@@ -341,7 +330,6 @@ const columnOptions = useMemo(() => {
           </Box>
 
           <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-            {/* Legend */}
             <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
               {Object.entries(CATEGORY_COLORS).map(([key, color]) => (
                 <Box key={key} sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
@@ -361,7 +349,6 @@ const columnOptions = useMemo(() => {
           </Box>
         </Box>
 
-        {/* Graph Canvas */}
         <Box
           ref={graphContainerRef}
           sx={{ 
@@ -432,7 +419,6 @@ const columnOptions = useMemo(() => {
             onNodeClick={handleNodeClick}
           />
 
-          {/* Entity Card - erscheint beim Klick */}
           {selectedEntity && (
             <Paper
               elevation={3}
@@ -454,7 +440,6 @@ const columnOptions = useMemo(() => {
                 resize: 'horizontal',
               }}
             >
-              {/* Fixed Header */}
               <Box sx={{ 
                 position: 'relative',
                 p: 3, 
@@ -481,7 +466,6 @@ const columnOptions = useMemo(() => {
                 </Box>
               </Box>
 
-              {/* Scrollable Content */}
               <Box sx={{ 
                 overflowY: 'hidden', 
                 p: 3,
@@ -603,7 +587,6 @@ const columnOptions = useMemo(() => {
             </Paper>
           )}
 
-          {/* Info Box */}
           <Box sx={{ 
             position: 'absolute', 
             bottom: 20, 

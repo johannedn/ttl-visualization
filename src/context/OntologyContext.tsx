@@ -1,4 +1,3 @@
-// src/context/OntologyContext.tsx
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import type { Triple } from '@utils/ttlParser'
 import { parseTTL } from '@utils/ttlParser'
@@ -9,7 +8,7 @@ interface OntologyContextValue {
   setTriples: (triples: Triple[]) => void
 
   selectedTriples: Triple[]
-  setSelectedTriples: React.Dispatch<React.SetStateAction<Triple[]>>  // ✅ Legg til denne
+  setSelectedTriples: React.Dispatch<React.SetStateAction<Triple[]>>
   toggleTriple: (t: Triple) => void
   clearSelection: () => void
 
@@ -46,17 +45,14 @@ export function OntologyProvider({ children }: { children: React.ReactNode }) {
   const clearSelection = () => setSelectedTriples([])
 
   const loadFromAPI = async () => {
-    console.log('🔍 loadFromAPI called')
     setLoading(true)
     setError(null)
     try {
       const ontology = await ontologyService.getLatestOntology()
-      console.log('📊 Received ontology:', ontology.filename)
       const parsed = await parseTTL(ontology.content)
-      console.log(`✅ Parsed ${parsed.length} triples`)
       setTriples(parsed)
     } catch (err) {
-      console.error('❌ Error loading ontology:', err)
+      console.error('Error loading ontology:', err)
       setError('Failed to load ontology from server')
     } finally {
       setLoading(false)
@@ -109,7 +105,7 @@ export function OntologyProvider({ children }: { children: React.ReactNode }) {
         triples,
         setTriples,
         selectedTriples,
-        setSelectedTriples,  // ✅ Legg til denne
+        setSelectedTriples,
         toggleTriple,
         clearSelection,
         loading,

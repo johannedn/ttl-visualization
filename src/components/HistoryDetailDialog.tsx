@@ -1,4 +1,3 @@
-// src/components/HistoryDetailDialog.tsx
 import { useEffect, useState } from 'react';
 import {
   Dialog,
@@ -31,9 +30,6 @@ export function HistoryDetailDialog({ open, versionId, onClose }: HistoryDetailD
   const [detail, setDetail] = useState<HistoryDetail | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-
-  // const [oldTriples, setOldTriples] = useState<Triple[]>([]);
-  // const [newTriples, setNewTriples] = useState<Triple[]>([]);
 
   useEffect(() => {
     if (!open || !versionId) return;

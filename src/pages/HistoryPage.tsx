@@ -1,4 +1,3 @@
-// src/pages/HistoryPage.tsx
 import { useEffect, useState, useMemo } from 'react';
 import {
   Box,
@@ -40,7 +39,6 @@ export function HistoryPage() {
       setError(null);
       try {
         const data = await historyService.getAllHistory();
-        // Sort by timestamp descending (newest first)
         const sorted = data.sort((a, b) => 
           b.created_at - a.created_at
         );
@@ -56,10 +54,8 @@ export function HistoryPage() {
     fetchHistory();
   }, []);
 
-  // Filter logic
   const filteredHistory = useMemo(() => {
     return history.filter(entry => {
-      // Search term
       if (searchTerm.trim()) {
         const lowerSearch = searchTerm.toLowerCase();
         return (
@@ -92,7 +88,6 @@ export function HistoryPage() {
       gap: 1.5,
       position: 'relative',
     }}>
-      {/* Toolbar */}
       <Paper 
         elevation={0}
         sx={{ 

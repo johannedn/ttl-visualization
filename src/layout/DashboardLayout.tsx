@@ -13,7 +13,7 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
 	const [chatOpen, setChatOpen] = React.useState(false)
 	const [sidebarOpen, setSidebarOpen] = React.useState(false)
 	const [chatWidth, setChatWidth] = React.useState(420)
-	const chatState = useOntologyChat() // Initialiser chat hook her
+	const chatState = useOntologyChat()
 
 	return (
 		<Box sx={{ display: 'flex', width: '100%', height: '100vh' }}>

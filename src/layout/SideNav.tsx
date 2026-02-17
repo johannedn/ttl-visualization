@@ -45,7 +45,6 @@ export function SideNav({ open, onClose }: SideNavProps) {
 				},
 			}}
 		>
-			{/* Claude sin versjon */}
 			<List>
 				<NavLink to="/graph" style={linkStyle}>
 					{({ isActive }) => (

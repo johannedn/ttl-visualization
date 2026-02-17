@@ -1,71 +1,61 @@
-import React, { useState, useMemo } from 'react';
-import { TableView } from './components/TableView3';
-import { GraphView } from './components/GraphView2';
-import { useOntology } from './context/OntologyContext';
-import './App.css';
+import { useState } from 'react'
+import { Routes, Route, Navigate } from 'react-router-dom'
+import { Box, Button, Typography } from '@mui/material'
+import { DashboardLayout } from './layout/DashboardLayout'
+import { TTLUploader } from './components/TTLUploader'
+import { GraphViewPage } from './pages/GraphViewPage'
+import { GraphViewFullscreenPage } from './pages/GraphViewFullscreenPage'
+import { TableViewPage } from './pages/TableViewPage'
+import { HistoryPage } from './pages/HistoryPage'
+import { useOntology } from '@context/OntologyContext'
+import { usePageTitle } from '@context/PageContext'
 
-// Limit für Performance - nur erste N Triples anzeigen
-const DISPLAY_LIMIT = 5000;
+type LoadMode = 'upload' | 'api'
 
-function App() {
-  const { triples, loading, error } = useOntology();
-  const [view, setView] = useState<'graph' | 'table'>('table'); // Default to table (faster)
+export default function App() {
+  const { triples, loadFromAPI, loadFromFile, loading, error } = useOntology()
+  const { title } = usePageTitle()
+  const [loadMode, setLoadMode] = useState<LoadMode>('api')
 
-  // Limit triples für Performance
-  const limitedTriples = useMemo(() => {
-    if (triples.length <= DISPLAY_LIMIT) return triples;
-    return triples.slice(0, DISPLAY_LIMIT);
-  }, [triples]);
-
-  const showLimitWarning = triples.length > DISPLAY_LIMIT;
+  const handleFileLoad = async (content: string) => {
+    await loadFromFile(content)
+  }
 
   return (
-    <div className="App">
-      <h1>Unified Ontology Generation for Heterogenous Data</h1>
-      
-      {/* View toggle buttons */}
-      <div style={{ margin: '20px 0', display: 'flex', gap: '10px', alignItems: 'center' }}>
-        <button 
-          onClick={() => setView('table')}
-          style={{ fontWeight: view === 'table' ? 'bold' : 'normal' }}
+    <DashboardLayout>
+      <Box 
+        sx={{
+          width: '100%',
+          maxWidth: '95%',
+          mx: 'auto',
+          display: 'flex',
+          flexDirection: 'column',
+          mt: 8,
+          mb: 3,
+        }}
+      >
+        <Typography 
+          variant="h3" 
+          gutterBottom
+          sx={{
+            fontSize: 40,
+            fontWeight: 700,
+            letterSpacing: 0.5,
+            color: '#1a3330',
+            fontFamily: "'Segoe UI', 'Roboto', 'Inter', system-ui, Avenir, Helvetica, Arial, sans-serif",
+          }}
         >
-          Table view
-        </button>
-        <button 
-          onClick={() => setView('graph')}
-          style={{ fontWeight: view === 'graph' ? 'bold' : 'normal' }}
-        >
-          Graph view
-        </button>
-        {showLimitWarning && (
-          <span style={{ color: '#ff9800', fontSize: '14px' }}>
-            ⚠️ Showing {DISPLAY_LIMIT.toLocaleString()} of {triples.length.toLocaleString()} triples
-          </span>
-        )}
-      </div>
+          {title}
+        </Typography>
+      </Box>
 
-      {/* Error display */}
-      {error && <div style={{ color: 'red', margin: '10px 0', padding: '10px', border: '1px solid red' }}>{error}</div>}
-
-      {/* Display views */}
-      {loading && <div style={{ padding: '20px' }}>Ontologie wird geladen...</div>}
-      
-      {!loading && triples.length > 0 && (
-        <>
-          {/* Only render the active view - conditional rendering for performance */}
-          {view === 'graph' ? (
-            <GraphView triples={limitedTriples} />
-          ) : (
-            <TableView triples={limitedTriples} />
-          )}
-        </>
-      )}
-      
-      {!loading && triples.length === 0 && !error && (
-        <div style={{ padding: '20px' }}>Keine Ontologie geladen</div>
-      )}
-    </div>
-  );
+      <Routes>
+        <Route path="/" element={<Navigate to="/graph" replace />} />
+        <Route path="/graph" element={<GraphViewPage triples={triples} />} />
+        <Route path="/graph-fullscreen" element={<GraphViewFullscreenPage triples={triples} />} />
+        <Route path="/table" element={<TableViewPage />} />
+        <Route path="/history" element={<HistoryPage />} />
+      </Routes>
+    </DashboardLayout>
+  )
 }
-
-export default App;

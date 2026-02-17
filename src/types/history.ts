@@ -1,4 +1,3 @@
-// src/types/history.ts
 export interface HistoryEntry {
   version_id: string;
   created_at: number;

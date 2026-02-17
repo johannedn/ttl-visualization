@@ -1,4 +1,3 @@
-// src/components/GraphView.tsx
 import React, { useMemo, useState, useRef, useCallback, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { Box, Paper, IconButton, Checkbox } from '@mui/material';
@@ -10,7 +9,6 @@ import ForceGraph2D, { type ForceGraphMethods } from 'react-force-graph-2d';
 import { FilterBar } from './FilterBar';
 import { useOntology } from '@context/OntologyContext';
 
-// Farben für die Kategorien
 const CATEGORY_COLORS = {
   subject: '#4CAF50',    // Grün
   predicate: '#FF9800',  // Orange
@@ -56,7 +54,6 @@ const GraphViewComponent: React.FC<GraphViewProps> = ({ triples }) => {
   
   const fgRef = useRef<ForceGraphMethods | undefined>(undefined);
 
-  // Column Options für Filter
   const columnOptions = useMemo(() => {
     const filtered = triples.filter((t: any) => {
       const objectValue = getRDFValue(t.object);
@@ -73,7 +70,6 @@ const GraphViewComponent: React.FC<GraphViewProps> = ({ triples }) => {
     }
   }, [triples, columnFilters]);
 
-  // Filter-Logik
   const filteredTriples = useMemo(() => {
     return triples.filter((t: any) => {
       const objectValue = getRDFValue(t.object);
@@ -85,7 +81,6 @@ const GraphViewComponent: React.FC<GraphViewProps> = ({ triples }) => {
     });
   }, [triples, columnFilters, searchTerm]);
 
-  // Gesamter Graph mit allen Nodes und Links
   const fullGraph = useMemo<GraphData>(() => {
     const nodeMap = new Map<string, Node>();
     const links: Link[] = [];
@@ -148,7 +143,6 @@ const GraphViewComponent: React.FC<GraphViewProps> = ({ triples }) => {
     };
   }, [filteredTriples, selectedEntity]);
 
-  // Gefilterter Graph
   const displayGraph = useMemo<GraphData>(() => {
     if (!selectedEntity) {
       return fullGraph;
@@ -253,7 +247,6 @@ const GraphViewComponent: React.FC<GraphViewProps> = ({ triples }) => {
         overflow: 'hidden',
       }}
     >
-      {/* Filter Bar */}
       <FilterBar
         searchTerm={searchTerm}
         onSearchChange={setSearchTerm}
@@ -264,9 +257,7 @@ const GraphViewComponent: React.FC<GraphViewProps> = ({ triples }) => {
         totalCount={fullGraph.nodes.length}
       />
 
-      {/* Main Graph View */}
       <Box sx={{ display: 'flex', gap: 2, width: '100%', position: 'relative', flex: 1, minHeight: 0 }}>
-        {/* Graph */}
         <Paper 
           elevation={0}
           sx={{ 
@@ -344,7 +335,6 @@ const GraphViewComponent: React.FC<GraphViewProps> = ({ triples }) => {
             onNodeClick={handleNodeClick}
           />
           
-          {/* Fullscreen Button */}
           <IconButton
             onClick={handleFullscreen}
             sx={{
@@ -361,7 +351,6 @@ const GraphViewComponent: React.FC<GraphViewProps> = ({ triples }) => {
             <FullscreenIcon sx={{ color: '#2d4f4b' }} />
           </IconButton>
           
-          {/* Legend */}
           <Box
             sx={{
               position: 'absolute',
@@ -395,7 +384,6 @@ const GraphViewComponent: React.FC<GraphViewProps> = ({ triples }) => {
           </Box>
         </Paper>
 
-        {/* Entity Card */}        {/* Entity Card */}
         {selectedEntity && (
           <Paper
             elevation={0}
@@ -455,7 +443,7 @@ const GraphViewComponent: React.FC<GraphViewProps> = ({ triples }) => {
                   .filter(t => t.subject === selectedEntity)
                   .slice(0, 6)
                   .map((triple, idx) => {
-                    const isSelected = isTripleSelected(triple); // ✅ Sjekk om triple er selected
+                    const isSelected = isTripleSelected(triple);
                     return (
                       <Box 
                         key={idx} 
@@ -511,7 +499,7 @@ const GraphViewComponent: React.FC<GraphViewProps> = ({ triples }) => {
                   .filter(t => getRDFValue(t.object) === selectedEntity)
                   .slice(0, 6)
                   .map((triple, idx) => {
-                    const isSelected = isTripleSelected(triple); // ✅ Sjekk om triple er selected
+                    const isSelected = isTripleSelected(triple);
                     return (
                       <Box 
                         key={idx} 
@@ -565,7 +553,6 @@ const GraphViewComponent: React.FC<GraphViewProps> = ({ triples }) => {
         )}
       </Box>
 
-      {/* Info */}
       <Box sx={{ color: 'rgba(45, 79, 75, 0.7)', fontSize: 12 }}>
         {selectedEntity 
           ? `Showing connections for: ${getShortName(selectedEntity)} (${displayGraph.nodes.length} nodes, ${displayGraph.links.length} connections)`

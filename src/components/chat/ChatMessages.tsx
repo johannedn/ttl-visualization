@@ -1,4 +1,3 @@
-// src/chat/ChatMessages.tsx
 import { Box, Typography, IconButton, Chip, Avatar } from '@mui/material'
 import { useEffect, useRef } from 'react'
 import { Delete as DeleteIcon } from '@mui/icons-material'
@@ -125,7 +124,6 @@ export function ChatMessages({ messages, onClearHistory }: ChatMessagesProps) {
                   dangerouslySetInnerHTML={{ __html: renderMarkdown(text) }}
                 />
                 
-                {/* Vis markerte tripler hvis de finnes */}
                 {'selected_triples' in m && m.selected_triples && m.selected_triples.length > 0 && (
                   <Box mt={1} display="flex" flexDirection="column" gap={0.5}>
                     <Typography variant="caption" sx={{ opacity: 0.8 }}>

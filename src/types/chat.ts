@@ -1,4 +1,3 @@
-// src/chat/chatTypes.ts
 export type ChatResponse =
   | {
       type: 'answer'

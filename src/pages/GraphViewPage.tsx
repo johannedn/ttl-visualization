@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { GraphView } from '../components/GraphView2'
+import { GraphView } from '../components/GraphView'
 import { usePageTitle } from '@context/PageContext'
 import type { Triple } from '../utils/ttlParser'
 

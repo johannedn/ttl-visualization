@@ -1,4 +1,3 @@
-// src/chat/ChatInput.tsx
 import { useState } from 'react'
 import { Box, Button, TextField, Chip, Typography, IconButton } from '@mui/material'
 import SendIcon from '@mui/icons-material/Send'
@@ -47,7 +46,6 @@ export function ChatInput({
 
   return (
     <Box p={1} borderTop={1} borderColor="divider">
-      {/* Vis markerte tripler */}
       {selectedTriples && selectedTriples.length > 0 && (
         <Box mb={1} p={1} bgcolor="grey.50" borderRadius={1}>
           <Box display="flex" justifyContent="space-between" alignItems="center" mb={0.5}>
@@ -110,7 +108,6 @@ export function ChatInput({
         </Box>
       )}
       
-      {/* Input felt */}
       <Box display="flex" gap={1}>
         <TextField
           fullWidth

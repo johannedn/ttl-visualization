@@ -1,14 +1,11 @@
-import { useState } from 'react'
 import { Box, TextField, Autocomplete, Stack, Checkbox, Switch, Typography, Chip } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
 import { getShortName } from '@utils/ttlParser'
 
 interface FilterBarProps {
-  // Search
   searchTerm: string
   onSearchChange: (value: string) => void
   
-  // Column filters
   columnFilters: {
     subject: string[]
     predicate: string[]
@@ -21,15 +18,12 @@ interface FilterBarProps {
     object: string[]
   }
   
-  // Optional: Full URI toggle (only for TableView)
   showFullURI?: boolean
   onFullURIChange?: (value: boolean) => void
   
-  // Stats
   filteredCount: number
   totalCount: number
   
-  // Optional: Custom filter function for options
   optionFilter?: (options: string[], state: any) => string[]
 }
 
@@ -47,7 +41,6 @@ export function FilterBar({
 }: FilterBarProps) {
   return (
     <Stack direction="row" spacing={2} alignItems="flex-start" sx={{ display: 'flex', flexWrap: 'wrap' }}>
-      {/* Search Box */}
       <TextField
         value={searchTerm}
         onChange={e => onSearchChange(e.target.value)}
@@ -81,7 +74,6 @@ export function FilterBar({
         }}
       />
 
-      {/* Column Filters */}
       {(['subject', 'predicate', 'object'] as const).map(key => (
         <Autocomplete
           key={key}
@@ -147,7 +139,6 @@ export function FilterBar({
         />
       ))}
 
-      {/* Right side: Full URIs Switch + Count */}
       <Box sx={{ display: 'flex', gap: 2, alignItems: 'center', ml: 'auto' }}>
         {showFullURI !== undefined && onFullURIChange && (
           <Stack direction="row" spacing={1} alignItems="center">
